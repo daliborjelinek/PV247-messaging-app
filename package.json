@@ -1,7 +1,7 @@
 {
   "name": "kentico-onboarding",
   "version": "0.0.1",
-  "main": "src/index.jsx",
+  "main": "src/index.tsx",
   "scripts": {
     "build": "webpack --mode=development",
     "start": "webpack-dev-server --mode=development",
@@ -11,9 +11,12 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "roboto-fontface": "^0.10.0"
   },
   "devDependencies": {
+    "@types/react-dom": "^16.0.9",
+    "@types/webpack-env": "^1.13.6",
     "@types/jest": "^23.1.5",
     "@types/react": "^16.4.6",
     "babel-cli": "^6.26.0",

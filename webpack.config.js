@@ -6,21 +6,14 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const mode = process.env.NODE_ENV || 'development';
 
 module.exports = {
-  entry: './src/index.jsx',
+  entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'bundle.js'
   },
   module: {
     rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: [
-          'babel-loader',
-          'eslint-loader'
-        ]
-      },
+
       {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
