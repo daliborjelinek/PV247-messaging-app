@@ -1,0 +1,33 @@
+@import "../../colors.less";
+
+@Message-padding: 10px;
+@Message__img_wrapper-margin-right: 10px;
+@Message__author_img-size: 70px;
+
+.Message {
+  display: flex;
+  flex-wrap: nowrap;
+  padding: @Message-padding;
+}
+
+.Message__author {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.Message__date {
+  color: @header-color;
+}
+
+// styles for a picture of the author of the post
+.Message__img_wrapper {
+  margin-right: @Message__img_wrapper-margin-right;
+}
+
+.Message__author_img {
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  width: @Message__author_img-size;
+  height: @Message__author_img-size;
+}

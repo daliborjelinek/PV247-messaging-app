@@ -1,6 +1,14 @@
 @import "node_modules/roboto-fontface/css/roboto/roboto-fontface.css";
+// importing general variables
+@import "./colors.less";
 
-@header-color: #95A0A4;
+// importing styles for components
+@import "src/components/ChannelItem.less";
+@import "src/components/ChannelHeader.less";
+@import "src/components/MessageEditor.less";
+@import "src/components/Message.less";
+@import "src/components/MessageRate.less";
+
 @header-height: 60px;
 
 body {
@@ -62,7 +70,6 @@ body {
 .content {
   grid-area: content;
   overflow-y: scroll;
-  padding: 20px;
 }
 
 /* width */

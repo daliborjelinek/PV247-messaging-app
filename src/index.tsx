@@ -1,4 +1,4 @@
-
+require.context('../public/', true);
 
 // Enables ES7 features such as async/await in *.js/*.jsx code
 import 'babel-core/register';

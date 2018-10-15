@@ -1,0 +1,36 @@
+@import "../../colors.less";
+
+@ChannelHeader-margin-top: 10px;
+
+@ChannelHeader__title-margin-left: 40px;
+@ChannelHeader__title-margin-right: 10px;
+
+@ChannelHeader__actions-font-size: 24px;
+
+.ChannelHeader {
+  display: flex;
+  justify-content: space-between;
+  // TODO create constants for colours and use them
+  background-color: #eee;
+}
+
+.ChannelHeader__title {
+  display: inline-block;
+  margin-top: @ChannelHeader-margin-top;
+  margin-left: @ChannelHeader__title-margin-left;
+  margin-right: @ChannelHeader__title-margin-right;
+}
+
+.ChannelHeader__numberOfUsers {
+  display: inline-block;
+  font-size: 17px;
+  color: @header-color;
+}
+
+.ChannelHeader__actions {
+  margin-top: @ChannelHeader-margin-top;
+  font-size: @ChannelHeader__actions-font-size;
+  .glyphicon {
+    margin-right: 10px;
+  }
+}
