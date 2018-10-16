@@ -5,6 +5,7 @@ import {IChannelItem} from './components/ChannelItem';
 import {ChatWindow, IContent} from './components/ChatWindow';
 import {IChannelHeader} from './components/ChannelHeader';
 import {IMessage, IMessageAuthor} from './components/Message';
+import {DropDownMenu, IDropDownMenuItem} from './components/DropDownMenu';
 
 export class App extends React.Component {
   constructor(props: any) {
@@ -64,6 +65,13 @@ export class App extends React.Component {
   }
   // </editor-fold>
 
+  private getProfileMenuItems(): IDropDownMenuItem[] {
+    return [
+      {title: 'Profile', action: () => console.log('Go to profile')},
+      {title: 'Logout', action: () => console.log('Log out')},
+    ];
+  }
+  /*<div className="avatar"> <span className="glyphicon glyphicon-user"/></div>*/
   render(): JSX.Element {
     const channels = this.getChannels();
     const content = this.getContent();
@@ -71,7 +79,11 @@ export class App extends React.Component {
       <div className="wrapper">
         <div className={'header'}>
           <h1>PV247</h1>
-          <div className="avatar"> <span className="glyphicon glyphicon-user"/></div>
+          <DropDownMenu items={this.getProfileMenuItems()}
+                        iconClass={'glyphicon glyphicon-user'}
+                        menuWrapperClass={'avatar'}
+                        openMenuDirection={'RIGHT'}
+                        />
         </div>
 
         <ChannelList channels={channels}/>

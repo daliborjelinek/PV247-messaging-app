@@ -1,0 +1,38 @@
+@import "../../fonts.less";
+
+@DropDownMenu__menuItem-min-width: 175px;
+@DropDownMenu__menuItem-padding: 10px;
+
+.DropDownMenu {
+  position: relative;
+  padding: 0 10px;
+}
+
+.DropDownMenu__list {
+  list-style: none;
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  display: block;
+  padding: 10px 0 0 0;
+  font-size: @font-size-big;
+
+  &.DropDownMenu--left {
+    left: 0;
+  }
+
+  &.DropDownMenu--right {
+    right: 0;
+  }
+}
+
+.DropDownMenu__menuItem {
+  min-width: @DropDownMenu__menuItem-min-width;
+  background: white;
+  display: block;
+  padding: @DropDownMenu__menuItem-padding;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

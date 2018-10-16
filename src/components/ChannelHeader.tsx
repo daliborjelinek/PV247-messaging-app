@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
+import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
 
 export interface IChannelHeader {
   title: string;
@@ -15,6 +16,14 @@ export class ChannelHeader extends React.PureComponent<IChannelHeader> {
     currentChannelId: PropTypes.number.isRequired,
   };
 
+  private getMenuItems(): IDropDownMenuItem[] {
+    return [
+      {title: 'Change name', action: () => console.log('Change channel name')},
+      {title: 'Invite member', action: () => console.log('Invite member')},
+      {title: 'Delete', action: () => console.log('Delete channel')},
+    ];
+  }
+
   public render(): JSX.Element {
     return (
       <div className={'ChannelHeader'}>
@@ -27,7 +36,9 @@ export class ChannelHeader extends React.PureComponent<IChannelHeader> {
         </div>
         <div className={'ChannelHeader__actions'}>
           <span className={'glyphicon glyphicon-search'} />
-          <span className={'glyphicon glyphicon-menu-hamburger'} />
+          <DropDownMenu items={this.getMenuItems()}
+                        iconClass={'glyphicon glyphicon-menu-hamburger'}
+                        openMenuDirection={'RIGHT'}/>
         </div>
       </div>
     );

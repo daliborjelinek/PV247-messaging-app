@@ -1,35 +1,31 @@
 @import "../../colors.less";
+@import "../../fonts.less";
 
-@ChannelHeader-margin-top: 10px;
-
-@ChannelHeader__title-margin-left: 40px;
-@ChannelHeader__title-margin-right: 10px;
-
-@ChannelHeader__actions-font-size: 24px;
+@ChannelHeader__title-margin: 0px 10px 0 40px;
 
 .ChannelHeader {
   display: flex;
   justify-content: space-between;
   // TODO create constants for colours and use them
   background-color: #eee;
+  align-items: center;
+  padding: 10px 0;
 }
 
 .ChannelHeader__title {
   display: inline-block;
-  margin-top: @ChannelHeader-margin-top;
-  margin-left: @ChannelHeader__title-margin-left;
-  margin-right: @ChannelHeader__title-margin-right;
+  margin: @ChannelHeader__title-margin;
 }
 
 .ChannelHeader__numberOfUsers {
   display: inline-block;
-  font-size: 17px;
+  font-size: @font-size-big;
   color: @header-color;
 }
 
 .ChannelHeader__actions {
-  margin-top: @ChannelHeader-margin-top;
-  font-size: @ChannelHeader__actions-font-size;
+  font-size: @font-size-large;
+  display: flex;
   .glyphicon {
     margin-right: 10px;
   }
