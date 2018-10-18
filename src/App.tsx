@@ -6,8 +6,16 @@ import {ChatWindow, IContent} from './components/ChatWindow';
 import {IChannelHeader} from './components/ChannelHeader';
 import {IMessage, IMessageAuthor} from './components/Message';
 import {DropDownMenu, IDropDownMenuItem} from './components/DropDownMenu';
+import {LoginPage} from './components/LoginPage';
 
-export class App extends React.Component {
+interface IAppState {
+  isLoggedIn: boolean;
+  nick: string;
+  message: string;
+  messages: any[];
+}
+
+export class App extends React.Component<{}, IAppState> {
   constructor(props: any) {
     super(props); // Must be called to properly build the base object and initialize its prototype.
 
@@ -17,7 +25,10 @@ export class App extends React.Component {
       nick: '',
       message: '',
       messages: [],
+      isLoggedIn: false,
     };
+
+    this.onLogin = this.onLogin.bind(this);
   }
 
   // <editor-fold desc="Creating dummy content">
@@ -68,14 +79,31 @@ export class App extends React.Component {
   private getProfileMenuItems(): IDropDownMenuItem[] {
     return [
       {title: 'Profile', action: () => console.log('Go to profile')},
-      {title: 'Logout', action: () => console.log('Log out')},
+      {title: 'Logout', action: () => this.onLogOut()},
     ];
   }
-  /*<div className="avatar"> <span className="glyphicon glyphicon-user"/></div>*/
+
+  private onLogin(userName: string, password: string) {
+    console.log(`Username: ${userName}, password: ${password}`);
+    this.setState((prevState) => {
+      return {...prevState, isLoggedIn: true};
+    });
+  }
+
+  private onLogOut() {
+    this.setState((prevState) => {
+      return {...prevState, isLoggedIn: false};
+    });
+  }
+
   render(): JSX.Element {
     const channels = this.getChannels();
     const content = this.getContent();
-    return (
+    // select view: login page / message app
+    const isLoggedIn = this.state.isLoggedIn;
+
+    // TODO create element for MessageApp and Header
+    const messageApp = (
       <div className="wrapper">
         <div className={'header'}>
           <h1>PV247</h1>
@@ -83,13 +111,17 @@ export class App extends React.Component {
                         iconClass={'glyphicon glyphicon-user'}
                         menuWrapperClass={'avatar'}
                         openMenuDirection={'RIGHT'}
-                        />
+          />
         </div>
-
         <ChannelList channels={channels}/>
         <ChatWindow messages={content.messages} selectedChannel={content.selectedChannel}/>
-      </div>
-    );
+      </div>);
+
+    if (isLoggedIn) {
+      return messageApp;
+    } else {
+      return <LoginPage onLogin={this.onLogin}/>;
+    }
   }
 
 }

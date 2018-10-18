@@ -10,12 +10,23 @@
 @import "src/components/MessageRate.less";
 @import "src/components/DropDownMenu.less";
 
+// style for login page
+@import "src/components/LoginPage.less";
+
 @header-height: 60px;
+
+html {
+  height: 100%;
+}
 
 body {
   font-family: 'Roboto', sans-serif;
+  height: 100%;
 }
 
+#app-root {
+  height: 100%;
+}
 
 .wrapper {
   display: grid;
@@ -26,6 +37,7 @@ body {
   grid-template-rows: @header-height auto;
   height: 100vh;
 }
+
 .header {
   grid-area: header;
   background-color: @header-color;
@@ -39,6 +51,16 @@ body {
   color: white;
   margin: 0;
 }
+
+.block {
+  display: block;
+}
+
+.label-top {
+  margin-bottom: 0;
+  display: block;
+}
+
 .sidebar {
    grid-area: sidebar;
    background-color: black;
