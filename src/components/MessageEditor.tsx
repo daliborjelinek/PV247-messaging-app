@@ -2,10 +2,13 @@ import * as React from 'react';
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faBold, faEraser, faFile, faFileImage, faFont, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
+import {faBold, faEraser, faFile, faFileImage, faFont, faItalic,
+        faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
 
+// Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
                   faListUl, faLink, faFile, faFileImage, faSmile);
+
 
 export class MessageEditor extends React.PureComponent {
   private readonly messageEditorDiv: React.RefObject<HTMLDivElement>;
@@ -15,11 +18,20 @@ export class MessageEditor extends React.PureComponent {
     this.messageEditorDiv = React.createRef();
   }
 
+  /**
+   * When component is mounted it starts to listen on window resize.
+   * After window resizing, component must be resized too.
+   */
   componentDidMount() {
     window.addEventListener('resize', () => this.resize());
     this.resize();
   }
 
+  /**
+   * Resize width of MessageEditor. Width cannot be set automatically,
+   * because MessageEditor has fixed position.
+   * Final width is computed as window width - message list width.
+   */
   private resize() {
     const windowWidth = window.innerWidth;
     const channelList = document.getElementsByClassName('ChannelList')[0] as HTMLDivElement;
