@@ -1,7 +1,11 @@
 @import "../../colors.less";
+@import "../../fonts.less";
 
-@MessageEditor-height: 100px;
+@MessageEditor-height: 150px;
 @MessageEditor-padding: 10px;
+@MessageEditor-space-between-icons: 10px;
+@MessageEditor-icon-font-size: 16px;
+@MessageEditor__textAreaWrapper-height: @MessageEditor-height - 50px;
 
 .MessageEditor {
   height: @MessageEditor-height;
@@ -11,4 +15,41 @@
   background-color: white;
   border-top: 1px solid @border-color-light;
   padding: @MessageEditor-padding;
+
+  .glyphicon, .svg-inline--fa {
+    cursor: pointer;
+
+    &:hover {
+      color: @header-color;
+    }
+  }
+
+  .glyphicon {
+    font-size: @MessageEditor-icon-font-size;
+    margin-right: @MessageEditor-space-between-icons;
+    position: relative;
+    top: 3px;
+    font-weight: bold;
+    color: black;
+  }
+
+  .svg-inline--fa {
+    margin-right: @MessageEditor-space-between-icons;
+  }
+}
+
+.MessageEditor__textAreaWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-end;
+  height: @MessageEditor__textAreaWrapper-height;
+  margin-top: 10px;
+}
+
+.MessageEditor__textArea {
+  width: 75%;
+  margin-right: 10px;
+  height: 90%;
+  resize: none;
 }
