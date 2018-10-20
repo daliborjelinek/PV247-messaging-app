@@ -3,6 +3,8 @@
 @import "./colors.less";
 
 // importing styles for components
+@import "src/components/MessageApp.less";
+@import "src/components/MessageAppHeader.less";
 @import "src/components/ChannelItem.less";
 @import "src/components/ChannelHeader.less";
 @import "src/components/MessageEditor.less";
@@ -26,30 +28,6 @@ body {
 
 #app-root {
   height: 100%;
-}
-
-.wrapper {
-  display: grid;
-  grid-template-columns: 250px auto;
-  grid-template-areas:
-          "header header"
-          "sidebar content";
-  grid-template-rows: @header-height auto;
-  height: 100vh;
-}
-
-.header {
-  grid-area: header;
-  background-color: @header-color;
-  display:flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 20px;
-}
-
-.header h1 {
-  color: white;
-  margin: 0;
 }
 
 .block {
