@@ -1,4 +1,5 @@
 @import "../../fonts.less";
+@import "../../colors.less";
 
 @DropDownMenu__menuItem-min-width: 175px;
 @DropDownMenu__menuItem-padding: 10px;
@@ -28,9 +29,9 @@
 
 .DropDownMenu__menuItem {
   min-width: @DropDownMenu__menuItem-min-width;
-  background: white;
   display: block;
   padding: @DropDownMenu__menuItem-padding;
+  background-color: @dropdown-menu-color;
 
   &:hover {
     cursor: pointer;
