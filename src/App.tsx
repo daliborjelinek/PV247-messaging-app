@@ -5,6 +5,7 @@ import {MessageApp} from './components/MessageApp';
 
 interface IAppState {
   isLoggedIn: boolean;
+  userName: string;
 }
 
 export class App extends React.Component<{}, IAppState> {
@@ -14,6 +15,7 @@ export class App extends React.Component<{}, IAppState> {
     // TODO Create real state
     this.state = {
       isLoggedIn: false,
+      userName: '',
     };
 
     this.onLogin = this.onLogin.bind(this);
@@ -23,7 +25,7 @@ export class App extends React.Component<{}, IAppState> {
   private onLogin(userName: string, password: string) {
     console.log(`Username: ${userName}, password: ${password}`);
     this.setState((prevState) => {
-      return {...prevState, isLoggedIn: true};
+      return {...prevState, isLoggedIn: true, userName};
     });
   }
 
@@ -38,7 +40,7 @@ export class App extends React.Component<{}, IAppState> {
     const isLoggedIn = this.state.isLoggedIn;
 
     if (isLoggedIn) {
-      return <MessageApp onLogout={this.onLogout}/>;
+      return <MessageApp userName={this.state.userName} onLogout={this.onLogout}/>;
     } else {
       return <LoginPage onLogin={this.onLogin}/>;
     }

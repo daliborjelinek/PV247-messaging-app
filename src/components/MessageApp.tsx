@@ -8,8 +8,10 @@ import {IChannelItem} from './ChannelItem';
 import {IMessage, IMessageAuthor} from './Message';
 import {IChannelHeader} from './ChannelHeader';
 import {MessageAppHeader} from './MessageAppHeader';
+import {Modal, Button} from 'react-bootstrap';
 
 interface IMessageAppFunctions {
+  userName: string;
   onLogout(): void;
 }
 
@@ -19,12 +21,14 @@ interface IMessageAppState {
   nick: string;
   message: string;
   messages: any[];
+  isUserModalVisible: boolean;
 }
 
 export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessageAppState> {
 
   static propTypes = {
     onLogout: PropTypes.func.isRequired,
+    userName: PropTypes.string.isRequired,
   };
 
   public constructor(props: IMessageAppProps) {
@@ -35,6 +39,7 @@ export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessa
       nick: '',
       message: '',
       messages: [],
+      isUserModalVisible: true,
     };
 
     this.getProfileMenuItems = this.getProfileMenuItems.bind(this);
@@ -87,9 +92,15 @@ export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessa
 
   private getProfileMenuItems(): IDropDownMenuItem[] {
     return [
-      {title: 'Profile', action: () => console.log('Go to profile')},
+      {title: 'Profile', action: () => this.toggleModal(true)},
       {title: 'Logout', action: () => this.props.onLogout()},
     ];
+  }
+
+  private toggleModal = (show: boolean) => {
+    this.setState((prevState) => {
+      return {...prevState, isUserModalVisible: show};
+    });
   }
 
   public render(): JSX.Element {
@@ -101,6 +112,27 @@ export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessa
         <MessageAppHeader profileMenuItems={this.getProfileMenuItems()}/>
         <ChannelList channels={channels}/>
         <ChatWindow messages={content.messages} selectedChannel={content.selectedChannel}/>
+
+        <Modal bsSize="small" className={'text-center'} show={this.state.isUserModalVisible} onHide={() => this.toggleModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>User settings</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className={'MessageApp__userModal_img rounded'}>
+              <div className={'MessageApp__userModal_img-overlay'}>
+                edit
+              </div>
+            </div>
+            <div className="form-group">
+              <input className="form-control text-center" value={this.props.userName}/>
+                <small id="emailHelp" className="form-text text-muted">Here you can change your nick.</small>
+            </div>
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => this.toggleModal(false)}>Save</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
