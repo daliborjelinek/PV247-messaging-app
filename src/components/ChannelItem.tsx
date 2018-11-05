@@ -1,12 +1,13 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
+import './ChannelItem.less';
 
-export interface IChannelItem {
-  name: string;
-  countOfNewMessages: number;
+export interface IChannelItemProps {
+  readonly name: string;
+  readonly countOfNewMessages: number;
 }
 
-export class ChannelItem extends React.PureComponent<IChannelItem> {
+export class ChannelItem extends React.PureComponent<IChannelItemProps> {
   static propTypes = {
     name: PropTypes.string.isRequired,
     countOfNewMessages: PropTypes.number.isRequired,

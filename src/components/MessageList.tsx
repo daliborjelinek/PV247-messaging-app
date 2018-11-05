@@ -1,12 +1,12 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
-import {IMessage, Message} from './Message';
+import {IMessageProps, Message} from './Message';
 
-export interface IMessageList {
-  messages: IMessage[];
+export interface IMessageListProps {
+  readonly messages: IMessageProps[];
 }
 
-export class MessageList extends React.PureComponent<IMessageList> {
+export class MessageList extends React.PureComponent<IMessageListProps> {
 
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.shape({
@@ -18,8 +18,7 @@ export class MessageList extends React.PureComponent<IMessageList> {
     return (
       <div className={'MessageList'}>
         {this.props.messages.map((message) => {
-          return <Message id={message.id} text={message.text} date={message.date}
-                   author={message.author} rating={message.rating} key={message.id}/>;
+          return <Message message={message.message} key={message.message.id}/>;
         })}
       </div>
     );

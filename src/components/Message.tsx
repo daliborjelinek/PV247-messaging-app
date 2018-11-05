@@ -2,32 +2,38 @@ import * as React from 'react';
 import * as  PropTypes from 'prop-types';
 import {MessageRate} from './MessageRate';
 
+export interface IMessageProps {
+  readonly message: IMessage;
+}
+
 export interface IMessage {
-  id: number;
-  text: string;
-  date: string;
-  author: IMessageAuthor;
-  rating: number;
+  readonly id: number;
+  readonly text: string;
+  readonly date: string;
+  readonly author: IMessageAuthor;
+  readonly rating: number;
 }
 
 export interface IMessageAuthor {
-  id: number;
-  name: string;
-  pictureUrl: string;
+  readonly id: number;
+  readonly name: string;
+  readonly pictureUrl: string;
 }
 
-export class Message extends React.PureComponent<IMessage> {
+export class Message extends React.PureComponent<IMessageProps> {
 
   static propTypes = {
-    id: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
-    author: PropTypes.shape({
+    message: PropTypes.shape({
       id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      pictureUrl: PropTypes.string,
-    }),
-    rating: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
+      author: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        pictureUrl: PropTypes.string,
+      }),
+      rating: PropTypes.number.isRequired,
+    })
   };
 
   public render(): JSX.Element {
@@ -37,14 +43,14 @@ export class Message extends React.PureComponent<IMessage> {
       <div className={'Message'}>
         <div className={'Message__img_wrapper'}>
           <div className={'Message__author_img'}
-               style={{backgroundImage: `url('${this.props.author.pictureUrl}')`}} />
+               style={{backgroundImage: `url('${this.props.message.author.pictureUrl}')`}} />
         </div>
         <div>
-          <span className={'Message__author'}>{this.props.author.name}</span>
-          <span className={'Message__date'}>{this.props.date}</span>
-          <div className={'Message__text'}>{this.props.text}</div>
+          <span className={'Message__author'}>{this.props.message.author.name}</span>
+          <span className={'Message__date'}>{this.props.message.date}</span>
+          <div className={'Message__text'}>{this.props.message.text}</div>
         </div>
-        <MessageRate rating={this.props.rating} isMyMessage={isMyMessage}/>
+        <MessageRate rating={this.props.message.rating} isMyMessage={isMyMessage}/>
       </div>
     );
   }

@@ -3,28 +3,29 @@ import * as  PropTypes from 'prop-types';
 
 import {IDropDownMenuItem} from './DropDownMenu';
 import {ChannelList} from './ChannelList';
-import {ChatWindow, IContent} from './ChatWindow';
-import {IChannelItem} from './ChannelItem';
-import {IMessage, IMessageAuthor} from './Message';
-import {IChannelHeader} from './ChannelHeader';
+import {ChatWindow, IChatWindowProps} from './ChatWindow';
+import {IChannelItemProps} from './ChannelItem';
+import {IMessageAuthor, IMessageProps} from './Message';
+import {IChannelHeaderProps} from './ChannelHeader';
 import {MessageAppHeader} from './MessageAppHeader';
 import {Modal, Button} from 'react-bootstrap';
 
-interface IMessageAppFunctions {
-  userName: string;
+interface IMessageAppPropsFunctions {
   onLogout(): void;
 }
 
-interface IMessageAppProps extends IMessageAppFunctions {}
-
-interface IMessageAppState {
-  nick: string;
-  message: string;
-  messages: any[];
-  isUserModalVisible: boolean;
+interface IMessageAppProps extends IMessageAppPropsFunctions {
+  readonly userName: string;
 }
 
-export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessageAppState> {
+interface IMessageAppState {
+  readonly nick: string;
+  readonly message: string;
+  readonly messages: any[];
+  readonly isUserModalVisible: boolean;
+}
+
+export class MessageApp extends React.PureComponent<IMessageAppProps, IMessageAppState> {
 
   static propTypes = {
     onLogout: PropTypes.func.isRequired,
@@ -47,10 +48,10 @@ export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessa
 
   // <editor-fold desc="Creating dummy content">
   // Returns statically filled channel list.
-  private getChannels(): IChannelItem[] {
-    const channel1: IChannelItem = { name: 'Mia Khlaifa', countOfNewMessages: 3 };
-    const channel2: IChannelItem = { name: 'Tori Black', countOfNewMessages: 1 };
-    const channel3: IChannelItem = { name: 'Asa Akira', countOfNewMessages: 0 };
+  private getChannels(): IChannelItemProps[] {
+    const channel1: IChannelItemProps = { name: 'Mia Khlaifa', countOfNewMessages: 3 };
+    const channel2: IChannelItemProps = { name: 'Tori Black', countOfNewMessages: 1 };
+    const channel3: IChannelItemProps = { name: 'Asa Akira', countOfNewMessages: 0 };
     return [channel1, channel2, channel3];
   }
 
@@ -68,20 +69,20 @@ export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessa
   }
 
   // Returns message
-  private getMessage(id: number): IMessage {
+  private getMessage(id: number): IMessageProps {
     const rating = Math.round(Math.random() * 100);
     const author = this.getMessageAuthor();
     const date = new Date().toISOString();
     const text = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' +
       ' Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer' +
       ' took a galley of type and scrambled it to make a type specimen book. ';
-    return {id, rating, author, date, text};
+    return {message: {id, rating, author, date, text}};
   }
 
   // Returns dummy data for content
-  private getContent(): IContent {
+  private getContent(): IChatWindowProps {
     const numberOfUsers = Math.round(Math.random() * 1000);
-    const selectedChannel: IChannelHeader = { currentChannelId: 0, title: 'Mia Khalifa', numberOfUsers };
+    const selectedChannel: IChannelHeaderProps = { currentChannelId: 0, title: 'Mia Khalifa', numberOfUsers };
     const message0 = this.getMessage(0);
     const message1 = this.getMessage(1);
     const message2 = this.getMessage(2);
@@ -101,7 +102,7 @@ export class MessageApp extends React.PureComponent<IMessageAppFunctions, IMessa
     this.setState((prevState) => {
       return {...prevState, isUserModalVisible: show};
     });
-  }
+  };
 
   public render(): JSX.Element {
     const channels = this.getChannels();

@@ -4,11 +4,11 @@ import * as  PropTypes from 'prop-types';
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
 import {shape} from 'prop-types';
 
-interface  IMessageAppHeader {
-  profileMenuItems: IDropDownMenuItem[];
+interface  IMessageAppHeaderProps {
+  readonly profileMenuItems: IDropDownMenuItem[];
 }
 
-export class MessageAppHeader extends React.PureComponent<IMessageAppHeader> {
+export class MessageAppHeader extends React.PureComponent<IMessageAppHeaderProps> {
 
   static propTypes = {
     profileMenuItems: PropTypes.arrayOf(shape({

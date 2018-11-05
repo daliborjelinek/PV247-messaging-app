@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as  PropTypes from 'prop-types';
 
 interface IMessageRating {
-  rating: number;
-  isMyMessage: boolean;
+  readonly rating: number;
+  readonly isMyMessage: boolean;
 }
 
 export class MessageRate extends React.PureComponent<IMessageRating> {

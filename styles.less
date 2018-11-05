@@ -5,8 +5,6 @@
 // importing styles for components
 @import "src/components/MessageApp.less";
 @import "src/components/MessageAppHeader.less";
-@import "src/components/ChannelItem.less";
-@import "src/components/ChannelHeader.less";
 @import "src/components/MessageEditor.less";
 @import "src/components/Message.less";
 @import "src/components/MessageRate.less";
@@ -39,16 +37,6 @@ body {
   display: block;
 }
 
-.sidebar {
-   grid-area: sidebar;
-   background-color: black;
-   padding: 0 20px;
- }
-
-.sidebar h3{
-  color: #e2e2e2;
-}
-
 .avatar {
   vertical-align: middle;
   width: 40px;
@@ -61,17 +49,8 @@ body {
   margin-right: 10px;
 }
 
-.sidebar ul {
-  list-style-type: none;
-}
-
 .badge {
   background-color: #F79C42;
-}
-
-.content {
-  grid-area: content;
-  overflow-y: scroll;
 }
 
 /* width */

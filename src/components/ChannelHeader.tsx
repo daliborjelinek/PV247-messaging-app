@@ -1,14 +1,15 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
+import './ChannelHeader.less';
 
-export interface IChannelHeader {
-  title: string;
-  numberOfUsers: number;
-  currentChannelId: number;
+export interface IChannelHeaderProps {
+  readonly title: string;
+  readonly numberOfUsers: number;
+  readonly currentChannelId: number;
 }
 
-export class ChannelHeader extends React.PureComponent<IChannelHeader> {
+export class ChannelHeader extends React.PureComponent<IChannelHeaderProps> {
 
   static propTypes = {
     title: PropTypes.string.isRequired,

@@ -1,20 +1,20 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
 
-interface IDropDownMenu {
-  items: IDropDownMenuItem[];
-  iconClass?: string;
-  menuWrapperClass?: string;
-  openMenuDirection?: 'LEFT' | 'RIGHT';
+interface IDropDownMenuProps {
+  readonly items: IDropDownMenuItem[];
+  readonly iconClass?: string;
+  readonly menuWrapperClass?: string;
+  readonly openMenuDirection?: 'LEFT' | 'RIGHT';
 }
 
 export interface IDropDownMenuItem {
-  title: string;
-  action: (...params: any[]) => any;
+  readonly title: string;
+  readonly action: (...params: any[]) => any;
 }
 
 interface IDropDownMenuState {
-  isShown: boolean;
+  readonly isShown: boolean;
 }
 
 interface IOpenMenuDirection {
@@ -27,7 +27,7 @@ const openMenuDirection: IOpenMenuDirection = {
   RIGHT: 'DropDownMenu--right',
 };
 
-export class DropDownMenu extends React.PureComponent<IDropDownMenu, IDropDownMenuState> {
+export class DropDownMenu extends React.PureComponent<IDropDownMenuProps, IDropDownMenuState> {
 
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({
@@ -39,7 +39,15 @@ export class DropDownMenu extends React.PureComponent<IDropDownMenu, IDropDownMe
     openMenuDirection: PropTypes.string,
   };
 
-  constructor(props: IDropDownMenu) {
+  private show = () => {
+    this.setState( () => ({ isShown: true }));
+  };
+
+  private hide = () => {
+    this.setState(() => ({ isShown: false }));
+  };
+
+  constructor(props: IDropDownMenuProps) {
     super(props);
 
     this.state = {
@@ -51,27 +59,13 @@ export class DropDownMenu extends React.PureComponent<IDropDownMenu, IDropDownMe
     return this.state.isShown && this.props.items != null && this.props.items.length > 0;
   }
 
-  private show(): void {
-    this.setState( () => {
-      return {
-        isShown: true,
-      };
-    });
-  }
-
-  private hide(): void {
-    this.setState(() => {
-      return {isShown: false};
-    });
-  }
-
   public render(): JSX.Element {
     // select side on which will be menu opened
     const openMenuDirectionClass = this.props.openMenuDirection ?
       openMenuDirection[this.props.openMenuDirection] : openMenuDirection.LEFT;
 
     return (
-      <div className={'DropDownMenu'} onMouseEnter={() => this.show()} onMouseLeave={() => this.hide()}>
+      <div className={'DropDownMenu'} onMouseEnter={this.show} onMouseLeave={this.hide}>
         <div className={this.props.menuWrapperClass}><span className={this.props.iconClass} /></div>
         {this.shouldBeMenuItemsRendered() &&
           <ul className={`DropDownMenu__list ${openMenuDirectionClass}`}>

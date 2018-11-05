@@ -1,16 +1,17 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
 import {MessageList} from './MessageList';
-import {ChannelHeader, IChannelHeader} from './ChannelHeader';
-import {IMessage, Message} from './Message';
+import {ChannelHeader, IChannelHeaderProps} from './ChannelHeader';
+import {IMessageProps, Message} from './Message';
 import {MessageEditor} from './MessageEditor';
+import './ChatWindow.less';
 
-export interface IContent {
-  messages: IMessage[];
-  selectedChannel: IChannelHeader;
+export interface IChatWindowProps {
+  readonly messages: IMessageProps[];
+  readonly selectedChannel: IChannelHeaderProps;
 }
 
-export class ChatWindow extends React.PureComponent<IContent> {
+export class ChatWindow extends React.PureComponent<IChatWindowProps> {
 
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.shape({
@@ -21,7 +22,7 @@ export class ChatWindow extends React.PureComponent<IContent> {
 
   public render(): JSX.Element {
     return (
-      <div className={'ChatWindow content'}>
+      <div className={'ChatWindow'}>
         <ChannelHeader title={this.props.selectedChannel.title}
                        numberOfUsers={this.props.selectedChannel.numberOfUsers}
                        currentChannelId={this.props.selectedChannel.currentChannelId}/>
