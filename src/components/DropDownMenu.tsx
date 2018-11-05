@@ -40,12 +40,8 @@ export class DropDownMenu extends React.PureComponent<IDropDownMenuProps, IDropD
     openMenuDirection: PropTypes.string,
   };
 
-  private show = () => {
-    this.setState( () => ({ isShown: true }));
-  };
-
-  private hide = () => {
-    this.setState(() => ({ isShown: false }));
+  private toggleVisibility = () => {
+    this.setState((prevState) => ({ isShown: !prevState.isShown }));
   };
 
   constructor(props: IDropDownMenuProps) {
@@ -66,8 +62,10 @@ export class DropDownMenu extends React.PureComponent<IDropDownMenuProps, IDropD
       openMenuDirection[this.props.openMenuDirection] : openMenuDirection.LEFT;
 
     return (
-      <div className={'DropDownMenu'} onMouseEnter={this.show} onMouseLeave={this.hide}>
-        <div className={this.props.menuWrapperClass}><span className={this.props.iconClass} /></div>
+      <div className={'DropDownMenu'} onClick={this.toggleVisibility}>
+        <div className={this.props.menuWrapperClass}>
+          <span className={this.props.iconClass} />
+        </div>
         {this.shouldBeMenuItemsRendered() &&
           <ul className={`DropDownMenu__list ${openMenuDirectionClass}`}>
             {this.props.items.map((item, index) => {
