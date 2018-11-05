@@ -42,8 +42,6 @@ export class MessageApp extends React.PureComponent<IMessageAppProps, IMessageAp
       messages: [],
       isUserModalVisible: true,
     };
-
-    this.getProfileMenuItems = this.getProfileMenuItems.bind(this);
   }
 
   // <editor-fold desc="Creating dummy content">
@@ -107,10 +105,11 @@ export class MessageApp extends React.PureComponent<IMessageAppProps, IMessageAp
   public render(): JSX.Element {
     const channels = this.getChannels();
     const content = this.getContent();
+    const profileMenuItems = this.getProfileMenuItems();
 
     return (
       <div className="MessageApp">
-        <MessageAppHeader profileMenuItems={this.getProfileMenuItems()}/>
+        <MessageAppHeader profileMenuItems={profileMenuItems}/>
         <ChannelList channels={channels}/>
         <ChatWindow messages={content.messages} selectedChannel={content.selectedChannel}/>
 
