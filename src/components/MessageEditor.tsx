@@ -12,11 +12,17 @@ faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
 import './MessageEditor.less';
 
 export class MessageEditor extends React.PureComponent {
+
+  // used to set width when component is mounted
   private readonly messageEditorDiv: React.RefObject<HTMLDivElement>;
+
+  // used to set focus when component is mounted
+  private readonly  messageEditorTextArea: React.RefObject<HTMLTextAreaElement>;
 
   constructor(props: {}) {
     super(props);
     this.messageEditorDiv = React.createRef();
+    this.messageEditorTextArea = React.createRef();
   }
 
   /**
@@ -26,6 +32,7 @@ export class MessageEditor extends React.PureComponent {
   componentDidMount() {
     window.addEventListener('resize', () => this.resize());
     this.resize();
+    this.messageEditorTextArea!.current!.focus();
   }
 
   /**
@@ -61,7 +68,8 @@ export class MessageEditor extends React.PureComponent {
           <FontAwesomeIcon icon={'smile'} size={'lg'}/>
         </div>
         <div className={'MessageEditor__textAreaWrapper'}>
-          <textarea className={'MessageEditor__textArea'}/>
+          <textarea className={'MessageEditor__textArea'}
+                    ref={this.messageEditorTextArea}/>
           <button type={'submit'} className={'btn btn-primary'}>Send</button>
         </div>
       </div>
