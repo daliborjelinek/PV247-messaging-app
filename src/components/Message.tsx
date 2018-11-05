@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
 import {MessageRate} from './MessageRate';
+import './Message.less';
 
 export interface IMessageProps {
   readonly message: IMessage;

@@ -10,6 +10,8 @@ import {IChannelHeaderProps} from './ChannelHeader';
 import {MessageAppHeader} from './MessageAppHeader';
 import {Modal, Button} from 'react-bootstrap';
 
+import './MessageApp.less';
+
 interface IMessageAppPropsFunctions {
   onLogout(): void;
 }

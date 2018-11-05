@@ -9,6 +9,7 @@ import {faBold, faEraser, faFile, faFileImage, faFont, faItalic,
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
                   faListUl, faLink, faFile, faFileImage, faSmile);
 
+import './MessageEditor.less';
 
 export class MessageEditor extends React.PureComponent {
   private readonly messageEditorDiv: React.RefObject<HTMLDivElement>;

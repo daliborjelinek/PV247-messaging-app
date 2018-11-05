@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as  PropTypes from 'prop-types';
+import './MessageRate.less';
 
 interface IMessageRating {
   readonly rating: number;

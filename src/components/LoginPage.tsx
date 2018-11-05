@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {ChangeEvent, FormEvent} from 'react';
 import * as  PropTypes from 'prop-types';
+import './LoginPage.less';
 
 interface ILoginPagePropsEvents {
   onLogin(userName: string, password: string): void;

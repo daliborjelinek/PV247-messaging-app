@@ -4,6 +4,8 @@ import * as  PropTypes from 'prop-types';
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
 import {shape} from 'prop-types';
 
+import './MessageAppHeader.less';
+
 interface  IMessageAppHeaderProps {
   readonly profileMenuItems: IDropDownMenuItem[];
 }
