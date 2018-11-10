@@ -1,9 +1,19 @@
+@import "../../colors.less";
 @ChannelItem-padding: 5px;
 
 .ChannelItem {
   display: flex;
   justify-content: space-between;
   padding: @ChannelItem-padding;
+  cursor: pointer;
+
+  &:hover {
+    background-color: @color-selected-channel;
+  }
+}
+
+.ChannelItem--selected {
+  background: linear-gradient(to right, @color-selected-channel 0%, @color-selected-channel 50%, rgba(0,0,0,0) 100%);
 }
 
 .ChannelItem__name {

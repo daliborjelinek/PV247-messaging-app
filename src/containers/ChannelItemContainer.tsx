@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 const mapStateToProps = (state: IMessageAppState, ownProps: IChannelItemOwnProps): IChannelItemStateProps => {
   return {
     channelItem: state.channels.byId.get(ownProps.id)!,
+    isSelected: state.currentChannelId === ownProps.id,
   };
 };
 
