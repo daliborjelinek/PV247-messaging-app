@@ -26,7 +26,7 @@ export class ChannelHeader extends React.PureComponent<IProps> {
     }
 
     // channel exists
-    const countOfUsersInChannel = this.props.channel.userIds.size;
+    const countOfUsersInChannel = this.props.channel.userIds.count();
     return (
       <div className={'ChannelHeader'}>
         <div className={'ChannelHeader__info'}>

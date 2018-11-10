@@ -22,11 +22,11 @@ export const users: Immutable.List<IMessageAppUser> = Immutable.List([
 // Channels
 export const channels: Immutable.List<IMessageAppChannel> = Immutable.List([
   { id: uuid(), name: 'Mia Khalifa', countOfNewMessages: Math.round(Math.random() * 10),
-    userIds: users.map((user) => user.id)},
+    userIds: Immutable.List(users.map((user) => user.id))},
   { id: uuid(), name: 'Tori Black', countOfNewMessages: Math.round(Math.random() * 10),
-    userIds: users.map((user) => user.id)},
+    userIds: Immutable.List(users.map((user) => user.id))},
   { id: uuid(), name: 'Asa Akira', countOfNewMessages: Math.round(Math.random() * 10),
-    userIds: users.delete(2).map((user) => user.id)},
+    userIds: Immutable.List(users.delete(2).map((user) => user.id))},
 ]);
 
 // Messages

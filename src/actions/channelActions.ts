@@ -2,9 +2,11 @@ import {CHANNEL_ADD_FAILED, CHANNEL_ADD_FINISHED, CHANNEL_ADD_STARTED, CURRENT_C
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
 import * as MessageAppRepository from '../repository/messageAppRepository';
+import {IMessageAppState} from '../models/IMessageAppState';
+import {loadMessagesForChannel} from './messageActions';
 
 // CHANGING CHANNEL
-export const currentChannelChangeStarted = (): Action<CURRENT_CHANNEL_CHANGE_STARTED> => ({
+const currentChannelChangeStarted = (): Action<CURRENT_CHANNEL_CHANGE_STARTED> => ({
   type: CURRENT_CHANNEL_CHANGE_STARTED,
 });
 
@@ -14,6 +16,17 @@ export const currentChannelChangeFinished = (activeChannel: IMessageAppChannel):
     id: activeChannel.id,
   },
 });
+
+export const onChannelSelected = (channelId: Uuid): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    dispatch(currentChannelChangeStarted());
+    const selectedChannel = getState().channels.byId.get(channelId)!;
+    dispatch(currentChannelChangeFinished(selectedChannel));
+
+    // render messages for given channel
+    dispatch(loadMessagesForChannel(channelId));
+  };
+};
 
 
 // ADDING NEW CHANNEL

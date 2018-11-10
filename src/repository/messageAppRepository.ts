@@ -25,7 +25,10 @@ export async function loadChannels(): Promise<Immutable.List<IMessageAppChannel>
   if (channelsLocalStorage.isEmpty()) {
     return channels;
   }
-  return channelsLocalStorage;
+  // user ids for given channel should be immutable list
+  return channelsLocalStorage.map((channel: IMessageAppChannel) => {
+    return {...channel, userIds: Immutable.List(channel.userIds)};
+  });
 }
 
 /**

@@ -23,7 +23,8 @@ export class ChannelItem extends React.PureComponent<IProps> {
     const channelItemClassName = this.props.isSelected ? 'ChannelItem ChannelItem--selected' : 'ChannelItem';
 
     return (
-      <div className={channelItemClassName}>
+      <div className={channelItemClassName}
+           onClick={() => this.props.onChannelSelected(this.props.id)}>
         <span className="ChannelItem__name">{this.props.channelItem.name}</span>
         <span className="ChannelItem__countOfNewMessages badge badge-pill">{this.props.channelItem.countOfNewMessages}</span>
       </div>
