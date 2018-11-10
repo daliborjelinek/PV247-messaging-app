@@ -13,7 +13,7 @@ const loggingFailed = (): Action<MESSAGE_APP_LOGGING_FAILED> => ({
   type: MESSAGE_APP_LOGGING_FAILED,
 });
 
-const loggingSucces = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGING_SUCCESS> => ({
+const loggingSuccess = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGING_SUCCESS> => ({
   type: MESSAGE_APP_LOGGING_SUCCESS,
   payload: {
     loggedUser,
@@ -27,12 +27,12 @@ export const logIn = (username: string, password: string): any => {
     if (loggedUser == null) {
       dispatch(loggingFailed());
     } else {
-      dispatch(loggingSucces(loggedUser));
+      dispatch(loggingSuccess(loggedUser));
     }
   };
 };
 
-// TODO create real implementation for logging in
+// TODO create real implementation for log in
 /**
  * Stub method for logging in. Wait 500 ms and then returns user with given username.
  *
@@ -41,7 +41,7 @@ export const logIn = (username: string, password: string): any => {
  * @private
  */
 async function _logIn(userName: string, password: string): Promise<IMessageAppUser | undefined> {
-  await delay(500);
+  await delay(100);
   console.log(userName, password);
-  return MessageAppRepository.getUserByUsername(userName);
+  return MessageAppRepository.getUserByUsername('Trump');
 }
