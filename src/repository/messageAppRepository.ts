@@ -55,6 +55,10 @@ export async function loadUsers(): Promise<Immutable.List<IMessageAppUser>> {
   return usersLocalStorage;
 }
 
+/**
+ * Add new channel with specified name and save it to the local storage.
+ * @param name
+ */
 export async function addChannel(name: string): Promise<IMessageAppChannel> {
   await delay(200);
   const newChannel: IMessageAppChannel = {
