@@ -1,6 +1,8 @@
 import {IMessageAppState} from '../models/IMessageAppState';
 import {connect} from 'react-redux';
-import {App, IAppStateProps} from '../App';
+import {App, IAppDispatchProps, IAppStateProps} from '../App';
+import {Dispatch} from 'redux';
+import {autoLogin} from '../actions/loginAction';
 
 const mapStateToProps = (state: IMessageAppState): IAppStateProps => {
   return {
@@ -8,4 +10,10 @@ const mapStateToProps = (state: IMessageAppState): IAppStateProps => {
   };
 };
 
-export const AppContainer = connect<IAppStateProps, void>(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    autoLogin: () => dispatch(autoLogin()),
+  };
+};
+
+export const AppContainer = connect<IAppStateProps, IAppDispatchProps>(mapStateToProps, mapDispatchToProps)(App);

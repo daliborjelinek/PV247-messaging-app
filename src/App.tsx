@@ -3,10 +3,14 @@ import {LoginPageContainer} from './containers/LoginPageContainer';
 import {MessageAppContainer} from './containers/MEssageAppContainer';
 
 export interface IAppStateProps {
-  isLoggedIn: boolean;
+  readonly isLoggedIn: boolean;
 }
 
-type IProps = IAppStateProps;
+export interface IAppDispatchProps {
+  autoLogin(): void;
+}
+
+type IProps = IAppStateProps & IAppDispatchProps;
 
 /**
  * This class represents whole application. It show login form or message app.
@@ -14,10 +18,13 @@ type IProps = IAppStateProps;
  */
 export class App extends React.Component<IProps> {
 
+  componentDidMount() {
+    this.props.autoLogin();
+  }
+
   render(): JSX.Element {
     // select view: login page / message app
     const isLoggedIn = this.props.isLoggedIn;
-    console.log('Is logged in: ' + isLoggedIn);
     if (isLoggedIn) {
       return <MessageAppContainer />;
     } else {
