@@ -1,48 +1,27 @@
-
 import * as React from 'react';
-import {LoginPage} from './components/LoginPage';
-import {MessageApp} from './components/MessageApp';
+import {LoginPageContainer} from './containers/LoginPageContainer';
+import {MessageAppContainer} from './containers/MEssageAppContainer';
 
-interface IAppState {
+export interface IAppStateProps {
   isLoggedIn: boolean;
-  userName: string;
 }
 
-export class App extends React.Component<{}, IAppState> {
-  constructor(props: any) {
-    super(props); // Must be called to properly build the base object and initialize its prototype.
+type IProps = IAppStateProps;
 
-    // TODO Create real state
-    this.state = {
-      isLoggedIn: false,
-      userName: '',
-    };
-
-    this.onLogin = this.onLogin.bind(this);
-    this.onLogout = this.onLogout.bind(this);
-  }
-
-  private onLogin(userName: string, password: string) {
-    console.log(`Username: ${userName}, password: ${password}`);
-    this.setState((prevState) => {
-      return {...prevState, isLoggedIn: true, userName};
-    });
-  }
-
-  private onLogout() {
-    this.setState((prevState) => {
-      return {...prevState, isLoggedIn: false};
-    });
-  }
+/**
+ * This class represents whole application. It show login form or message app.
+ * Which component is rendered depends on user status (logged in/not logged in).
+ */
+export class App extends React.Component<IProps> {
 
   render(): JSX.Element {
     // select view: login page / message app
-    const isLoggedIn = this.state.isLoggedIn;
-
+    const isLoggedIn = this.props.isLoggedIn;
+    console.log('Is logged in: ' + isLoggedIn);
     if (isLoggedIn) {
-      return <MessageApp userName={this.state.userName} onLogout={this.onLogout}/>;
+      return <MessageAppContainer />;
     } else {
-      return <LoginPage onLogin={this.onLogin}/>;
+      return <LoginPageContainer />;
     }
   }
 }

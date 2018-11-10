@@ -1,28 +1,23 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
-import {ChannelItem, IChannelItemProps} from './ChannelItem';
+import * as Immutable from 'immutable';
 import './ChannelList.less';
+import {ChannelItemContainer} from '../containers/ChannelItemContainer';
 
-export interface IChannelListProps {
-  readonly channels: IChannelItemProps[];
+export interface IChannelListStateProps {
+  readonly channelIds: Immutable.List<Uuid>;
 }
 
-export class ChannelList extends React.PureComponent<IChannelListProps> {
+type IProps = IChannelListStateProps;
 
-  static propTypes = {
-    channels: PropTypes.arrayOf(PropTypes.shape({
-      ...ChannelItem.propTypes
-    })),
-  };
+export class ChannelList extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
     return (
       <div className={'ChannelList'}>
         <h3 className={'ChannelList__title'}>Channels</h3>
-        {this.props.channels && this.props.channels.map((channel, index) => {
-          return (<ChannelItem name={channel.name}
-                               countOfNewMessages={channel.countOfNewMessages}
-                               key={index}/>);
+        {this.props.channelIds && this.props.channelIds.map((channelId) => {
+          return (<ChannelItemContainer id={channelId}
+                                        key={channelId}/>);
         })}
         <button type="button" className="btn btn-secondary btn-sm btn-block">New channel</button>
       </div>

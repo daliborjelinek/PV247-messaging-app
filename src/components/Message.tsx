@@ -1,41 +1,21 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
 import {MessageRate} from './MessageRate';
 import './Message.less';
+import {IMessageAppMessage} from '../models/IMessageAppMessage';
+import {IMessageAppUser} from '../models/IMessageAppUser';
 
-export interface IMessageProps {
-  readonly message: IMessage;
+export interface IMessageOwnProps {
+  readonly id: Uuid;
 }
 
-export interface IMessage {
-  readonly id: number;
-  readonly text: string;
-  readonly date: string;
-  readonly author: IMessageAuthor;
-  readonly rating: number;
+export interface IMessageStateProps {
+  readonly message: IMessageAppMessage;
+  readonly messageAuthor: IMessageAppUser;
 }
 
-export interface IMessageAuthor {
-  readonly id: number;
-  readonly name: string;
-  readonly pictureUrl: string;
-}
+type IProps = IMessageOwnProps & IMessageStateProps;
 
-export class Message extends React.PureComponent<IMessageProps> {
-
-  static propTypes = {
-    message: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      text: PropTypes.string.isRequired,
-      date: PropTypes.string.isRequired,
-      author: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        pictureUrl: PropTypes.string,
-      }),
-      rating: PropTypes.number.isRequired,
-    })
-  };
+export class Message extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
     const isMyMessage = Math.random() > 0.5;
@@ -44,10 +24,10 @@ export class Message extends React.PureComponent<IMessageProps> {
       <div className={'Message'}>
         <div className={'Message__img_wrapper'}>
           <div className={'Message__author_img'}
-               style={{backgroundImage: `url('${this.props.message.author.pictureUrl}')`}} />
+               style={{backgroundImage: `url('${this.props.messageAuthor.pictureUrl}')`}} />
         </div>
         <div>
-          <span className={'Message__author'}>{this.props.message.author.name}</span>
+          <span className={'Message__author'}>{this.props.messageAuthor.name}</span>
           <span className={'Message__date'}>{this.props.message.date}</span>
           <div className={'Message__text'}>{this.props.message.text}</div>
         </div>

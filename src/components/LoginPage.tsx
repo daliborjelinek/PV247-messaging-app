@@ -1,13 +1,9 @@
 import * as React from 'react';
 import {ChangeEvent, FormEvent} from 'react';
-import * as  PropTypes from 'prop-types';
 import './LoginPage.less';
 
-interface ILoginPagePropsEvents {
+export interface ILoginPageDispatchProps {
   onLogin(userName: string, password: string): void;
-}
-
-interface ILoginPageProps extends ILoginPagePropsEvents {
 }
 
 interface ILoginPageState {
@@ -15,11 +11,7 @@ interface ILoginPageState {
   readonly password: string;
 }
 
-export class LoginPage extends React.PureComponent<ILoginPageProps, ILoginPageState> {
-
-  static propTypes = {
-    onLogin: PropTypes.func.isRequired
-  };
+export class LoginPage extends React.PureComponent<ILoginPageDispatchProps, ILoginPageState> {
 
   private onSubmit = (e: FormEvent): void => {
     e.preventDefault();
@@ -34,7 +26,7 @@ export class LoginPage extends React.PureComponent<ILoginPageProps, ILoginPageSt
     });
   };
 
-  constructor(props: ILoginPagePropsEvents) {
+  constructor(props: ILoginPageDispatchProps) {
     super(props);
 
     this.state = {

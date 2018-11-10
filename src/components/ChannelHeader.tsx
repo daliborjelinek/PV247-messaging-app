@@ -1,21 +1,15 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
+import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import './ChannelHeader.less';
 
-export interface IChannelHeaderProps {
-  readonly title: string;
-  readonly numberOfUsers: number;
-  readonly currentChannelId: number;
+export interface IChannelHeaderStateProps {
+  readonly channel: IMessageAppChannel | null;
 }
 
-export class ChannelHeader extends React.PureComponent<IChannelHeaderProps> {
+type IProps = IChannelHeaderStateProps;
 
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    numberOfUsers: PropTypes.number.isRequired,
-    currentChannelId: PropTypes.number.isRequired,
-  };
+export class ChannelHeader extends React.PureComponent<IProps> {
 
   private getMenuItems(): IDropDownMenuItem[] {
     return [
@@ -26,13 +20,20 @@ export class ChannelHeader extends React.PureComponent<IChannelHeaderProps> {
   }
 
   public render(): JSX.Element {
+    // channel doesn't exist
+    if (this.props.channel == null) {
+      return <div className={'ChannelHeader'} />;
+    }
+
+    // channel exists
+    const countOfUsersInChannel = this.props.channel.userIds.size;
     return (
       <div className={'ChannelHeader'}>
         <div className={'ChannelHeader__info'}>
-          <h2 className={'ChannelHeader__title'}>{this.props.title}</h2>
+          <h2 className={'ChannelHeader__title'}>{this.props.channel.name}</h2>
           <div className={'ChannelHeader__numberOfUsers'}>
             <span className={'glyphicon glyphicon-user'} />
-            <span>{this.props.numberOfUsers}</span>
+            <span>{countOfUsersInChannel}</span>
           </div>
         </div>
         <div className={'ChannelHeader__actions'}>

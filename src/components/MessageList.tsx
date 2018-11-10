@@ -1,24 +1,21 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
-import {IMessageProps, Message} from './Message';
+import * as Immutable from 'immutable';
+import {MessageContainer} from '../containers/MessageContainer';
 
-export interface IMessageListProps {
-  readonly messages: IMessageProps[];
+export interface IMessageListStateProps {
+  readonly messageIds: Immutable.List<Uuid>;
 }
 
-export class MessageList extends React.PureComponent<IMessageListProps> {
+type IProps = IMessageListStateProps;
 
-  static propTypes = {
-    messages: PropTypes.arrayOf(PropTypes.shape({
-      ...Message.propTypes
-    })).isRequired,
-  };
+export class MessageList extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
     return (
       <div className={'MessageList'}>
-        {this.props.messages.map((message) => {
-          return <Message message={message.message} key={message.message.id}/>;
+        {this.props.messageIds.map((messageId) => {
+          return <MessageContainer id={messageId}
+                                   key={messageId}/>;
         })}
       </div>
     );
