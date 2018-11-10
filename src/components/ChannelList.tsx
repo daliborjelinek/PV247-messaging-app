@@ -2,14 +2,33 @@ import * as React from 'react';
 import * as Immutable from 'immutable';
 import './ChannelList.less';
 import {ChannelItemContainer} from '../containers/ChannelItemContainer';
+import {ChangeEvent} from 'react';
 
 export interface IChannelListStateProps {
   readonly channelIds: Immutable.List<Uuid>;
 }
 
-type IProps = IChannelListStateProps;
+export interface IChannelListDispatchProps {
+  addChannel(name: string): void;
+}
 
-export class ChannelList extends React.PureComponent<IProps> {
+type IProps = IChannelListStateProps & IChannelListDispatchProps;
+type IState = { newChannelName: string };
+
+export class ChannelList extends React.PureComponent<IProps, IState> {
+
+  private onNewChannelChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const name = event.target.value;
+    this.setState(() => ({ newChannelName: name }));
+  };
+
+  constructor(props: IProps) {
+    super(props);
+
+    this.state = {
+      newChannelName: '',
+    };
+  }
 
   public render(): JSX.Element {
     return (
@@ -19,7 +38,13 @@ export class ChannelList extends React.PureComponent<IProps> {
           return (<ChannelItemContainer id={channelId}
                                         key={channelId}/>);
         })}
-        <button type="button" className="btn btn-secondary btn-sm btn-block">New channel</button>
+        <div className={'ChannelList__newChannel form-group'}>
+          <input className={'form-control ChannelList__newChannelInput'} type="text"
+                 name="newChannelName" placeholder={'Channel name'}
+                 onChange={this.onNewChannelChange}/>
+          <button type="button" className="btn btn-secondary"
+                  onClick={() => this.props.addChannel(this.state.newChannelName)}>Add</button>
+        </div>
       </div>
     );
   }

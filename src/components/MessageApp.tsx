@@ -28,7 +28,7 @@ export class MessageApp extends React.PureComponent<IProps, IMessageAppState> {
     super(props);
 
     this.state = {
-      isUserModalVisible: true,
+      isUserModalVisible: false,
     };
   }
 
