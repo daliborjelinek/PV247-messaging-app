@@ -8,6 +8,8 @@ export const currentChannelIdReducer = (prevState: null | Uuid = null,
       return prevState;
     case 'CURRENT_CHANNEL_CHANGE_FINISHED':
       return action.payload.id;
+    case 'CHANNEL_DELETE_FINISHED':
+      return null;
     default:
       return prevState;
   }

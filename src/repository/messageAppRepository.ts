@@ -77,6 +77,19 @@ export async function addChannel(name: string): Promise<IMessageAppChannel> {
 }
 
 /**
+ * Deletes selected channel from local storage.
+ * @param id Id of the channel.
+ */
+export async function deleteChannel(id: Uuid): Promise<void> {
+  // delete operation works only with local storage
+  _saveToLocalStorage();
+  // load from local storage, remove item and save again
+  const channelsLS = _loadCollectionFromLocalStorage<IMessageAppChannel>(LOCAL_STORAGE_CHANNELS_KEY);
+  const channelsNew = channelsLS.filter((channel) => channel.id !== id);
+  _saveCollectionToLocalStorage(channelsNew, LOCAL_STORAGE_CHANNELS_KEY);
+}
+
+/**
  * Load collection from local storage. Should be used for loading messages, channels and users.
  * @param key Key of collection in local storage.
  * @private
@@ -87,6 +100,15 @@ function _loadCollectionFromLocalStorage<T>(key: string): Immutable.List<T> {
     return Immutable.List<T>();
   }
   return Immutable.List<T>(JSON.parse(collection));
+}
+
+/**
+ * Saves collection with to local storage using a selected key.
+ * @param collection
+ * @param key
+ */
+function _saveCollectionToLocalStorage(collection: Immutable.List<any>, key: string): void {
+  localStorage.setItem(key, JSON.stringify(collection.toJS()));
 }
 
 /**

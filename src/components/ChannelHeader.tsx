@@ -7,15 +7,25 @@ export interface IChannelHeaderStateProps {
   readonly channel: IMessageAppChannel | null;
 }
 
-type IProps = IChannelHeaderStateProps;
+export interface IChannelHeaderDispatchProps {
+  changeChannelName(id: Uuid, newName: string): void;
+  removeChannel(id: Uuid): void;
+}
+
+type IProps = IChannelHeaderStateProps & IChannelHeaderDispatchProps;
 
 export class ChannelHeader extends React.PureComponent<IProps> {
 
   private getMenuItems(): IDropDownMenuItem[] {
+    if (this.props.channel == null) {
+      return [];
+    }
+
+    // TODO create dialog/input for changing the name of the channel
     return [
-      {title: 'Change name', action: () => console.log('Change channel name')},
-      {title: 'Invite member', action: () => console.log('Invite member')},
-      {title: 'Delete', action: () => console.log('Delete channel')},
+      { title: 'Change name', action: () => this.props.changeChannelName(this.props.channel!.id, 'CHANNEL_RENAMED')},
+      { title: 'Invite member', action: () => console.log('Invite member')},
+      { title: 'Delete', action: () => (this.props.removeChannel(this.props.channel!.id))},
     ];
   }
 
