@@ -12,6 +12,8 @@ export const byId = (prevState = Immutable.Map<Uuid, IMessageAppMessage>(),
     case 'MESSAGE_ADD_FINISHED':
       const newMessage: IMessageAppMessage = action.payload.message;
       return prevState.set(newMessage.id, newMessage);
+    case 'MESSAGE_DELETE_FINISHED':
+      return prevState.delete(action.payload.id);
     default:
       return prevState;
   }
@@ -25,6 +27,8 @@ export const allIds = (prevState = Immutable.List<Uuid>(),
       return Immutable.List(action.payload.messages.map((message: IMessageAppMessage) => message.id));
     case 'MESSAGE_ADD_FINISHED':
       return prevState.push(action.payload.message.id);
+    case 'MESSAGE_DELETE_FINISHED':
+      return prevState.filter((id: Uuid) => id !== action.payload.id);
     default:
       return prevState;
   }

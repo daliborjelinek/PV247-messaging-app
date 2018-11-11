@@ -1,5 +1,5 @@
 import * as Immutable from 'immutable';
-import {MESSAGE_ADD_FINISHED, MESSAGE_ADD_STARTED, MESSAGE_LOADING_FINISHED, MESSAGE_LOADING_STARTED} from '../constants/actionTypes';
+import {MESSAGE_ADD_FINISHED, MESSAGE_ADD_STARTED, MESSAGE_DELETE_FINISHED, MESSAGE_DELETE_STARTED, MESSAGE_LOADING_FINISHED, MESSAGE_LOADING_STARTED} from '../constants/actionTypes';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {Dispatch} from 'redux';
 import * as MessageAppRepository from '../repository/messageAppRepository';
@@ -57,3 +57,27 @@ export const addMessage = (text: string): any => {
   };
 };
 
+// DELETING MESSAGE
+
+const messageDeleteStarted = (): Action<MESSAGE_DELETE_STARTED> => {
+  return {
+    type: 'MESSAGE_DELETE_STARTED',
+  };
+};
+
+const messageDeleteFinished = (id: Uuid): Action<MESSAGE_DELETE_FINISHED> => {
+  return {
+    type: 'MESSAGE_DELETE_FINISHED',
+    payload: {
+      id,
+    }
+  };
+};
+
+export const deleteMessage = (id: Uuid): any => {
+  return async (dispatch: Dispatch): Promise<void> => {
+    dispatch(messageDeleteStarted());
+    await MessageAppRepository.deleteMessage(id);
+    dispatch(messageDeleteFinished(id));
+  };
+};

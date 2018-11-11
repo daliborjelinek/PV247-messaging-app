@@ -1,7 +1,18 @@
-.MessageRate__actionIcons {
-  display: flex;
-}
+@import "../../colors.less";
 
 .MessageRate {
   margin-left: auto;
+}
+
+.MessageRate__actionIcons {
+  display: flex;
+  justify-content: center;
+
+  .glyphicon {
+    cursor: pointer;
+
+    &:hover {
+      color: @color-icons-hovered;
+    }
+  }
 }

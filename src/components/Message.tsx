@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {MessageRate} from './MessageRate';
 import './Message.less';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {IMessageAppUser} from '../models/IMessageAppUser';
+import {MessageRateContainer} from '../containers/MessageRateContainer';
 
 export interface IMessageOwnProps {
   readonly id: Uuid;
@@ -21,6 +21,7 @@ export class Message extends React.PureComponent<IProps> {
   public render(): JSX.Element {
     const isMyMessage = this.props.isMyMessage;
     const messageRating = this.props.message.rating;
+    const messageId = this.props.message.id;
 
     return (
       <div className={'Message'}>
@@ -33,7 +34,7 @@ export class Message extends React.PureComponent<IProps> {
           <span className={'Message__date'}>{this.props.message.date}</span>
           <div className={'Message__text'}>{this.props.message.text}</div>
         </div>
-        <MessageRate rating={messageRating} isMyMessage={isMyMessage}/>
+        <MessageRateContainer rating={messageRating} isMyMessage={isMyMessage} messageId={messageId}/>
       </div>
     );
   }

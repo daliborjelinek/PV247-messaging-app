@@ -101,6 +101,17 @@ export async function addMessage(text: string, authorId: Uuid,
 }
 
 /**
+ * Deletes selected message from local storage.
+ * @param id Id of the message.
+ */
+export async function deleteMessage(id: Uuid): Promise<void> {
+  _saveToLocalStorage();
+  const messagesLS = _loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY);
+  const messagesNew = messagesLS.filter((message) => message.id !== id);
+  _saveCollectionToLocalStorage(messagesNew, LOCAL_STORAGE_MESSAGES_KEY);
+}
+
+/**
  * Deletes selected channel from local storage.
  * @param id Id of the channel.
  */
