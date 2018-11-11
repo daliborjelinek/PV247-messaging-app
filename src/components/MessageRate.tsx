@@ -1,25 +1,20 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
 import './MessageRate.less';
 
-interface IMessageRating {
-  readonly rating: number;
-  readonly isMyMessage: boolean;
+export interface IMessageRateOwnProps {
+  isMyMessage: boolean;
+  rating: number;
 }
 
-export class MessageRate extends React.PureComponent<IMessageRating> {
+type IProps = IMessageRateOwnProps;
 
-  static propTypes = {
-    rating: PropTypes.number.isRequired,
-    isMyMessage: PropTypes.bool.isRequired,
-  };
+export class MessageRate extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
     const actionIconClasses: string[] = [];
 
     // which icons will be shown depends on if I am author of displayed message
     if (this.props.isMyMessage) {
-      actionIconClasses.push('glyphicon glyphicon-pencil');
       actionIconClasses.push('glyphicon glyphicon-trash');
     } else {
       actionIconClasses.push('glyphicon glyphicon-plus');

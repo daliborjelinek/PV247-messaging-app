@@ -11,6 +11,7 @@ export interface IMessageOwnProps {
 export interface IMessageStateProps {
   readonly message: IMessageAppMessage;
   readonly messageAuthor: IMessageAppUser;
+  readonly isMyMessage: boolean;
 }
 
 type IProps = IMessageOwnProps & IMessageStateProps;
@@ -18,7 +19,8 @@ type IProps = IMessageOwnProps & IMessageStateProps;
 export class Message extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
-    const isMyMessage = Math.random() > 0.5;
+    const isMyMessage = this.props.isMyMessage;
+    const messageRating = this.props.message.rating;
 
     return (
       <div className={'Message'}>
@@ -31,7 +33,7 @@ export class Message extends React.PureComponent<IProps> {
           <span className={'Message__date'}>{this.props.message.date}</span>
           <div className={'Message__text'}>{this.props.message.text}</div>
         </div>
-        <MessageRate rating={this.props.message.rating} isMyMessage={isMyMessage}/>
+        <MessageRate rating={messageRating} isMyMessage={isMyMessage}/>
       </div>
     );
   }
