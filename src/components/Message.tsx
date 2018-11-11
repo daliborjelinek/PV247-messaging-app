@@ -26,7 +26,7 @@ export class Message extends React.PureComponent<IProps> {
           <div className={'Message__author_img'}
                style={{backgroundImage: `url('${this.props.messageAuthor.pictureUrl}')`}} />
         </div>
-        <div>
+        <div className={'Message_content'}>
           <span className={'Message__author'}>{this.props.messageAuthor.name}</span>
           <span className={'Message__date'}>{this.props.message.date}</span>
           <div className={'Message__text'}>{this.props.message.text}</div>

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {MessageEditor} from './MessageEditor';
 import './ChatWindow.less';
 import {MessageListContainer} from '../containers/MessageListContainer';
 import {ChannelHeaderContainer} from '../containers/ChannelHeaderContainer';
+import {MessageEditorContainer} from '../containers/MessageEditorContainer';
 
 export class ChatWindow extends React.PureComponent {
 
@@ -11,7 +11,7 @@ export class ChatWindow extends React.PureComponent {
       <div className={'ChatWindow'}>
         <ChannelHeaderContainer />
         <MessageListContainer />
-        <MessageEditor/>
+        <MessageEditorContainer />
       </div>
     );
   }

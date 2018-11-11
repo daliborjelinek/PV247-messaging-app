@@ -63,6 +63,7 @@ export async function loadUsers(): Promise<Immutable.List<IMessageAppUser>> {
  * @param name
  */
 export async function addChannel(name: string): Promise<IMessageAppChannel> {
+  _saveToLocalStorage();
   await delay(200);
   const newChannel: IMessageAppChannel = {
     id: uuid(),
@@ -70,10 +71,33 @@ export async function addChannel(name: string): Promise<IMessageAppChannel> {
     userIds: Immutable.List(),
     countOfNewMessages: 0,
   };
-  const channelsNew = channels.push(newChannel);
+  const channelsNew = Immutable.merge(_loadCollectionFromLocalStorage<IMessageAppChannel>(LOCAL_STORAGE_CHANNELS_KEY), newChannel);
+  _saveCollectionToLocalStorage(channelsNew, LOCAL_STORAGE_CHANNELS_KEY);
   localStorage.setItem(LOCAL_STORAGE_CHANNELS_KEY, JSON.stringify(channelsNew.toJS()));
-  _saveToLocalStorage();
   return newChannel;
+}
+
+/**
+ * Add new message to collection and saves it into the local storage.
+ * @param text text of given message
+ * @param authorId
+ * @param channelId
+ */
+export async function addMessage(text: string, authorId: Uuid,
+                                 channelId: Uuid): Promise<IMessageAppMessage> {
+  _saveToLocalStorage();
+  await delay(100);
+  const newMessage: IMessageAppMessage = {
+    id: uuid(),
+    date: new Date().toDateString(),
+    rating: 0,
+    authorId,
+    channelId,
+    text,
+  };
+  const messagesNew = Immutable.merge(_loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY), newMessage);
+  _saveCollectionToLocalStorage(messagesNew, LOCAL_STORAGE_MESSAGES_KEY);
+  return newMessage;
 }
 
 /**
