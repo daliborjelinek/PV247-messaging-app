@@ -27,4 +27,5 @@ export interface IMessageAppState {
   isLoggedIn: boolean;
   loggedUser: IMessageAppUser | null;
   currentChannelId: Uuid | null;
+  isUserDialogOpen: boolean;
 }
