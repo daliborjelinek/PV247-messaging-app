@@ -63,6 +63,7 @@ export async function loadUsers(): Promise<Immutable.List<IMessageAppUser>> {
  * @param name
  */
 export async function addChannel(name: string): Promise<IMessageAppChannel> {
+  _saveToLocalStorage();
   await delay(200);
   const newChannel: IMessageAppChannel = {
     id: uuid(),
@@ -70,10 +71,57 @@ export async function addChannel(name: string): Promise<IMessageAppChannel> {
     userIds: Immutable.List(),
     countOfNewMessages: 0,
   };
-  const channelsNew = channels.push(newChannel);
+  const channelsNew = Immutable.merge(_loadCollectionFromLocalStorage<IMessageAppChannel>(LOCAL_STORAGE_CHANNELS_KEY), newChannel);
+  _saveCollectionToLocalStorage(channelsNew, LOCAL_STORAGE_CHANNELS_KEY);
   localStorage.setItem(LOCAL_STORAGE_CHANNELS_KEY, JSON.stringify(channelsNew.toJS()));
-  _saveToLocalStorage();
   return newChannel;
+}
+
+/**
+ * Add new message to collection and saves it into the local storage.
+ * @param text text of given message
+ * @param authorId
+ * @param channelId
+ */
+export async function addMessage(text: string, authorId: Uuid,
+                                 channelId: Uuid): Promise<IMessageAppMessage> {
+  _saveToLocalStorage();
+  await delay(100);
+  const newMessage: IMessageAppMessage = {
+    id: uuid(),
+    date: new Date().toDateString(),
+    rating: 0,
+    authorId,
+    channelId,
+    text,
+  };
+  const messagesNew = Immutable.merge(_loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY), newMessage);
+  _saveCollectionToLocalStorage(messagesNew, LOCAL_STORAGE_MESSAGES_KEY);
+  return newMessage;
+}
+
+/**
+ * Deletes selected message from local storage.
+ * @param id Id of the message.
+ */
+export async function deleteMessage(id: Uuid): Promise<void> {
+  _saveToLocalStorage();
+  const messagesLS = _loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY);
+  const messagesNew = messagesLS.filter((message) => message.id !== id);
+  _saveCollectionToLocalStorage(messagesNew, LOCAL_STORAGE_MESSAGES_KEY);
+}
+
+/**
+ * Deletes selected channel from local storage.
+ * @param id Id of the channel.
+ */
+export async function deleteChannel(id: Uuid): Promise<void> {
+  // delete operation works only with local storage
+  _saveToLocalStorage();
+  // load from local storage, remove item and save again
+  const channelsLS = _loadCollectionFromLocalStorage<IMessageAppChannel>(LOCAL_STORAGE_CHANNELS_KEY);
+  const channelsNew = channelsLS.filter((channel) => channel.id !== id);
+  _saveCollectionToLocalStorage(channelsNew, LOCAL_STORAGE_CHANNELS_KEY);
 }
 
 /**
@@ -87,6 +135,15 @@ function _loadCollectionFromLocalStorage<T>(key: string): Immutable.List<T> {
     return Immutable.List<T>();
   }
   return Immutable.List<T>(JSON.parse(collection));
+}
+
+/**
+ * Saves collection with to local storage using a selected key.
+ * @param collection
+ * @param key
+ */
+function _saveCollectionToLocalStorage(collection: Immutable.List<any>, key: string): void {
+  localStorage.setItem(key, JSON.stringify(collection.toJS()));
 }
 
 /**

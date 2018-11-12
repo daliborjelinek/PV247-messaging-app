@@ -11,6 +11,12 @@ const byId = (prevState = Immutable.Map<Uuid, IMessageAppChannel>(),
       return Immutable.Map(action.payload.channels.map((item: IMessageAppChannel) => [item.id, item]));
     case  'CHANNEL_ADD_FINISHED':
       return prevState.set(action.payload.channel.id, action.payload.channel);
+    case 'CHANNEL_RENAME_FINISHED':
+      const { id, name } = action.payload;
+      const updatedItem = { ...prevState.get(id)!, name};
+      return prevState.set(id, updatedItem);
+    case 'CHANNEL_DELETE_FINISHED':
+      return prevState.delete(action.payload.id);
     default:
       return prevState;
   }
@@ -23,6 +29,8 @@ const allIds = (prevState = Immutable.List<Uuid>(),
       return Immutable.List(action.payload.channels.map((item: IMessageAppChannel) => item.id));
     case 'CHANNEL_ADD_FINISHED':
       return prevState.push(action.payload.channel.id);
+    case 'CHANNEL_DELETE_FINISHED':
+      return prevState.filter((id) => id !== action.payload.id);
     default:
       return prevState;
   }

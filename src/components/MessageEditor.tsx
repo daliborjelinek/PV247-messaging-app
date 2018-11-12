@@ -10,8 +10,24 @@ faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
                   faListUl, faLink, faFile, faFileImage, faSmile);
 
 import './MessageEditor.less';
+import {ChangeEvent} from 'react';
 
-export class MessageEditor extends React.PureComponent {
+export interface IMessageEditorDispatchProps {
+  addMessage(messageText: string): void;
+}
+
+export interface IMessageEditorStateProps {
+  channelSelected: boolean;
+}
+
+type IProps = IMessageEditorDispatchProps & IMessageEditorStateProps;
+type IState = { messageText: string };
+
+
+/**
+ * Class which represents message editor. Text area is focused after page is loaded.
+ */
+export class MessageEditor extends React.PureComponent<IProps, IState> {
 
   // used to set width when component is mounted
   private readonly messageEditorDiv: React.RefObject<HTMLDivElement>;
@@ -19,10 +35,35 @@ export class MessageEditor extends React.PureComponent {
   // used to set focus when component is mounted
   private readonly  messageEditorTextArea: React.RefObject<HTMLTextAreaElement>;
 
-  constructor(props: {}) {
+  /**
+   * Stores text into the state when text is changed.
+   * @param e change event
+   */
+  private onTextChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    const text = e.target.value;
+    this.setState(() => {
+      return { messageText: text };
+    });
+  };
+
+  /**
+   * Saves messages into Redux store and database/local storage.
+   */
+  private onSave = () => {
+    if (this.state.messageText === '') {
+      return;
+    }
+    this.props.addMessage(this.state.messageText);
+    this.messageEditorTextArea.current!.value = '';
+  };
+
+  constructor(props: IProps) {
     super(props);
     this.messageEditorDiv = React.createRef();
     this.messageEditorTextArea = React.createRef();
+    this.state = {
+      messageText: '',
+    };
   }
 
   /**
@@ -31,8 +72,39 @@ export class MessageEditor extends React.PureComponent {
    */
   componentDidMount() {
     window.addEventListener('resize', () => this.resize());
-    this.resize();
+    document.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
+    if (!this.props.channelSelected) {
+      return;
+    }
     this.messageEditorTextArea!.current!.focus();
+    this.resize();
+  }
+
+  /**
+   * Focus textarea and resize MessageEditor if any channel is selected = message editor is visible.
+   */
+  componentDidUpdate() {
+    if (!this.props.channelSelected) {
+      return;
+    }
+    this.messageEditorTextArea!.current!.focus();
+    this.resize();
+  }
+
+  /**
+   * When enter key is pressed, textarea is focused and messageText is not empty,
+   * message will be submitted.
+   * @param e
+   */
+  private onKeyDown(e: KeyboardEvent) {
+    if (document.activeElement.className !== 'MessageEditor__textArea') {
+      return;
+    }
+    if (!e.ctrlKey || e.key !== 'Enter') {
+      return;
+    }
+    this.onSave();
+    this.messageEditorTextArea.current!.value = '';
   }
 
   /**
@@ -50,7 +122,11 @@ export class MessageEditor extends React.PureComponent {
     this.messageEditorDiv!.current!.style.width = windowWidth - channelListWidth + 'px';
   }
 
-  public render(): JSX.Element {
+  public render(): JSX.Element | null {
+    if (!this.props.channelSelected) {
+      return null;
+    }
+
     return (
       <div className={'MessageEditor'} ref={this.messageEditorDiv}>
         <div className={'MessageEditor__operationPane'}>
@@ -69,8 +145,10 @@ export class MessageEditor extends React.PureComponent {
         </div>
         <div className={'MessageEditor__textAreaWrapper'}>
           <textarea className={'MessageEditor__textArea'}
-                    ref={this.messageEditorTextArea}/>
-          <button type={'submit'} className={'btn btn-primary'}>Send</button>
+                    ref={this.messageEditorTextArea}
+                    onChange={this.onTextChange}/>
+          <button type={'submit'} className={'btn btn-primary'}
+                  onClick={this.onSave}>Send</button>
         </div>
       </div>
     );
