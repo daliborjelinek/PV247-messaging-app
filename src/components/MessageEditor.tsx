@@ -71,13 +71,12 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    * After window resizing, component must be resized too.
    */
   componentDidMount() {
-    window.addEventListener('resize', () => this.resize());
     document.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
     if (!this.props.channelSelected) {
       return;
     }
     this.messageEditorTextArea!.current!.focus();
-    this.resize();
+
   }
 
   /**
@@ -88,7 +87,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       return;
     }
     this.messageEditorTextArea!.current!.focus();
-    this.resize();
+
   }
 
   /**
@@ -105,21 +104,6 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     }
     this.onSave();
     this.messageEditorTextArea.current!.value = '';
-  }
-
-  /**
-   * Resize width of MessageEditor. Width cannot be set automatically,
-   * because MessageEditor has fixed position.
-   * Final width is computed as window width - message list width.
-   */
-  private resize() {
-    const windowWidth = window.innerWidth;
-    const channelList = document.getElementsByClassName('ChannelList')[0] as HTMLDivElement;
-    if (channelList == null) {
-      return;
-    }
-    const channelListWidth = channelList.offsetWidth;
-    this.messageEditorDiv!.current!.style.width = windowWidth - channelListWidth + 'px';
   }
 
   public render(): JSX.Element | null {
@@ -147,7 +131,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
           <textarea className={'MessageEditor__textArea'}
                     ref={this.messageEditorTextArea}
                     onChange={this.onTextChange}/>
-          <button type={'submit'} className={'btn btn-primary'}
+          <button type={'submit'} className={'btn btn-default MessageEditor__sendButton'}
                   onClick={this.onSave}>Send</button>
         </div>
       </div>
