@@ -6,12 +6,11 @@
 @MessageEditor-space-between-icons: 10px;
 @MessageEditor-icon-font-size: 16px;
 @MessageEditor__textAreaWrapper-height: @MessageEditor-height - 50px;
+@MessageEditor__sendButton-offset: 50px;
 
 .MessageEditor {
   height: @MessageEditor-height;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+  position: relative;
   background-color: white;
   border-top: 1px solid @border-color-light;
   padding: @MessageEditor-padding;
@@ -47,8 +46,15 @@
 }
 
 .MessageEditor__textArea {
-  width: 75%;
-  margin-right: 10px;
+  width: 100%;
+  padding-right: 65px;
   height: 90%;
   resize: none;
+}
+
+.MessageEditor__sendButton {
+  position: absolute;
+  right: 15px;
+  bottom: 13px;
+
 }
