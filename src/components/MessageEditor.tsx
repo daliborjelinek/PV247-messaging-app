@@ -130,8 +130,9 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
         <div className={'MessageEditor__textAreaWrapper'}>
           <textarea className={'MessageEditor__textArea'}
                     ref={this.messageEditorTextArea}
-                    onChange={this.onTextChange}/>
-          <button type={'submit'} className={'btn btn-default MessageEditor__sendButton'}
+                    onChange={this.onTextChange}
+                    placeholder={'Press Ctrl + Enter to send the message'}/>
+          <button type={'submit'} className={'btn btn-primary MessageEditor__sendButton'}
                   onClick={this.onSave}>Send</button>
         </div>
       </div>

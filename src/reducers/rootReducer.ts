@@ -4,8 +4,8 @@ import {loggedUserReducer} from './loggedUserReducer';
 import {channelsReducer} from './channelsReducer';
 import {messagesReducer} from './messagesReducer';
 import {currentChannelIdReducer} from './currentChannelReducer';
-import {usersReducer} from './usersReducers';
-import {isUserDialogOpen} from './isUserDialogOpen';
+import {usersReducer} from './usersReducer';
+import {isUserDialogOpenReducer} from './isUserDialogOpenReducer';
 import {isChannelNameEdititingModeReducer} from './isChannelNameEdtitingModeReducer';
 
 // TODO create reducers for remaining state attributes
@@ -16,6 +16,6 @@ export const rootReducer = (prevState = {} as IMessageAppState, action: Action<a
   messages: messagesReducer(prevState.messages, action),
   currentChannelId: currentChannelIdReducer(prevState.currentChannelId, action),
   users: usersReducer(prevState.users, action),
-  isUserDialogOpen: isUserDialogOpen(prevState.isUserDialogOpen, action),
+  isUserDialogOpen: isUserDialogOpenReducer(prevState.isUserDialogOpen, action),
   isChannelNameEditingMode: isChannelNameEdititingModeReducer(prevState.isChannelNameEditingMode, action),
 });

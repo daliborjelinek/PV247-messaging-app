@@ -42,7 +42,7 @@ export class ChannelList extends React.PureComponent<IProps, IState> {
           <input className={'form-control ChannelList__newChannelInput'} type="text"
                  name="newChannelName" placeholder={'Channel name'}
                  onChange={this.onNewChannelChange}/>
-          <button type="button" className="btn btn-secondary"
+          <button type="button" className="btn btn-default"
                   onClick={() => this.props.addChannel(this.state.newChannelName)}>Add</button>
         </div>
       </div>
