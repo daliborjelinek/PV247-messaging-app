@@ -28,4 +28,5 @@ export interface IMessageAppState {
   loggedUser: IMessageAppUser | null;
   currentChannelId: Uuid | null;
   isUserDialogOpen: boolean;
+  isChannelNameEditingMode: boolean;
 }

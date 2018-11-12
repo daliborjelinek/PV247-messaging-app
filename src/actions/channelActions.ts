@@ -7,7 +7,8 @@ import {
   CHANNEL_RENAME_FINISHED,
   CHANNEL_RENAME_STARTED,
   CURRENT_CHANNEL_CHANGE_FINISHED,
-  CURRENT_CHANNEL_CHANGE_STARTED
+  CURRENT_CHANNEL_CHANGE_STARTED, EDITING_CHANNEL_NAME_MODE_FINISHED,
+  EDITING_CHANNEL_NAME_MODE_STARTED
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
@@ -86,8 +87,18 @@ export const renameChannel = (id: Uuid, name: string): any => {
     dispatch(channelRenameStarted());
     // TODO change name in repository
     dispatch(channelRenameFinished(id, name));
+    dispatch(editingChannelNameModeFinished());
   };
 };
+
+// EDITING CHANNEL NAME MODE
+export const editingChannelNameModeStarted = (): Action<EDITING_CHANNEL_NAME_MODE_STARTED> => ({
+  type: EDITING_CHANNEL_NAME_MODE_STARTED,
+});
+
+export const editingChannelNameModeFinished = (): Action<EDITING_CHANNEL_NAME_MODE_FINISHED> => ({
+  type: EDITING_CHANNEL_NAME_MODE_FINISHED,
+});
 
 // DELETING CHANNEL
 const channelDeleteStarted = (): Action<CHANNEL_DELETE_STARTED> => ({
