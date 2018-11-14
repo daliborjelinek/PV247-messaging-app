@@ -1,4 +1,7 @@
+@import "../../variables.less";
+
 .MessageList {
   overflow-y: scroll;
   flex-grow: 1;
+  height: calc(100vh - @header-height - @channel-header-height - @message-editor-height);
 }
