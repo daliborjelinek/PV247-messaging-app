@@ -1,7 +1,7 @@
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {IMessageRateDispatchProps, MessageRate} from '../components/MessageRate';
 import {deleteMessage} from '../actions/messageActions';
+import {IMessageActionsEditingDispatchProps, MessageActionsEditing} from '../components/MessageActionsEditing';
 
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -10,4 +10,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-export const MessageRateContainer = connect<void, IMessageRateDispatchProps>(null, mapDispatchToProps)(MessageRate);
+export const MessageActionsEditingContainer = connect<void, IMessageActionsEditingDispatchProps>(
+  null, mapDispatchToProps)(MessageActionsEditing);

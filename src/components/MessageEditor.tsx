@@ -1,4 +1,7 @@
 import * as React from 'react';
+import {ChangeEvent} from 'react';
+import './MessageEditor.less';
+
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -8,9 +11,6 @@ import {faBold, faEraser, faFile, faFileImage, faFont, faItalic,
 // Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
                   faListUl, faLink, faFile, faFileImage, faSmile);
-
-import './MessageEditor.less';
-import {ChangeEvent} from 'react';
 
 export interface IMessageEditorDispatchProps {
   addMessage(messageText: string): void;
@@ -57,6 +57,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     this.messageEditorTextArea.current!.value = '';
   };
 
+  // CONSTRUCTOR
   constructor(props: IProps) {
     super(props);
     this.messageEditorDiv = React.createRef();
@@ -67,8 +68,8 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   }
 
   /**
-   * When component is mounted it starts to listen on window resize.
-   * After window resizing, component must be resized too.
+   * When component is mounted, text area should be focused. Component starts to listen to
+   *   key-down events. When Ctrl + Enter is clicked, content of text area is send to server (if not empty).
    */
   componentDidMount() {
     document.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
