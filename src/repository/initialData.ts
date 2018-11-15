@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import * as Immutable from 'immutable';
 import {IMessageAppUser} from '../models/IMessageAppUser';
-import {IMessageAppMessage} from '../models/IMessageAppMessage';
+import {IMessageAppMessage, UsersWhoRatedMessageMap} from '../models/IMessageAppMessage';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 
 const pictureUrl1 = 'https://imagebox.cz.osobnosti.cz/foto/vladimir-putin/vladimir-putin.jpg';
@@ -32,11 +32,15 @@ export const channels: Immutable.List<IMessageAppChannel> = Immutable.List([
 // Messages
 export const messages: Immutable.List<IMessageAppMessage> = Immutable.List([
   { id: uuid(), text:  loremIpsumText, date: new Date().toDateString(), authorId: users.get(0)!.id,
-    rating: Math.round(Math.random() * 100), channelId: channels.get(0)!.id },
+    rating: Math.round(Math.random() * 100), channelId: channels.get(0)!.id,
+    usersWhoRatedMessage: {} as UsersWhoRatedMessageMap},
   { id: uuid(), text:  loremIpsumText, date: new Date().toDateString(), authorId: users.get(1)!.id,
-    rating: Math.round(Math.random() * 100), channelId: channels.get(0)!.id },
+    rating: Math.round(Math.random() * 100), channelId: channels.get(0)!.id,
+    usersWhoRatedMessage: {} as UsersWhoRatedMessageMap},
   { id: uuid(), text:  loremIpsumText, date: new Date().toDateString(), authorId: users.get(2)!.id,
-    rating: Math.round(Math.random() * 100), channelId: channels.get(1)!.id },
+    rating: Math.round(Math.random() * 100), channelId: channels.get(1)!.id,
+    usersWhoRatedMessage: {} as UsersWhoRatedMessageMap},
   { id: uuid(), text:  loremIpsumText, date: new Date().toDateString(), authorId: users.get(0)!.id,
-    rating: Math.round(Math.random() * 100), channelId: channels.get(2)!.id },
+    rating: Math.round(Math.random() * 100), channelId: channels.get(2)!.id,
+    usersWhoRatedMessage: {} as UsersWhoRatedMessageMap},
 ]);

@@ -4,7 +4,8 @@ import {channels, messages, users} from './initialData';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import delay from 'delay';
-import {IMessageAppMessage} from '../models/IMessageAppMessage';
+import {IMessageAppMessage, UsersWhoRatedMessageMap} from '../models/IMessageAppMessage';
+import {RatingPolarity} from '../enums/RatingPolarity';
 
 const LOCAL_STORAGE_CHANNELS_KEY = 'CHANNELS';
 const LOCAL_STORAGE_MESSAGES_KEY = 'MESSAGES';
@@ -94,6 +95,7 @@ export async function addMessage(text: string, authorId: Uuid,
     authorId,
     channelId,
     text,
+    usersWhoRatedMessage: {} as UsersWhoRatedMessageMap,
   };
   const messagesNew = Immutable.merge(_loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY), newMessage);
   _saveCollectionToLocalStorage(messagesNew, LOCAL_STORAGE_MESSAGES_KEY);
@@ -109,6 +111,29 @@ export async function deleteMessage(id: Uuid): Promise<void> {
   const messagesLS = _loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY);
   const messagesNew = messagesLS.filter((message) => message.id !== id);
   _saveCollectionToLocalStorage(messagesNew, LOCAL_STORAGE_MESSAGES_KEY);
+}
+
+/**
+ * Change rating for message with given id.
+ * @param id id of message
+ * @param userId user, who rated the message
+ * @param ratingPolarity positive or negative review
+ */
+export async function changeMessageRating(id: Uuid, userId: Uuid, ratingPolarity: RatingPolarity) {
+  _saveToLocalStorage();
+  const messagesLS = _loadCollectionFromLocalStorage<IMessageAppMessage>(LOCAL_STORAGE_MESSAGES_KEY);
+  const ratedMessage = messagesLS.filter((message) => message.id === id).get(0)!;
+  const previousRating = ratedMessage.rating;
+  const rating = ratingPolarity === RatingPolarity.POSITIVE ? previousRating + 1 : previousRating - 1;
+  const usersWhoRatedMessage = ratedMessage.usersWhoRatedMessage;
+  usersWhoRatedMessage[userId] = ratingPolarity;
+  const updatedMessages = messagesLS.map((message): IMessageAppMessage => {
+    if (message.id === id) {
+      return {...message, rating, usersWhoRatedMessage};
+    }
+    return message;
+  });
+  _saveCollectionToLocalStorage(updatedMessages, LOCAL_STORAGE_MESSAGES_KEY);
 }
 
 /**

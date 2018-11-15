@@ -1,9 +1,19 @@
 import * as Immutable from 'immutable';
-import {MESSAGE_ADD_FINISHED, MESSAGE_ADD_STARTED, MESSAGE_DELETE_FINISHED, MESSAGE_DELETE_STARTED, MESSAGE_LOADING_FINISHED, MESSAGE_LOADING_STARTED} from '../constants/actionTypes';
+import {
+  MESSAGE_ADD_FINISHED,
+  MESSAGE_ADD_STARTED,
+  MESSAGE_DECREMENT_RATING,
+  MESSAGE_DELETE_FINISHED,
+  MESSAGE_DELETE_STARTED,
+  MESSAGE_INCREMENT_RATING,
+  MESSAGE_LOADING_FINISHED,
+  MESSAGE_LOADING_STARTED
+} from '../constants/actionTypes';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {Dispatch} from 'redux';
 import * as MessageAppRepository from '../repository/messageAppRepository';
 import {IMessageAppState} from '../models/IMessageAppState';
+import {RatingPolarity} from '../enums/RatingPolarity';
 
 // LOADING MESSAGES
 const messageLoadingStarted = (): Action<MESSAGE_LOADING_STARTED> => {
@@ -58,7 +68,6 @@ export const addMessage = (text: string): any => {
 };
 
 // DELETING MESSAGE
-
 const messageDeleteStarted = (): Action<MESSAGE_DELETE_STARTED> => {
   return {
     type: 'MESSAGE_DELETE_STARTED',
@@ -79,5 +88,40 @@ export const deleteMessage = (id: Uuid): any => {
     dispatch(messageDeleteStarted());
     await MessageAppRepository.deleteMessage(id);
     dispatch(messageDeleteFinished(id));
+  };
+};
+
+// CHANGING RATING
+export const messageIncrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_INCREMENT_RATING> => {
+  return {
+    type: 'MESSAGE_INCREMENT_RATING',
+    payload: {
+      id,
+      userId,
+    }
+  };
+};
+
+export const incrementRating = (id: Uuid): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    await MessageAppRepository.changeMessageRating(id, getState().loggedUser!.id, RatingPolarity.POSITIVE);
+    dispatch(messageIncrementRating(id, getState().loggedUser!.id));
+  };
+};
+
+export const messageDecrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_DECREMENT_RATING> => {
+  return {
+    type: 'MESSAGE_DECREMENT_RATING',
+    payload: {
+      id,
+      userId,
+    }
+  };
+};
+
+export const decrementRating = (id: Uuid): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    await MessageAppRepository.changeMessageRating(id, getState().loggedUser!.id, RatingPolarity.NEGATIVE);
+    dispatch(messageDecrementRating(id, getState().loggedUser!.id));
   };
 };

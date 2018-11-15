@@ -1,15 +1,33 @@
 import * as React from 'react';
 import './MessageActions.less';
+import {RatingPolarity} from '../enums/RatingPolarity';
+import './MessageActionsRating.less';
 
-/**
- * Message rating - up-voting and down-voting. This action is used for messages, where
- *   author is not the logged user.
- */
-export function MessageActionsRating() {
+export interface IMessageActionsRatingOwnProps {
+  readonly messageId: Uuid;
+}
+
+export interface IMessageActionsRatingStateProps {
+  readonly isRatedByLoggedUser: boolean;
+  readonly rating: number;
+  readonly ratingPolarityFromCurrentUser: undefined | null | RatingPolarity;
+}
+
+export interface IMessageActionsRatingDispatchProps {
+  incrementRating(messageId: Uuid): void;
+  decrementRating(messageId: Uuid): void;
+}
+
+type IProps = IMessageActionsRatingDispatchProps & IMessageActionsRatingOwnProps &
+              IMessageActionsRatingStateProps;
+
+export function MessageActionsRating(props: IProps) {
+  const additionalClassName = props.ratingPolarityFromCurrentUser != null ?
+                          `MessageActionsRating--rated MessageActionsRating--rated-${props.ratingPolarityFromCurrentUser}` : '';
   return (
-    <div className={'MessageActions__actionIcons'}>
-      <span className={'glyphicon glyphicon-plus'} />
-      <span className={'glyphicon glyphicon-minus'} />
+    <div className={`MessageActions__actionIcons ${additionalClassName}`}>
+      <span className={'glyphicon glyphicon-plus'} onClick={() => props.incrementRating(props.messageId)} />
+      <span className={'glyphicon glyphicon-minus'} onClick={() => props.decrementRating(props.messageId)} />
     </div>
   );
 }

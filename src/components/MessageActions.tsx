@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './MessageActions.less';
 import {MessageActionsEditingContainer} from '../containers/MessageActionsEditingContainer';
-import {MessageActionsRating} from './MessageActionsRating';
+import {MessageActionsRatingContainer} from '../containers/MessageActionsRatingContainer';
 
 export interface IMessageRateOwnProps {
   isMyMessage: boolean;
@@ -19,7 +19,10 @@ type IProps = IMessageRateOwnProps;
 export function MessageActions(props: IProps) {
   return (
     <div className={'MessageActions'}>
-      {props.isMyMessage ? <MessageActionsEditingContainer messageId={props.messageId}/> : <MessageActionsRating/>}
+      {props.isMyMessage ?
+        <MessageActionsEditingContainer messageId={props.messageId} /> :
+        <MessageActionsRatingContainer messageId={props.messageId} />
+      }
       <div className={'MessageActions__rating badge badge-pill'}>{props.rating}</div>
     </div>
   );
