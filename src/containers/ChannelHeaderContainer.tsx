@@ -21,6 +21,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-// TODO mapDispatchToProps for renaming and deleting channel
-
 export const ChannelHeaderContainer = connect<IChannelHeaderStateProps, IChannelHeaderDispatchProps>(mapStateToProps, mapDispatchToProps)(ChannelHeader);

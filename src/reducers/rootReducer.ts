@@ -8,7 +8,6 @@ import {usersReducer} from './usersReducer';
 import {isUserDialogOpenReducer} from './isUserDialogOpenReducer';
 import {isChannelNameEdititingModeReducer} from './isChannelNameEdtitingModeReducer';
 
-// TODO create reducers for remaining state attributes
 export const rootReducer = (prevState = {} as IMessageAppState, action: Action<any>): IMessageAppState => ({
   isLoggedIn: isLoggedInReducer(prevState.isLoggedIn, action),
   loggedUser: loggedUserReducer(prevState.loggedUser, action),

@@ -18,7 +18,6 @@ export interface IMessageAppUsers {
   byId: Immutable.Map<Uuid, IMessageAppUser>;
 }
 
-// TODO uncomment after reducers are created
 export interface IMessageAppState {
   messages: IMessageAppMessages;
   channels: IMessageAppChannels;

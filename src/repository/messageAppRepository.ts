@@ -11,7 +11,7 @@ const LOCAL_STORAGE_CHANNELS_KEY = 'CHANNELS';
 const LOCAL_STORAGE_MESSAGES_KEY = 'MESSAGES';
 const LOCAL_STORAGE_USERS_KEY = 'USERS';
 
-// TODO user identification should be id or username, not both
+// TODO should user have both id and username???
 export function getUserByUsername(userName: string): IMessageAppUser | undefined {
   return users.filter((user) => user.userName === userName).get(0);
 }

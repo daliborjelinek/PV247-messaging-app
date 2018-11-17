@@ -97,7 +97,6 @@ export class ChannelHeader extends React.PureComponent<IProps, IState> {
       return [];
     }
 
-    // TODO create dialog/input for changing the name of the channel
     return [
       { title: 'Change name', action: () => this.props.activateChannelNameEditingMode() },
       { title: 'Invite member', action: () => console.log('Invite member')},
