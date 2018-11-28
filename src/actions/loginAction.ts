@@ -1,19 +1,22 @@
 import {Dispatch} from 'redux';
 import {MESSAGE_APP_LOGGING_AUTO_FAILED, MESSAGE_APP_LOGGING_AUTO_STARTED, MESSAGE_APP_LOGGING_AUTO_SUCCESS, MESSAGE_APP_LOGGING_FAILED, MESSAGE_APP_LOGGING_STARTED, MESSAGE_APP_LOGGING_SUCCESS} from '../constants/actionTypes';
-import delay from 'delay';
-import * as MessageAppRepository from '../repository/messageAppRepository';
+import * as authenticationService from '../service/authenticationService';
 import {IMessageAppUser} from '../models/IMessageAppUser';
+import {LOGIN_ERROR} from '../constants/errors';
 
 // MANUAL LOG IN
-const loggingStarted = (): Action<MESSAGE_APP_LOGGING_STARTED> => ({
+const authenticationStarted = (): Action<MESSAGE_APP_LOGGING_STARTED> => ({
   type: MESSAGE_APP_LOGGING_STARTED,
 });
 
-const loggingFailed = (): Action<MESSAGE_APP_LOGGING_FAILED> => ({
+const authenticationFailed = (errorType: LOGIN_ERROR): Action<MESSAGE_APP_LOGGING_FAILED> => ({
   type: MESSAGE_APP_LOGGING_FAILED,
+  payload: {
+    errorType,
+  }
 });
 
-const loggingSuccess = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGING_SUCCESS> => ({
+const authenticationSuccess = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGING_SUCCESS> => ({
   type: MESSAGE_APP_LOGGING_SUCCESS,
   payload: {
     loggedUser,
@@ -36,22 +39,25 @@ const loginAutoSucces = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGIN
   }
 });
 
-export const logIn = (username: string, password: string): any => {
+export const logIn = (email: string, password: string): any => {
   return async (dispatch: Dispatch): Promise<void> => {
-    dispatch(loggingStarted());
-    const loggedUser = await _login(username, password);
-    if (loggedUser == null) {
-      dispatch(loggingFailed());
-    } else {
-      dispatch(loggingSuccess(loggedUser));
+    dispatch(authenticationStarted());
+    const authenticationResult = await authenticationService.authenticate({email, password});
+
+    // error during authentication
+    if (typeof authenticationResult === 'string') {
+      dispatch(authenticationFailed(authenticationResult));
+      return;
     }
+
+    dispatch(authenticationSuccess(authenticationResult));
   };
 };
 
 export const autoLogin = (): any => {
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch(loginAutoStarted());
-    const loggedUser = _autoLogin();
+    const loggedUser = authenticationService.getLoggedUser();
     if (loggedUser == null) {
       dispatch(loginAutoFailed());
     } else {
@@ -60,34 +66,3 @@ export const autoLogin = (): any => {
   };
 };
 
-////////////////////// PRIVATE FUNCTIONS //////////////////////////
-export const AUTO_LOGIN_USER_KEY = 'AUTO_LOGIN_USER';
-
-// TODO create real implementation for log in
-/**
- * Stub method for logging in. Wait 500 ms and then returns user with given username.
- *
- * @param userName userName of user, who is logging in
- * @param password password of user, who is logging in: passwords is ignored right now
- * @private
- */
-async function _login(userName: string, password: string): Promise<IMessageAppUser | undefined> {
-  await delay(100);
-  console.log(userName, password);
-  const selectedUser = MessageAppRepository.getUserByUsername('Trump');
-  // put selected user to local storage
-  localStorage.setItem(AUTO_LOGIN_USER_KEY, JSON.stringify(selectedUser));
-  return selectedUser;
-}
-
-/**
- * Automatic log in based on data in local storage.
- * @private
- */
-function _autoLogin(): IMessageAppUser | null {
-  const localStorageLoggedUser = localStorage.getItem(AUTO_LOGIN_USER_KEY);
-  if (localStorageLoggedUser  == null) {
-    return null;
-  }
-  return JSON.parse(localStorageLoggedUser);
-}

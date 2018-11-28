@@ -7,6 +7,64 @@ import delay from 'delay';
 import {IMessageAppMessage, UsersWhoRatedMessageMap} from '../models/IMessageAppMessage';
 import {RatingPolarity} from '../enums/RatingPolarity';
 
+const LOCAL_STORAGE_AUTH_TOKEN_KEY = 'AUTH_TOKEN';
+const LOCAL_STORAGE_LOGGED_USER_KEY = 'LOGGED_uSER';
+
+/**
+ * Returns auth token from LocalStorage or null, when Token is not in LocalStorage, is expired
+ *    or will expire in the next minute.
+ */
+export function getAuthToken(): null | AuthToken {
+  const authTokenStr = localStorage.getItem(LOCAL_STORAGE_AUTH_TOKEN_KEY);
+  if (authTokenStr == null) {
+    return null;
+  }
+
+  const authToken: AuthToken = JSON.parse(authTokenStr);
+  const millisecondsToMinutes = 60000;
+  const dateNextMinute = new Date(new Date().getTime() + millisecondsToMinutes);
+  // return null when expired or when it will expire in the next minute
+  if (authToken.expiration < dateNextMinute) {
+    return null;
+  }
+
+  return authToken;
+}
+
+/**
+ * Saves authentication token into the local storage.
+ * @param token authentication token into the local storage
+ */
+export function saveAuthToken(token: AuthToken): void {
+  localStorage.setItem(LOCAL_STORAGE_AUTH_TOKEN_KEY, JSON.stringify(token));
+}
+
+/**
+ * Returns logged user.
+ */
+export function getLoggedUser(): IMessageAppUser | null {
+  const loggedUser = localStorage.getItem(LOCAL_STORAGE_LOGGED_USER_KEY);
+  return loggedUser == null ? null : JSON.parse(loggedUser);
+}
+
+/**
+ * Saves logged user into local storage. It allows auto log in functionality.
+ * @param user logged user
+ */
+export function saveLoggedUser(user: IMessageAppUser): void {
+  localStorage.setItem(LOCAL_STORAGE_LOGGED_USER_KEY, JSON.stringify(user));
+}
+
+/**
+ * Us for log out.
+ */
+export function removeLoggedUser() {
+  localStorage.removeItem(LOCAL_STORAGE_LOGGED_USER_KEY);
+}
+
+/**
+ * Following functionality is now DEPRECATED.
+ */
 const LOCAL_STORAGE_CHANNELS_KEY = 'CHANNELS';
 const LOCAL_STORAGE_MESSAGES_KEY = 'MESSAGES';
 const LOCAL_STORAGE_USERS_KEY = 'USERS';

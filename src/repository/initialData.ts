@@ -14,9 +14,9 @@ const loremIpsumText = 'Lorem Ipsum is simply dummy text of the printing and typ
 
 // Users - message authors
 export const users: Immutable.List<IMessageAppUser> = Immutable.List([
-  { id: uuid(), name: 'Franta Novák', userName: 'Putin', pictureUrl: pictureUrl1 },
-  { id: uuid(), name: 'Strýček Donald', userName: 'Trump', pictureUrl: pictureUrl2 },
-  { id: uuid(), name: 'Miloš Becherovka', userName: 'Milos', pictureUrl: pictureUrl3 },
+  { id: uuid(), email: 'a', name: 'Franta Novák', userName: 'Putin', pictureUrl: pictureUrl1 },
+  { id: uuid(), email: 'b', name: 'Strýček Donald', userName: 'Trump', pictureUrl: pictureUrl2 },
+  { id: uuid(), email: 'c', name: 'Miloš Becherovka', userName: 'Milos', pictureUrl: pictureUrl3 },
 ]);
 
 // Channels
