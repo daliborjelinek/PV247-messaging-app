@@ -19,6 +19,14 @@ export function getUserUrl(): string {
   return `${getBaseUrl()}user`;
 }
 
+export function getChannelUrl(): string {
+  return `${getBaseAppUrl()}channel`;
+}
+
+export function getMessageUrl(channelId: Uuid): string {
+  return `${getChannelUrl()}/${channelId}/message`;
+}
+
 /*************************************************
  * SENDING REQUESTS WITH AUTHENTICATION TOKEN
  ************************************************/
@@ -27,7 +35,7 @@ export function GET<T>(url: string): AxiosPromise<T> {
     .then((config) => axios.get<T>(url, config));
 }
 
-export function POST<T>(url: string, data?: any): AxiosPromise<T> {
+export function POST<T>(url: string, data: any): AxiosPromise<T> {
   return getConfigWithBearerToken()
     .then((config) => axios.post<T>(url, data, config));
 }
@@ -35,6 +43,11 @@ export function POST<T>(url: string, data?: any): AxiosPromise<T> {
 export function PUT<T>(url: string, data?: any): AxiosPromise<T> {
   return getConfigWithBearerToken()
     .then((config) => axios.put<T>(url, data, config));
+}
+
+export function DELETE<T>(url: string): AxiosPromise<T> {
+  return getConfigWithBearerToken()
+    .then((config) => axios.delete(url, config));
 }
 
 /**

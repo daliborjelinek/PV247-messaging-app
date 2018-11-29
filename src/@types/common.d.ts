@@ -1,8 +1,8 @@
 type Uuid = string;
 
-type Action<T> = {
+type Action<T, S = any> = {
   type: T;
-  payload?: any;
+  payload?: S;
 };
 
 type AuthToken = {

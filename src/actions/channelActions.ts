@@ -1,5 +1,4 @@
 import {
-  CHANNEL_ADD_FAILED,
   CHANNEL_ADD_FINISHED,
   CHANNEL_ADD_STARTED,
   CHANNEL_DELETE_FINISHED,
@@ -12,9 +11,9 @@ import {
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
-import * as MessageAppRepository from '../repository/messageAppRepository';
 import {IMessageAppState} from '../models/IMessageAppState';
 import {loadMessagesForChannel} from './messageActions';
+import * as ChannelService from '../service/channelService';
 
 // CHANGING CHANNEL
 const currentChannelChangeStarted = (): Action<CURRENT_CHANNEL_CHANGE_STARTED> => ({
@@ -45,10 +44,6 @@ const channelAddStarted = (): Action<CHANNEL_ADD_STARTED> => ({
   type: CHANNEL_ADD_STARTED,
 });
 
-const channelAddFailed = (): Action<CHANNEL_ADD_FAILED> => ({
-  type: CHANNEL_ADD_FAILED,
-});
-
 const channelAddFinished = (channel: IMessageAppChannel): Action<CHANNEL_ADD_FINISHED> => ({
   type: CHANNEL_ADD_FINISHED,
   payload: {
@@ -59,11 +54,7 @@ const channelAddFinished = (channel: IMessageAppChannel): Action<CHANNEL_ADD_FIN
 export const addChannel = (name: string): any => {
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch(channelAddStarted());
-    if (name === '') {
-      dispatch(channelAddFailed());
-      return;
-    }
-    const newChannel = await MessageAppRepository.addChannel(name);
+    const newChannel = await ChannelService.createChannel(name);
     dispatch(channelAddFinished(newChannel));
   };
 };
@@ -83,9 +74,10 @@ const channelRenameFinished = (id: Uuid, name: string): Action<CHANNEL_RENAME_FI
 });
 
 export const renameChannel = (id: Uuid, name: string): any => {
-  return async (dispatch: Dispatch): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(channelRenameStarted());
-    // TODO change name in repository
+    const channel = getState().channels.byId.get(id)!;
+    await ChannelService.changeChannelName(channel, name);
     dispatch(channelRenameFinished(id, name));
     dispatch(editingChannelNameModeFinished());
   };
@@ -115,8 +107,8 @@ const channelDeleteFinished = (id: Uuid): Action<CHANNEL_DELETE_FINISHED> => ({
 export const deleteChannel = (id: Uuid): any => {
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch(channelDeleteStarted());
-    await MessageAppRepository.deleteChannel(id);
+    await ChannelService.deleteChannel(id);
     dispatch(channelDeleteFinished(id));
-    // TODO delete messages from selected channel
+    // TODO delete messages from selected channel???
   };
 };
