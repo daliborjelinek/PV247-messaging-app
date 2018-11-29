@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as uuid from 'uuid';
-import {getUserUrl, getAuthToken} from '../utils/requestUtils';
+import {getUserUrl, getAuthToken, GET} from '../utils/requestUtils';
 import {IMessageAppUser, IMessageAppUserWithPassword} from '../models/IMessageAppUser';
 import {LOGIN_BAD_PASSWORD, LOGIN_EMAIL_DOES_NOT_EXIST, LOGIN_ERROR, LOGIN_USER_ALREADY_REGISTERED} from '../constants/errors';
 import * as messageAppRepository from '../repository/messageAppRepository';
@@ -19,6 +19,7 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
     const registerResult = await registerUser(credentials);
 
     if (registerResult === LOGIN_USER_ALREADY_REGISTERED) {
+      messageAppRepository.removeAuthToken();
       return Promise.resolve(LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED);
     }
     // save user to local storage
@@ -30,11 +31,13 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
   // existing e-mail - log in
   const loadResult = await loadUser(credentials);
   if (loadResult === LOGIN_EMAIL_DOES_NOT_EXIST) {
+    messageAppRepository.removeAuthToken();
     return Promise.resolve(LOGIN_EMAIL_DOES_NOT_EXIST as LOGIN_EMAIL_DOES_NOT_EXIST);
   }
 
   // bad password
   if (!checkPassword(credentials, loadResult.password)) {
+    messageAppRepository.removeAuthToken();
     return Promise.resolve(LOGIN_BAD_PASSWORD as LOGIN_BAD_PASSWORD);
   }
 
@@ -51,7 +54,7 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
  */
 async function loadUser(credentials: Credentials): Promise<IMessageAppUserWithPassword | LOGIN_EMAIL_DOES_NOT_EXIST> {
   const url = `${getUserUrl()}/${credentials.email}`;
-  return axios.get<ServerResponseUser>(url)
+  return GET<ServerResponseUser>(url)
     .then((response) => {
       const userData = response.data.customData;
       return Promise.resolve({email: response.data.email, ...userData});
@@ -103,4 +106,5 @@ export function getLoggedUser(): IMessageAppUser | null {
  */
 export function logOut(): void {
   messageAppRepository.removeLoggedUser();
+  messageAppRepository.removeAuthToken();
 }

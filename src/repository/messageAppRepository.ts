@@ -33,10 +33,17 @@ export function getAuthToken(): null | AuthToken {
 
 /**
  * Saves authentication token into the local storage.
- * @param token authentication token into the local storage
+ * @param token authentication token
  */
 export function saveAuthToken(token: AuthToken): void {
   localStorage.setItem(LOCAL_STORAGE_AUTH_TOKEN_KEY, JSON.stringify(token));
+}
+
+/**
+ * Remove auth token from local storage. Used when user is logged out.
+ */
+export function removeAuthToken(): void {
+  localStorage.removeItem(LOCAL_STORAGE_AUTH_TOKEN_KEY);
 }
 
 /**
