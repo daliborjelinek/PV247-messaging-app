@@ -11,7 +11,7 @@ import {RatingPolarity} from '../enums/RatingPolarity';
  */
 export async function loadMessagesForChannel(channelId: Uuid): Promise<Immutable.List<IMessageAppMessage>> {
   const responseData = await GET<ServerResponseMessage[]>(getMessageUrl(channelId));
-  return mapToMessagesMap(responseData.data);
+  return mapToMessagesList(responseData.data);
 }
 
 /**
@@ -63,12 +63,21 @@ export async function changeMessageRating(message: IMessageAppMessage, email: st
 }
 
 // PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
-function mapToMessagesMap(serverResponseMessage: ServerResponseMessage[]): Immutable.List<IMessageAppMessage> {
+function mapToMessagesList(serverResponseMessage: ServerResponseMessage[]): Immutable.List<IMessageAppMessage> {
   if (serverResponseMessage == null || serverResponseMessage.length === 0) {
     return Immutable.List();
   }
 
-  return Immutable.List(serverResponseMessage.map((message) => mapToMessage(message)));
+  const messageList = Immutable.List(serverResponseMessage.map((message) => mapToMessage(message)));
+  return messageList.sort((a, b) => {
+    if (a.createdAt > b.createdAt) {
+      return 1;
+    }
+    if (a.createdAt < b.createdAt) {
+      return -1;
+    }
+    return 0;
+  });
 }
 
 function mapToMessage(serverResponseMessage: ServerResponseMessage): IMessageAppMessage {
