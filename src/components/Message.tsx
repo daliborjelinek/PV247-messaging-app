@@ -31,8 +31,8 @@ export class Message extends React.PureComponent<IProps> {
         </div>
         <div className={'Message_content'}>
           <span className={'Message__author'}>{this.props.messageAuthor.name}</span>
-          <span className={'Message__date'}>{this.props.message.date}</span>
-          <div className={'Message__text'}>{this.props.message.text}</div>
+          <span className={'Message__date'}>{this.props.message.createdAt.toLocaleString()}</span>
+          <div className={'Message__text'}>{this.props.message.value}</div>
         </div>
         <MessageActions rating={messageRating} isMyMessage={isMyMessage} messageId={messageId}/>
       </div>
