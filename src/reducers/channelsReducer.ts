@@ -1,7 +1,12 @@
 import * as Immutable from 'immutable';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
-import {CHANNEL_ADD_FINISHED, CHANNEL_DELETE_FINISHED, CHANNEL_RENAME_FINISHED,
-  MESSAGE_APP_CHANNELS_ACTIONS, MESSAGE_APP_LOADING_FINISHED} from '../constants/actionTypes';
+import {
+  CHANNEL_ADD_FINISHED,
+  CHANNEL_DELETE_FINISHED,
+  CHANNEL_RENAME_FINISHED,
+  MESSAGE_APP_CHANNELS_ACTIONS,
+  MESSAGE_APP_LOADING_FINISHED,
+} from '../constants/actionTypes';
 import {combineReducers} from 'redux';
 
 
