@@ -1,7 +1,7 @@
 import {IMessageAppUser} from '../models/IMessageAppUser';
 
 const LOCAL_STORAGE_AUTH_TOKEN_KEY = 'AUTH_TOKEN';
-const LOCAL_STORAGE_LOGGED_USER_KEY = 'LOGGED_uSER';
+const LOCAL_STORAGE_LOGGED_USER_KEY = 'LOGGED_USER';
 
 /*************************************************
  * AUTHENTICATION
@@ -20,7 +20,7 @@ export function getAuthToken(): null | AuthToken {
   const millisecondsToMinutes = 60000;
   const dateNextMinute = new Date(new Date().getTime() + millisecondsToMinutes);
   // return null when expired or when it will expire in the next minute
-  if (authToken.expiration < dateNextMinute) {
+  if (new Date(authToken.expiration) < dateNextMinute) {
     return null;
   }
 

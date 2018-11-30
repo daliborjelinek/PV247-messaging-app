@@ -17,13 +17,13 @@ export async function loadMessagesForChannel(channelId: Uuid): Promise<Immutable
 /**
  * Create new message for selected channel.
  * @param value text of the message
- * @param createdBy id of the author of the message
+ * @param authorEmail id of the author of the message
  * @param channelId id of the channel
  */
-export async function createMessage(value: string, createdBy: Uuid, channelId: Uuid): Promise<IMessageAppMessage> {
+export async function createMessage(value: string, authorEmail: string, channelId: Uuid): Promise<IMessageAppMessage> {
   const newMessage: ServerRequestMessage = {
     value,
-    createdBy,
+    createdBy: authorEmail,
     createdAt: new Date(),
     customData: {
       rating: 0,
@@ -47,15 +47,15 @@ export async function deleteMessage(messageId: Uuid, channelId: Uuid): Promise<v
 /**
  * Decrement or increment message rating. Return updated message.
  * @param message message which rating should be updated
- * @param userId id of user, who changed rating
+ * @param email id of user, who changed rating
  * @param channelId id of channel in which message is shown
  * @param ratingPolarity rating polaritt
  */
-export async function changeMessageRating(message: IMessageAppMessage, userId: Uuid,
+export async function changeMessageRating(message: IMessageAppMessage, email: string,
                                           channelId: Uuid, ratingPolarity: RatingPolarity) {
   const requestMessage = mapToRequestMessage(message);
   const currentRating = requestMessage.customData.rating;
-  requestMessage.customData.usersWhoRatedMessage[userId] = ratingPolarity;
+  requestMessage.customData.usersWhoRatedMessage[email] = ratingPolarity;
   requestMessage.customData.rating = ratingPolarity === RatingPolarity.POSITIVE ? currentRating + 1 : currentRating - 1;
 
   const response = await PUT<ServerResponseMessage>(`${getMessageUrl(channelId)}/${message.id}`, requestMessage);

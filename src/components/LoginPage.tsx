@@ -7,7 +7,8 @@ export interface ILoginPageDispatchProps {
 }
 
 interface ILoginPageState {
-  readonly userName: string;
+  // email/username
+  readonly email: string;
   readonly password: string;
 }
 
@@ -15,7 +16,7 @@ export class LoginPage extends React.PureComponent<ILoginPageDispatchProps, ILog
 
   private onSubmit = (e: FormEvent): void => {
     e.preventDefault();
-    this.props.onLogin(this.state.userName, this.state.password);
+    this.props.onLogin(this.state.email, this.state.password);
   };
 
   private onChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -30,7 +31,7 @@ export class LoginPage extends React.PureComponent<ILoginPageDispatchProps, ILog
     super(props);
 
     this.state = {
-      userName: '',
+      email: '',
       password: '',
     };
   }
@@ -44,8 +45,8 @@ export class LoginPage extends React.PureComponent<ILoginPageDispatchProps, ILog
           </div>
           <div className={'form-group'}>
             <label htmlFor={'fullNameInput'} className={'label-top'}>Full Name:</label>
-            <input type={'text'} id={'fullNameInput'} value={this.state.userName}
-                   name={'userName'} className={'form-control'}
+            <input type={'text'} id={'fullNameInput'} value={this.state.email}
+                   name={'email'} className={'form-control'}
                    onChange={this.onChange}/>
           </div>
           <div className={'form-group'}>

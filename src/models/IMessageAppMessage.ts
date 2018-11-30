@@ -12,5 +12,5 @@ export interface  IMessageAppMessage {
 }
 
 export interface UsersWhoRatedMessageMap {
-  [id: string]: RatingPolarity;
+  [email: string]: RatingPolarity;
 }

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as uuid from 'uuid';
 import {getUserUrl, getAuthToken, GET} from '../utils/requestUtils';
 import {IMessageAppUser, IMessageAppUserWithPassword} from '../models/IMessageAppUser';
 import {LOGIN_BAD_PASSWORD, LOGIN_EMAIL_DOES_NOT_EXIST, LOGIN_ERROR, LOGIN_USER_ALREADY_REGISTERED} from '../constants/errors';
@@ -79,14 +78,12 @@ function checkPassword(credentials: Credentials, correctPassword: string): boole
  * @param credentials data from login form
  */
 async function registerUser(credentials: Credentials): Promise<IMessageAppUser | LOGIN_USER_ALREADY_REGISTERED> {
-  const id = uuid();
   return axios.post<ServerResponseUser>(getUserUrl(), {
     email: credentials.email,
-    customData: {id, password: credentials.password}
+    customData: {password: credentials.password}
   })
     .then((response) => {
       return Promise.resolve({
-        id: response.data.customData.id,
         email: response.data.email,
         password: response.data.customData.password,
       });

@@ -5,7 +5,7 @@ import {ILoginPageDispatchProps, LoginPage} from '../components/LoginPage';
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onLogin: (username: string, password: string) =>  dispatch(logIn(username, password)),
+    onLogin: (email: string, password: string) =>  dispatch(logIn(email, password)),
   };
 };
 

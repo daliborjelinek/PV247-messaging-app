@@ -16,14 +16,17 @@ type IProps = IMessageRateOwnProps;
  *   message can be rated.
  * @param props
  */
-export function MessageActions(props: IProps) {
-  return (
-    <div className={'MessageActions'}>
-      {props.isMyMessage ?
-        <MessageActionsEditingContainer messageId={props.messageId} /> :
-        <MessageActionsRatingContainer messageId={props.messageId} />
-      }
-      <div className={'MessageActions__rating badge badge-pill'}>{props.rating}</div>
-    </div>
-  );
+export class MessageActions extends React.PureComponent<IProps> {
+
+  public render() {
+    return (
+      <div className={'MessageActions'}>
+        {this.props.isMyMessage ?
+          <MessageActionsEditingContainer messageId={this.props.messageId} /> :
+          <MessageActionsRatingContainer messageId={this.props.messageId} />
+        }
+        <div className={'MessageActions__rating badge badge-pill'}>{this.props.rating}</div>
+      </div>
+    );
+  }
 }

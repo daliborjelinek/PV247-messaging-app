@@ -14,8 +14,8 @@ export interface IMessageAppChannels {
 }
 
 export interface IMessageAppUsers {
-  allIds: Immutable.List<Uuid>;
-  byId: Immutable.Map<Uuid, IMessageAppUser>;
+  allEmails: Immutable.List<Uuid>;
+  byEmail: Immutable.Map<Uuid, IMessageAppUser>;
 }
 
 export interface IMessageAppState {

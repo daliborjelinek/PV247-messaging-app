@@ -12,16 +12,20 @@ export interface IMessageActionsEditingDispatchProps {
 type IProps = IMessageActionsEditingOwnProps & IMessageActionsEditingDispatchProps;
 
 /**
- * Actions over messages, when message author is logged user. Right now, app supports only delete messege function.
- *
- * @param props
- * @constructor
+ * Actions over messages, when message author is logged user. Right now, app supports only delete message function.
  */
-export function MessageActionsEditing(props: IProps) {
-  return (
-    <div className={'MessageActions__actionIcons'}>
+export class MessageActionsEditing extends React.PureComponent<IProps> {
+
+  private onDeleteMessage = () => {
+    this.props.deleteMessage(this.props.messageId);
+  };
+
+  public render(): JSX.Element {
+    return (
+      <div className={'MessageActions__actionIcons'}>
           <span className={'glyphicon glyphicon-trash'}
-                onClick={() => props.deleteMessage(props.messageId)} />
-    </div>
-  );
+                onClick={this.onDeleteMessage} />
+      </div>
+    );
+  }
 }

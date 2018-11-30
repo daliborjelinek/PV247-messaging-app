@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 
 const mapStateToProps = (state: IMessageAppState, ownProps: IMessageOwnProps): IMessageStateProps => {
   const message = state.messages.byId.get(ownProps.id)!;
-  const messageAuthor = state.users.byId.get(message.createdBy)!;
-  const isMyMessage = state.loggedUser!.id === message.createdBy;
+  const messageAuthor = state.users.byEmail.get(message.createdBy)!;
+  const isMyMessage = state.loggedUser!.email === message.createdBy;
   return { message, messageAuthor, isMyMessage };
 };
 

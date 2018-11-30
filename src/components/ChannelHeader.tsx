@@ -112,7 +112,7 @@ export class ChannelHeader extends React.PureComponent<IProps, IState> {
     }
 
     // channel exists
-    const countOfUsersInChannel = this.props.channel.userIds.count();
+    const countOfUsersInChannel = this.props.channel.userEmails.count();
     return (
       <div className={'ChannelHeader'}>
         <div className={'ChannelHeader__info'}>

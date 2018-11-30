@@ -22,6 +22,10 @@ export class ChannelList extends React.PureComponent<IProps, IState> {
     this.setState(() => ({ newChannelName: name }));
   };
 
+  private onAddChannel = (): void => {
+    this.props.addChannel(this.state.newChannelName);
+  };
+
   constructor(props: IProps) {
     super(props);
 
@@ -43,7 +47,7 @@ export class ChannelList extends React.PureComponent<IProps, IState> {
                  name="newChannelName" placeholder={'Channel name'}
                  onChange={this.onNewChannelChange}/>
           <button type="button" className="btn btn-default"
-                  onClick={() => this.props.addChannel(this.state.newChannelName)}>Add</button>
+                  onClick={this.onAddChannel}>Add</button>
         </div>
       </div>
     );

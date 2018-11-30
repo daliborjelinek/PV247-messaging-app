@@ -8,8 +8,8 @@ import {decrementRating, incrementRating} from '../actions/messageActions';
 
 const mapStateToProps = (state: IMessageAppState,
                          ownProps: IMessageActionsEditingOwnProps): IMessageActionsRatingStateProps => {
-  const loggedUserId = state.loggedUser!.id;
-  const ratingFromLoggedUser = state.messages.byId.get(ownProps.messageId)!.usersWhoRatedMessage[loggedUserId];
+  const loggedUserEmail = state.loggedUser!.email;
+  const ratingFromLoggedUser = state.messages.byId.get(ownProps.messageId)!.usersWhoRatedMessage[loggedUserEmail];
   return {
     isRatedByLoggedUser: ratingFromLoggedUser != null,
     rating: state.messages.byId.get(ownProps.messageId)!.rating,

@@ -59,10 +59,10 @@ export const addMessage = (text: string): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(messageAddStarted());
     // user must be logged in to write message, that's why I can use exclamation mark
-    const authorId = getState().loggedUser!.id;
+    const authorEmail = getState().loggedUser!.email;
     // if message editor is shown, current channel must be not null
     const channelId = getState().currentChannelId!;
-    const newMessage = await  MessageService.createMessage(text, authorId, channelId);
+    const newMessage = await  MessageService.createMessage(text, authorEmail, channelId);
     dispatch(messageAddFinished(newMessage));
   };
 };
@@ -106,10 +106,10 @@ export const messageIncrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_I
 export const incrementRating = (id: Uuid): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     const message = getState().messages.byId.get(id)!;
-    const loggedUserId = getState().loggedUser!.id;
+    const loggedUserEmail = getState().loggedUser!.email;
     const currentChannelId = getState().currentChannelId!;
-    await MessageService.changeMessageRating(message, loggedUserId, currentChannelId, RatingPolarity.POSITIVE);
-    dispatch(messageIncrementRating(id, getState().loggedUser!.id));
+    await MessageService.changeMessageRating(message, loggedUserEmail, currentChannelId, RatingPolarity.POSITIVE);
+    dispatch(messageIncrementRating(id, getState().loggedUser!.email));
   };
 };
 
@@ -126,9 +126,9 @@ export const messageDecrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_D
 export const decrementRating = (id: Uuid): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     const message = getState().messages.byId.get(id)!;
-    const loggedUserId = getState().loggedUser!.id;
+    const loggedUserEmail = getState().loggedUser!.email;
     const currentChannelId = getState().currentChannelId!;
-    await MessageService.changeMessageRating(message, loggedUserId, currentChannelId, RatingPolarity.NEGATIVE);
-    dispatch(messageDecrementRating(id, getState().loggedUser!.id));
+    await MessageService.changeMessageRating(message, loggedUserEmail, currentChannelId, RatingPolarity.NEGATIVE);
+    dispatch(messageDecrementRating(id, getState().loggedUser!.email));
   };
 };

@@ -78,7 +78,7 @@ function mapToChannel(serverResponseChannel: ServerResponseChannel): IMessageApp
     id: serverResponseChannel.id,
     name: serverResponseChannel.name,
     countOfNewMessages: serverResponseChannel.customData.countOfNewMessages,
-    userIds: Immutable.List<Uuid>(serverResponseChannel.customData.userIds),
+    userEmails: Immutable.List<Uuid>(serverResponseChannel.customData.userIds),
   };
 }
 
@@ -87,7 +87,7 @@ function mapToRequestChannel(channel: IMessageAppChannel): ServerRequestChannel 
     name: channel.name,
     customData: {
       countOfNewMessages: channel.countOfNewMessages,
-      userIds: channel.userIds.toJS(),
+      userIds: channel.userEmails.toJS(),
     },
   };
 }

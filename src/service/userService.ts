@@ -22,11 +22,24 @@ function mapToUsersMap(serverResponseUsers: ServerResponseUser[]): Immutable.Lis
 }
 
 function mapToUser(serverResponseUser: ServerResponseUser): IMessageAppUser {
+  const userName = serverResponseUser.customData.userName == null ? serverResponseUser.email :
+    serverResponseUser.customData.userName;
+  const name = serverResponseUser.customData.name == null ? userName :
+    serverResponseUser.customData.userName;
+  const pictureUrl = getPictureUrl(serverResponseUser.customData.picture);
   return {
-    id: serverResponseUser.customData.id,
     email: serverResponseUser.email,
-    userName: serverResponseUser.customData.userName,
-    name: serverResponseUser.customData.name,
-    // TODO picture url
+    userName,
+    name,
+    pictureUrl,
   };
+}
+
+function getPictureUrl(picture: any): string {
+  if (picture == null) {
+    return 'https://image.freepik.com/free-icon/male-user-shadow_318-34042.jpg';
+  }
+
+  // TODO return real picture
+  return 'https://image.freepik.com/free-icon/male-user-shadow_318-34042.jpg';
 }

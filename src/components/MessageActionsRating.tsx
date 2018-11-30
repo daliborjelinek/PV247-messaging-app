@@ -21,13 +21,24 @@ export interface IMessageActionsRatingDispatchProps {
 type IProps = IMessageActionsRatingDispatchProps & IMessageActionsRatingOwnProps &
               IMessageActionsRatingStateProps;
 
-export function MessageActionsRating(props: IProps) {
-  const additionalClassName = props.ratingPolarityFromCurrentUser != null ?
-                          `MessageActionsRating--rated MessageActionsRating--rated-${props.ratingPolarityFromCurrentUser}` : '';
-  return (
-    <div className={`MessageActions__actionIcons ${additionalClassName}`}>
-      <span className={'glyphicon glyphicon-plus'} onClick={() => props.incrementRating(props.messageId)} />
-      <span className={'glyphicon glyphicon-minus'} onClick={() => props.decrementRating(props.messageId)} />
-    </div>
-  );
+export class MessageActionsRating extends React.PureComponent<IProps> {
+
+  private onIncrementRating = (): void => {
+    this.props.incrementRating(this.props.messageId);
+  };
+
+  private onDecrementRating = (): void => {
+    this.props.decrementRating(this.props.messageId);
+  };
+
+  public render(): JSX.Element {
+    const additionalClassName = this.props.ratingPolarityFromCurrentUser != null ?
+      `MessageActionsRating--rated MessageActionsRating--rated-${this.props.ratingPolarityFromCurrentUser}` : '';
+    return (
+      <div className={`MessageActions__actionIcons ${additionalClassName}`}>
+        <span className={'glyphicon glyphicon-plus'} onClick={this.onIncrementRating}/>
+        <span className={'glyphicon glyphicon-minus'} onClick={this.onDecrementRating}/>
+      </div>
+    );
+  }
 }
