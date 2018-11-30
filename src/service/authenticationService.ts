@@ -20,31 +20,31 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
 
     if (registerResult === LOGIN_USER_ALREADY_REGISTERED) {
       messageAppRepository.removeAuthToken();
-      return Promise.resolve(LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED);
+      return LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED;
     }
     // save user to local storage
     messageAppRepository.saveLoggedUser(registerResult);
     // return registered user
-    return Promise.resolve(registerResult);
+    return registerResult;
   }
 
   // existing e-mail - log in
   const loadResult = await loadUser(credentials);
   if (loadResult === LOGIN_EMAIL_DOES_NOT_EXIST) {
     messageAppRepository.removeAuthToken();
-    return Promise.resolve(LOGIN_EMAIL_DOES_NOT_EXIST as LOGIN_EMAIL_DOES_NOT_EXIST);
+    return LOGIN_EMAIL_DOES_NOT_EXIST as LOGIN_EMAIL_DOES_NOT_EXIST;
   }
 
   // bad password
   if (!checkPassword(credentials, loadResult.password)) {
     messageAppRepository.removeAuthToken();
-    return Promise.resolve(LOGIN_BAD_PASSWORD as LOGIN_BAD_PASSWORD);
+    return LOGIN_BAD_PASSWORD as LOGIN_BAD_PASSWORD;
   }
 
   const {password, ...user} = loadResult;
   messageAppRepository.saveLoggedUser(user);
   // return logged user
-  return Promise.resolve(user);
+  return user;
 }
 
 /**
@@ -57,9 +57,9 @@ async function loadUser(credentials: Credentials): Promise<IMessageAppUserWithPa
   return GET<ServerResponseUser>(url)
     .then((response) => {
       const userData = response.data.customData;
-      return Promise.resolve({email: response.data.email, ...userData});
+      return {email: response.data.email, ...userData};
     })
-    .catch(() => Promise.resolve(LOGIN_EMAIL_DOES_NOT_EXIST as LOGIN_EMAIL_DOES_NOT_EXIST));
+    .catch(() => LOGIN_EMAIL_DOES_NOT_EXIST as LOGIN_EMAIL_DOES_NOT_EXIST);
 }
 
 /**
@@ -83,12 +83,12 @@ async function registerUser(credentials: Credentials): Promise<IMessageAppUser |
     customData: {password: credentials.password}
   })
     .then((response) => {
-      return Promise.resolve({
+      return {
         email: response.data.email,
         password: response.data.customData.password,
-      });
+      };
     })
-    .catch(() => Promise.resolve(LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED));
+    .catch(() => LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED);
 }
 
 /**

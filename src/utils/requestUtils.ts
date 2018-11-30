@@ -57,10 +57,10 @@ export function DELETE<T>(url: string): AxiosPromise<T> {
  * @param email e-mail which should be used for making the request, if not
  *   specified, e-mail of logged user is used
  */
-export function getAuthToken(email?: string): Promise<string | null> {
+export async function getAuthToken(email?: string): Promise<string | null> {
   const authToken = messageAppRepository.getAuthToken();
   if (authToken) {
-    return Promise.resolve(authToken.token);
+    return authToken.token;
   }
 
   if (email == null) {
@@ -75,10 +75,10 @@ export function getAuthToken(email?: string): Promise<string | null> {
   return axios.post<AuthToken>(`${BASE_URL}auth`, {email})
     .then((response) => {
       messageAppRepository.saveAuthToken(response.data);
-      return Promise.resolve(response.data.token);
+      return response.data.token;
     })
     .catch(() => {
-      return Promise.resolve(null);
+      return null;
     });
 }
 
@@ -88,7 +88,7 @@ export function getAuthToken(email?: string): Promise<string | null> {
 async function getConfigWithBearerToken(): Promise<AxiosRequestConfig> {
   const token = await getAuthToken();
 
-  return Promise.resolve({
+  return {
     headers: {Authorization: 'bearer ' + token},
-  });
+  };
 }
