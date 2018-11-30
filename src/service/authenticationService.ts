@@ -4,6 +4,7 @@ import {getUserUrl, getAuthToken, GET} from '../utils/requestUtils';
 import {IMessageAppUser, IMessageAppUserWithPassword} from '../models/IMessageAppUser';
 import {LOGIN_BAD_PASSWORD, LOGIN_EMAIL_DOES_NOT_EXIST, LOGIN_ERROR, LOGIN_USER_ALREADY_REGISTERED} from '../constants/errors';
 import * as messageAppRepository from '../repository/messageAppRepository';
+import {ServerResponseUser} from '../@types/api';
 
 /**
  * Authenticates user. If user is not registered, he will be registered.
