@@ -31,8 +31,8 @@ export const onChannelSelected = (channelId: Uuid): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(currentChannelChangeStarted());
     const selectedChannel = getState().channels.byId.get(channelId)!;
+    ChannelService.setLastLoadedChannelId(channelId);
     dispatch(currentChannelChangeFinished(selectedChannel));
-
     // render messages for given channel
     dispatch(loadMessagesForChannel(channelId));
   };

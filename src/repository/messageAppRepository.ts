@@ -77,3 +77,11 @@ const LAST_ACTIVE_CHANNEL_ID_KEY = 'LAST_ACTIVE_CHANNEL_ID';
 export function getLastActiveChannelId(): Uuid | null {
   return localStorage.getItem(LAST_ACTIVE_CHANNEL_ID_KEY);
 }
+
+/**
+ * Set id of activated channel into the local storage.
+ * @param channelId id of active channel
+ */
+export function setLastActiveChannelId(channelId: Uuid): void {
+  localStorage.setItem(LAST_ACTIVE_CHANNEL_ID_KEY, channelId);
+}

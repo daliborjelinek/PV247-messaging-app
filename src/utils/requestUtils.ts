@@ -40,7 +40,7 @@ export function POST<T>(url: string, data: any): AxiosPromise<T> {
     .then((config) => axios.post<T>(url, data, config));
 }
 
-export function PUT<T>(url: string, data?: any): AxiosPromise<T> {
+export function PUT<T>(url: string, data: any): AxiosPromise<T> {
   return getConfigWithBearerToken()
     .then((config) => axios.put<T>(url, data, config));
 }

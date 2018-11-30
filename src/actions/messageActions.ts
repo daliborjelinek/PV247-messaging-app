@@ -11,20 +11,20 @@ import {
 } from '../constants/actionTypes';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {Dispatch} from 'redux';
-import * as MessageAppRepository from '../repository/messageAppRepository';
 import {IMessageAppState} from '../models/IMessageAppState';
 import {RatingPolarity} from '../enums/RatingPolarity';
+import * as MessageService from '../service/messageService';
 
 // LOADING MESSAGES
 const messageLoadingStarted = (): Action<MESSAGE_LOADING_STARTED> => {
   return {
-    type: 'MESSAGE_LOADING_STARTED',
+    type: MESSAGE_LOADING_STARTED,
   };
 };
 
 const messageLoadingFinished = (messages: Immutable.List<IMessageAppMessage>): Action<MESSAGE_LOADING_FINISHED> => {
   return {
-    type: 'MESSAGE_LOADING_FINISHED',
+    type: MESSAGE_LOADING_FINISHED,
     payload: {
       messages,
     }
@@ -34,7 +34,7 @@ const messageLoadingFinished = (messages: Immutable.List<IMessageAppMessage>): A
 export const loadMessagesForChannel = (channelId: Uuid): any => {
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch(messageLoadingStarted());
-    const messages = await MessageAppRepository.loadMessagesForChannel(channelId);
+    const messages = await MessageService.loadMessagesForChannel(channelId);
     dispatch(messageLoadingFinished(messages));
   };
 };
@@ -42,13 +42,13 @@ export const loadMessagesForChannel = (channelId: Uuid): any => {
 // ADDING MESSAGE
 const messageAddStarted = (): Action<MESSAGE_ADD_STARTED> => {
   return {
-    type: 'MESSAGE_ADD_STARTED',
+    type: MESSAGE_ADD_STARTED,
   };
 };
 
 const messageAddFinished = (message: IMessageAppMessage): Action<MESSAGE_ADD_FINISHED> => {
   return {
-    type: 'MESSAGE_ADD_FINISHED',
+    type: MESSAGE_ADD_FINISHED,
     payload: {
       message,
     }
@@ -62,7 +62,7 @@ export const addMessage = (text: string): any => {
     const authorId = getState().loggedUser!.id;
     // if message editor is shown, current channel must be not null
     const channelId = getState().currentChannelId!;
-    const newMessage = await MessageAppRepository.addMessage(text, authorId, channelId);
+    const newMessage = await  MessageService.createMessage(text, authorId, channelId);
     dispatch(messageAddFinished(newMessage));
   };
 };
@@ -70,13 +70,13 @@ export const addMessage = (text: string): any => {
 // DELETING MESSAGE
 const messageDeleteStarted = (): Action<MESSAGE_DELETE_STARTED> => {
   return {
-    type: 'MESSAGE_DELETE_STARTED',
+    type: MESSAGE_DELETE_STARTED,
   };
 };
 
 const messageDeleteFinished = (id: Uuid): Action<MESSAGE_DELETE_FINISHED> => {
   return {
-    type: 'MESSAGE_DELETE_FINISHED',
+    type: MESSAGE_DELETE_FINISHED,
     payload: {
       id,
     }
@@ -84,9 +84,10 @@ const messageDeleteFinished = (id: Uuid): Action<MESSAGE_DELETE_FINISHED> => {
 };
 
 export const deleteMessage = (id: Uuid): any => {
-  return async (dispatch: Dispatch): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(messageDeleteStarted());
-    await MessageAppRepository.deleteMessage(id);
+    const channelId = getState().currentChannelId!;
+    await MessageService.deleteMessage(id, channelId);
     dispatch(messageDeleteFinished(id));
   };
 };
@@ -94,7 +95,7 @@ export const deleteMessage = (id: Uuid): any => {
 // CHANGING RATING
 export const messageIncrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_INCREMENT_RATING> => {
   return {
-    type: 'MESSAGE_INCREMENT_RATING',
+    type: MESSAGE_INCREMENT_RATING,
     payload: {
       id,
       userId,
@@ -104,14 +105,17 @@ export const messageIncrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_I
 
 export const incrementRating = (id: Uuid): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
-    await MessageAppRepository.changeMessageRating(id, getState().loggedUser!.id, RatingPolarity.POSITIVE);
+    const message = getState().messages.byId.get(id)!;
+    const loggedUserId = getState().loggedUser!.id;
+    const currentChannelId = getState().currentChannelId!;
+    await MessageService.changeMessageRating(message, loggedUserId, currentChannelId, RatingPolarity.POSITIVE);
     dispatch(messageIncrementRating(id, getState().loggedUser!.id));
   };
 };
 
 export const messageDecrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_DECREMENT_RATING> => {
   return {
-    type: 'MESSAGE_DECREMENT_RATING',
+    type: MESSAGE_DECREMENT_RATING,
     payload: {
       id,
       userId,
@@ -121,7 +125,10 @@ export const messageDecrementRating = (id: Uuid, userId: Uuid): Action<MESSAGE_D
 
 export const decrementRating = (id: Uuid): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
-    await MessageAppRepository.changeMessageRating(id, getState().loggedUser!.id, RatingPolarity.NEGATIVE);
+    const message = getState().messages.byId.get(id)!;
+    const loggedUserId = getState().loggedUser!.id;
+    const currentChannelId = getState().currentChannelId!;
+    await MessageService.changeMessageRating(message, loggedUserId, currentChannelId, RatingPolarity.NEGATIVE);
     dispatch(messageDecrementRating(id, getState().loggedUser!.id));
   };
 };

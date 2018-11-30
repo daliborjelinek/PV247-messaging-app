@@ -5,6 +5,8 @@ export interface  IMessageAppMessage {
   readonly value: string;
   readonly createdAt: Date;
   readonly createdBy: Uuid;
+  readonly updatedAt?: Date;
+  readonly updatedBy?: Uuid;
   readonly rating: number;
   readonly usersWhoRatedMessage: UsersWhoRatedMessageMap;
 }

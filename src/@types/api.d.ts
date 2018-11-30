@@ -39,3 +39,15 @@ export type ServerResponseMessage = {
     readonly usersWhoRatedMessage: UsersWhoRatedMessageMap;
   };
 };
+
+export type ServerRequestMessage = {
+  value: string;
+  createdAt: Date;
+  createdBy: Uuid;
+  updatedAt?: Date;
+  updatedBy?: Uuid;
+  customData: {
+     rating: number;
+     usersWhoRatedMessage: UsersWhoRatedMessageMap;
+  };
+};

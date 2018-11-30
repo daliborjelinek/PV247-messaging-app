@@ -44,7 +44,7 @@ export async function deleteChannel(id: Uuid): Promise<void> {
 export async function changeChannelName(channel: IMessageAppChannel, name: string): Promise<IMessageAppChannel> {
   const channelRequest = mapToRequestChannel(channel);
   channelRequest.name = name;
-  const response = await PUT<ServerResponseChannel>(`${getChannelUrl()}/${channel.id}`);
+  const response = await PUT<ServerResponseChannel>(`${getChannelUrl()}/${channel.id}`, channelRequest);
   return mapToChannel(response.data);
 }
 
@@ -54,6 +54,14 @@ export async function changeChannelName(channel: IMessageAppChannel, name: strin
  */
 export function getLastLoadedChannelId(): Uuid | null {
   return MessageAppRepository.getLastActiveChannelId();
+}
+
+/**
+ * Set id of activated channel into the local storage.
+ * @param channelId id of active channel
+ */
+export function setLastLoadedChannelId(channelId: Uuid): void {
+  MessageAppRepository.setLastActiveChannelId(channelId);
 }
 
 // PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
