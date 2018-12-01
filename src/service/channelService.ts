@@ -17,13 +17,14 @@ export async function loadChannels(): Promise<Immutable.List<IMessageAppChannel>
  * Creates new channel with specified name.
  * @param name name of the new channel
  * @param order order of newly created channel - last is default
+ * @param createdBy email of the message author
  */
-export async function createChannel(name: string, order: number): Promise<IMessageAppChannel> {
+export async function createChannel(name: string, order: number, createdBy: string): Promise<IMessageAppChannel> {
   const newChannel: ServerRequestChannel = {
     name,
     customData: {
       countOfNewMessages: 0,
-      userIds: [],
+      userIds: [createdBy],
       order,
     },
   };

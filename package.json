@@ -23,6 +23,7 @@
     "react-dom": "^16.4.1",
     "react-redux": "^5.1.0",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "roboto-fontface": "^0.10.0",
     "uuid": "^3.3.2"
   },
