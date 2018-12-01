@@ -5,7 +5,7 @@ import {
   CHANNEL_DELETE_FINISHED,
   CHANNEL_RENAME_FINISHED,
   MESSAGE_APP_CHANNELS_ACTIONS,
-  MESSAGE_APP_LOADING_FINISHED,
+  MESSAGE_APP_LOADING_FINISHED, MESSAGE_APP_REORDER_CHANNELS_FINISHED,
 } from '../constants/actionTypes';
 import {combineReducers} from 'redux';
 
@@ -37,6 +37,8 @@ const allIds = (prevState = Immutable.List<Uuid>(),
       return prevState.push(action.payload.channel.id);
     case CHANNEL_DELETE_FINISHED:
       return prevState.filter((id) => id !== action.payload.id);
+    case MESSAGE_APP_REORDER_CHANNELS_FINISHED:
+      return action.payload.reorderedChannelIds;
     default:
       return prevState;
   }

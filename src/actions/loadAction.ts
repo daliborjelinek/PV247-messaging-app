@@ -36,8 +36,12 @@ export const loadApp = (): any => {
     }
 
     // at least one channel exists - load messages and users
+    let activeChannel: IMessageAppChannel = channels.get(0)!;
     const lastUsedChannelId = ChannelService.getLastLoadedChannelId();
-    const activeChannel = lastUsedChannelId == null ? channels.get(0)! : channels.find((channel) => channel.id === lastUsedChannelId)!;
+    const lastUsedChannel = channels.find((channel) => channel.id === lastUsedChannelId);
+    if (lastUsedChannel != null) {
+      activeChannel = lastUsedChannel;
+    }
     const messagesForActiveChannel = MessageService.loadMessagesForChannel(activeChannel.id);
     const users = UserService.loadUsers();
     Promise.all([messagesForActiveChannel, users]).then((values) => {

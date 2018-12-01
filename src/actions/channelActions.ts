@@ -7,13 +7,14 @@ import {
   CHANNEL_RENAME_STARTED,
   CURRENT_CHANNEL_CHANGE_FINISHED,
   CURRENT_CHANNEL_CHANGE_STARTED, EDITING_CHANNEL_NAME_MODE_FINISHED,
-  EDITING_CHANNEL_NAME_MODE_STARTED
+  EDITING_CHANNEL_NAME_MODE_STARTED, MESSAGE_APP_REORDER_CHANNELS_FINISHED, MESSAGE_APP_REORDER_CHANNELS_STARTED
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
 import {IMessageAppState} from '../models/IMessageAppState';
 import {loadMessagesForChannel} from './messageActions';
 import * as ChannelService from '../service/channelService';
+import * as Immutable from 'immutable';
 
 // CHANGING CHANNEL
 const currentChannelChangeStarted = (): Action<CURRENT_CHANNEL_CHANGE_STARTED> => ({
@@ -110,5 +111,25 @@ export const deleteChannel = (id: Uuid): any => {
     await ChannelService.deleteChannel(id);
     dispatch(channelDeleteFinished(id));
     // TODO delete messages from selected channel???
+  };
+};
+
+// REORDERING CHANNELS
+const reorderChannelStarted = (): Action<MESSAGE_APP_REORDER_CHANNELS_STARTED> => ({
+  type: MESSAGE_APP_REORDER_CHANNELS_STARTED,
+});
+
+const reorderChannelFinished = (reorderedChannelIds: Immutable.List<Uuid>): Action<MESSAGE_APP_REORDER_CHANNELS_FINISHED> => ({
+  type: MESSAGE_APP_REORDER_CHANNELS_FINISHED,
+  payload: {
+    reorderedChannelIds,
+  }
+});
+
+export const reorderChannels = (reorderedChannelIds: Immutable.List<Uuid>): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    dispatch(reorderChannelStarted());
+    ChannelService.reorderChannels(reorderedChannelIds, getState().channels);
+    dispatch(reorderChannelFinished(reorderedChannelIds));
   };
 };

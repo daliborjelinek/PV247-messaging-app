@@ -1,9 +1,11 @@
 import * as React from 'react';
 import './ChannelItem.less';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
+import {Draggable} from 'react-beautiful-dnd';
 
 export interface IChannelItemOwnProps {
   readonly id: Uuid;
+  readonly index: number;
 }
 
 export interface IChannelItemStateProps {
@@ -23,11 +25,18 @@ export class ChannelItem extends React.PureComponent<IProps> {
     const channelItemClassName = this.props.isSelected ? 'ChannelItem ChannelItem--selected' : 'ChannelItem';
 
     return (
-      <div className={channelItemClassName}
-           onClick={() => this.props.onChannelSelected(this.props.id)}>
-        <span className="ChannelItem__name">{this.props.channelItem.name}</span>
-        <span className="ChannelItem__countOfNewMessages badge badge-pill">{this.props.channelItem.countOfNewMessages}</span>
-      </div>
+      <Draggable draggableId={this.props.id} index={this.props.index}>
+        {(provided) => (
+          <div className={channelItemClassName}
+               {...provided.draggableProps}
+               {...provided.dragHandleProps}
+               ref={provided.innerRef}
+               onClick={() => this.props.onChannelSelected(this.props.id)}>
+            <span className="ChannelItem__name">{this.props.channelItem.name}</span>
+            <span className="ChannelItem__countOfNewMessages badge badge-pill">{this.props.channelItem.countOfNewMessages}</span>
+          </div>
+        )}
+      </Draggable>
     );
   }
 }

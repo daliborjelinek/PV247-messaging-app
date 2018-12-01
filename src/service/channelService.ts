@@ -3,6 +3,7 @@ import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {DELETE, GET, getChannelUrl, POST, PUT} from '../utils/requestUtils';
 import * as MessageAppRepository from '../repository/messageAppRepository';
 import {ServerRequestChannel, ServerResponseChannel} from '../@types/api';
+import {IMessageAppChannels} from '../models/IMessageAppState';
 
 /**
  * Load all channels from server and transform them to the Immutable List.
@@ -48,6 +49,19 @@ export async function changeChannelName(channel: IMessageAppChannel, name: strin
   channelRequest.name = name;
   const response = await PUT<ServerResponseChannel>(`${getChannelUrl()}/${channel.id}`, channelRequest);
   return mapToChannel(response.data);
+}
+
+/**
+ * Send requests to server with updated order of channels.
+ * @param reorderedChannelIds channel ids in new order
+ * @param channels all visible channels
+ */
+export function reorderChannels(reorderedChannelIds: Immutable.List<Uuid>, channels: IMessageAppChannels): void {
+  reorderedChannelIds.forEach((channelId, index) => {
+    const requestChannel = mapToRequestChannel(channels.byId.get(channelId)!);
+    requestChannel.customData.order = index;
+    PUT<ServerResponseChannel>(`${getChannelUrl()}/${channelId}`, requestChannel);
+  });
 }
 
 /**
