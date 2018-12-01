@@ -16,6 +16,7 @@ export type ServerResponseChannel = {
   readonly customData: {
     readonly countOfNewMessages: number;
     readonly userIds: Uuid[];
+    readonly order: number;
   };
 };
 
@@ -24,6 +25,7 @@ export type ServerRequestChannel = {
   customData: {
     countOfNewMessages: number;
     userIds: Uuid[];
+    order: number;
   };
 };
 

@@ -52,9 +52,9 @@ const channelAddFinished = (channel: IMessageAppChannel): Action<CHANNEL_ADD_FIN
 });
 
 export const addChannel = (name: string): any => {
-  return async (dispatch: Dispatch): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(channelAddStarted());
-    const newChannel = await ChannelService.createChannel(name);
+    const newChannel = await ChannelService.createChannel(name, getState().channels.allIds.size);
     dispatch(channelAddFinished(newChannel));
   };
 };

@@ -9,19 +9,21 @@ import {ServerRequestChannel, ServerResponseChannel} from '../@types/api';
  */
 export async function loadChannels(): Promise<Immutable.List<IMessageAppChannel>> {
   const response = await GET<ServerResponseChannel[]>(getChannelUrl());
-  return mapToChannelsMap(response.data);
+  return mapToChannelsList(response.data);
 }
 
 /**
  * Creates new channel with specified name.
  * @param name name of the new channel
+ * @param order order of newly created channel - last is default
  */
-export async function createChannel(name: string): Promise<IMessageAppChannel> {
+export async function createChannel(name: string, order: number): Promise<IMessageAppChannel> {
   const newChannel: ServerRequestChannel = {
     name,
     customData: {
       countOfNewMessages: 0,
       userIds: [],
+      order,
     },
   };
   const response = await POST<ServerResponseChannel>(getChannelUrl(), newChannel);
@@ -65,12 +67,13 @@ export function setLastLoadedChannelId(channelId: Uuid): void {
 }
 
 // PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
-function mapToChannelsMap(serverResponseChannel: ServerResponseChannel[]): Immutable.List<IMessageAppChannel> {
+function mapToChannelsList(serverResponseChannel: ServerResponseChannel[]): Immutable.List<IMessageAppChannel> {
   if (serverResponseChannel == null || serverResponseChannel.length === 0) {
     return Immutable.List();
   }
 
-  return Immutable.List(serverResponseChannel.map((channel) => mapToChannel(channel)));
+  const channels = Immutable.List(serverResponseChannel.map((channel) => mapToChannel(channel)));
+  return channels.sort((a, b) => a.order - b.order);
 }
 
 function mapToChannel(serverResponseChannel: ServerResponseChannel): IMessageAppChannel {
@@ -79,6 +82,7 @@ function mapToChannel(serverResponseChannel: ServerResponseChannel): IMessageApp
     name: serverResponseChannel.name,
     countOfNewMessages: serverResponseChannel.customData.countOfNewMessages,
     userEmails: Immutable.List<Uuid>(serverResponseChannel.customData.userIds),
+    order: serverResponseChannel.customData.order,
   };
 }
 
@@ -88,6 +92,7 @@ function mapToRequestChannel(channel: IMessageAppChannel): ServerRequestChannel 
     customData: {
       countOfNewMessages: channel.countOfNewMessages,
       userIds: channel.userEmails.toJS(),
+      order: channel.order,
     },
   };
 }
