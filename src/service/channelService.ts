@@ -54,6 +54,7 @@ export async function changeChannelName(channel: IMessageAppChannel, name: strin
 
 /**
  * Send requests to server with updated order of channels.
+ *   GUI does not wait for result because it would degrade user experience with reordering.
  * @param reorderedChannelIds channel ids in new order
  * @param channels all visible channels
  */
@@ -63,6 +64,17 @@ export function reorderChannels(reorderedChannelIds: Immutable.List<Uuid>, chann
     requestChannel.customData.order = index;
     PUT<ServerResponseChannel>(`${getChannelUrl()}/${channelId}`, requestChannel);
   });
+}
+
+/**
+ * Add user into the channel. UI does not wait for result.
+ * @param email email of added user
+ * @param channel channel in which user will be added
+ */
+export function addUserToChannel(email: Uuid, channel: IMessageAppChannel): void {
+  const requestChannel = mapToRequestChannel(channel);
+  requestChannel.customData.userIds.push(email);
+  PUT<ServerResponseChannel>(`${getChannelUrl}/${channel.id}`, requestChannel);
 }
 
 /**

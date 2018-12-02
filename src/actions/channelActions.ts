@@ -7,7 +7,7 @@ import {
   CHANNEL_RENAME_STARTED,
   CURRENT_CHANNEL_CHANGE_FINISHED,
   CURRENT_CHANNEL_CHANGE_STARTED, EDITING_CHANNEL_NAME_MODE_FINISHED,
-  EDITING_CHANNEL_NAME_MODE_STARTED, MESSAGE_APP_REORDER_CHANNELS_FINISHED, MESSAGE_APP_REORDER_CHANNELS_STARTED
+  EDITING_CHANNEL_NAME_MODE_STARTED, CHANNEL_REORDER_FINISHED, CHANNEL_REORDER_STARTED, CHANNEL_INVITE_USER_STARTED, CHANNEL_INVITE_USER_FINISHED
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
@@ -116,12 +116,12 @@ export const deleteChannel = (id: Uuid): any => {
 };
 
 // REORDERING CHANNELS
-const reorderChannelStarted = (): Action<MESSAGE_APP_REORDER_CHANNELS_STARTED> => ({
-  type: MESSAGE_APP_REORDER_CHANNELS_STARTED,
+const reorderChannelStarted = (): Action<CHANNEL_REORDER_STARTED> => ({
+  type: CHANNEL_REORDER_STARTED,
 });
 
-const reorderChannelFinished = (reorderedChannelIds: Immutable.List<Uuid>): Action<MESSAGE_APP_REORDER_CHANNELS_FINISHED> => ({
-  type: MESSAGE_APP_REORDER_CHANNELS_FINISHED,
+const reorderChannelFinished = (reorderedChannelIds: Immutable.List<Uuid>): Action<CHANNEL_REORDER_FINISHED> => ({
+  type: CHANNEL_REORDER_FINISHED,
   payload: {
     reorderedChannelIds,
   }
@@ -134,3 +134,26 @@ export const reorderChannels = (reorderedChannelIds: Immutable.List<Uuid>): any 
     dispatch(reorderChannelFinished(reorderedChannelIds));
   };
 };
+
+// ADDING USER TO CHANNEL
+const addUserToChannelStarted = (): Action<CHANNEL_INVITE_USER_STARTED> => ({
+  type: CHANNEL_INVITE_USER_STARTED,
+});
+
+const addUserToChannelFinished = (channelId: Uuid, email: string): Action<CHANNEL_INVITE_USER_FINISHED> => ({
+  type: CHANNEL_INVITE_USER_FINISHED,
+  payload: {
+    channelId,
+    email,
+  }
+});
+
+export const addUserToActiveChannel = (email: string): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    dispatch(addUserToChannelStarted());
+    const channel = getState().channels.byId.get(getState().currentChannelId!)!;
+    ChannelService.addUserToChannel(email, channel);
+    dispatch(addUserToChannelFinished(email, getState().currentChannelId!));
+  };
+};
+
