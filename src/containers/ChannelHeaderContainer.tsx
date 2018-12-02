@@ -3,6 +3,7 @@ import {ChannelHeader, IChannelHeaderDispatchProps, IChannelHeaderStateProps} fr
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 import {deleteChannel, editingChannelNameModeFinished, editingChannelNameModeStarted, renameChannel} from '../actions/channelActions';
+import {showInviteUsersToChannelDialog} from '../actions/appearanceActions';
 
 
 const mapStateToProps = (state: IMessageAppState): IChannelHeaderStateProps => {
@@ -12,13 +13,15 @@ const mapStateToProps = (state: IMessageAppState): IChannelHeaderStateProps => {
   return { channel, isChannelNameEditingMode };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch): IChannelHeaderDispatchProps => {
   return {
     changeChannelName: (id: Uuid, newName: string) => dispatch(renameChannel(id, newName)),
     removeChannel: (id: Uuid) => dispatch(deleteChannel(id)),
     activateChannelNameEditingMode: () => dispatch(editingChannelNameModeStarted()),
     deactivateChannelNameEditingMode: () => dispatch(editingChannelNameModeFinished()),
+    showInviteUsersDialog: () => dispatch(showInviteUsersToChannelDialog()),
   };
 };
 
-export const ChannelHeaderContainer = connect<IChannelHeaderStateProps, IChannelHeaderDispatchProps>(mapStateToProps, mapDispatchToProps)(ChannelHeader);
+export const ChannelHeaderContainer = connect<IChannelHeaderStateProps, IChannelHeaderDispatchProps>(mapStateToProps,
+  mapDispatchToProps)(ChannelHeader);
