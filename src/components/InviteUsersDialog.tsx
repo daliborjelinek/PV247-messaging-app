@@ -18,11 +18,15 @@ type IProps = IInviteUserModalStateProps & IInviteUserModalDispatchProps;
  */
 export class InviteUsersDialog extends React.PureComponent<IProps> {
 
+  private onHide = (): void => {
+    this.props.hideInviteUserDialog();
+  };
+
   public render(): JSX.Element {
     return (
       <Modal bsSize={'small'}
              show={this.props.isInviteUserDialogVisible}
-             onHide={() => this.props.hideInviteUserDialog()}>
+             onHide={this.onHide}>
         <Modal.Header closeButton>
           <Modal.Title>Invite users to channel</Modal.Title>
         </Modal.Header>
@@ -30,7 +34,7 @@ export class InviteUsersDialog extends React.PureComponent<IProps> {
           <InviteUsersListContainer />
         </ModalBody>
         <Modal.Footer>
-          <Button onClick={() => this.props.showInviteUserDialog}>Close</Button>
+          <Button onClick={this.onHide}>Close</Button>
         </Modal.Footer>
       </Modal>
     );
