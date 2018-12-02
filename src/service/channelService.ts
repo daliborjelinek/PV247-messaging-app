@@ -78,19 +78,20 @@ export function addUserToChannel(email: Uuid, channel: IMessageAppChannel): void
 }
 
 /**
- * Returns last active channel id. Can return null if no channel has been ever used
+ * Returns last active channel id for selected user. Can return null if no channel has been ever used
  *   or someone deleted data from local storage.
  */
-export function getLastLoadedChannelId(): Uuid | null {
-  return MessageAppRepository.getLastActiveChannelId();
+export function getLastActiveChannelId(userEmail: string): Uuid | null {
+  return MessageAppRepository.getLastActiveChannelId(userEmail);
 }
 
 /**
  * Set id of activated channel into the local storage.
  * @param channelId id of active channel
+ * @param userEmail email of logged user
  */
-export function setLastLoadedChannelId(channelId: Uuid): void {
-  MessageAppRepository.setLastActiveChannelId(channelId);
+export function setLastActiveChannelId(channelId: Uuid, userEmail: string): void {
+  MessageAppRepository.setLastActiveChannelId(channelId, userEmail);
 }
 
 // PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
