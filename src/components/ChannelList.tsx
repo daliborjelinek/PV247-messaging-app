@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Immutable from 'immutable';
-import './ChannelList.less';
+import '../styles/components/ChannelList.less';
 import {ChannelItemContainer} from '../containers/ChannelItemContainer';
 import {ChangeEvent} from 'react';
 import {DragDropContext, Droppable, DroppableProvided, DropResult} from 'react-beautiful-dnd';

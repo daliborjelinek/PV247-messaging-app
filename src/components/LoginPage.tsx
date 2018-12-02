@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ChangeEvent, FormEvent} from 'react';
-import './LoginPage.less';
+import '../styles/components/LoginPage.less';
 
 export interface ILoginPageDispatchProps {
   onLogin(userName: string, password: string): void;

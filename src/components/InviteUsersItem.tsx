@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {IMessageAppUser} from '../models/IMessageAppUser';
-import './InviteUsersItem.less';
+import '../styles/components/InviteUsersItem.less';
 
 interface IInviteUsersItemOwnProps {
   readonly user: IMessageAppUser;

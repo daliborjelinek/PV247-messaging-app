@@ -3,7 +3,7 @@ import * as React from 'react';
 import {IDropDownMenuItem} from './DropDownMenu';
 import {ChatWindow} from './ChatWindow';
 import {MessageAppHeader} from './MessageAppHeader';
-import './MessageApp.less';
+import '../styles/components/MessageApp.less';
 import {ChannelListContainer} from '../containers/ChannelListContainer';
 import {UserProfileContainer} from '../containers/UserProfileContainer';
 

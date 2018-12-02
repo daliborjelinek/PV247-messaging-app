@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './ChatWindow.less';
+import '../styles/components/ChatWindow.less';
 import {MessageListContainer} from '../containers/MessageListContainer';
 import {ChannelHeaderContainer} from '../containers/ChannelHeaderContainer';
 import {MessageEditorContainer} from '../containers/MessageEditorContainer';

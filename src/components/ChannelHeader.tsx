@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
-import './ChannelHeader.less';
+import '../styles/components/ChannelHeader.less';
 import {ChangeEvent} from 'react';
 import {InviteUsersDialogContainer} from '../containers/InviteUsersDialogContainer';
 

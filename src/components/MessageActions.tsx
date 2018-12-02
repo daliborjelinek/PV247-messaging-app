@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './MessageActions.less';
+import '../styles/components/MessageActions.less';
 import {MessageActionsEditingContainer} from '../containers/MessageActionsEditingContainer';
 import {MessageActionsRatingContainer} from '../containers/MessageActionsRatingContainer';
 
