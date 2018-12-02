@@ -20,7 +20,7 @@ export class InviteUsersDialog extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
     return (
-      <Modal bsSize="small" className={'text-center'}
+      <Modal bsSize={'small'}
              show={this.props.isInviteUserDialogVisible}
              onHide={() => this.props.hideInviteUserDialog()}>
         <Modal.Header closeButton>
