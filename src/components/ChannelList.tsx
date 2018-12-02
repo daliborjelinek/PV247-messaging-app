@@ -46,7 +46,7 @@ export class ChannelList extends React.PureComponent<IProps, IState> {
       return;
     }
 
-    const reorderedChannelIds = this.props.channelIds.remove(source.index)
+    const reorderedChannelIds = this.props.channelIds.delete(source.index)
                                                      .insert(destination.index, draggableId);
     this.props.reorderChannels(reorderedChannelIds);
   };

@@ -5,6 +5,7 @@ import {IMessageAppUser} from '../models/IMessageAppUser';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 
 const getChannels = (state: IMessageAppState): IMessageAppChannels => state.channels;
+const getChannelIds = (state: IMessageAppState): Immutable.List<Uuid> => state.channels.allIds;
 const getLoggedUserEmail = (state: IMessageAppState): Uuid => state.loggedUser!.email;
 const getUsers = (state: IMessageAppState): IMessageAppUsers => state.users;
 const getCurrentChannel = (state: IMessageAppState): IMessageAppChannel => state.channels.byId.get(state.currentChannelId!)!;
@@ -14,12 +15,12 @@ const getCurrentChannel = (state: IMessageAppState): IMessageAppChannel => state
  * Those are the ones user created or was invited in.
  */
 export const getChannelIdsForLoggedUser = createSelector(
-  [ getChannels, getLoggedUserEmail ],
-  (channels, loggedUserEmail): Immutable.List<Uuid> => (
-    channels.byId.filter((channel) => channel.userEmails.contains(loggedUserEmail))
-                 .toList()
-                 .map((channel) => channel.id))
-
+  [ getChannels, getChannelIds, getLoggedUserEmail ],
+  (channels, channelIds, loggedUserEmail): Immutable.List<Uuid> => {
+      const filteredChannels = channels.byId.filter((channel) => channel.userEmails.contains(loggedUserEmail));
+      // ordering must be preserved
+      return channelIds.filter((channelId) => filteredChannels.has(channelId));
+  }
 );
 
 /**
