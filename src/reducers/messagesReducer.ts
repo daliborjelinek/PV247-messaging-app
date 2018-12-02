@@ -1,6 +1,7 @@
 import * as Immutable from 'immutable';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {
+  HIDE_MESSAGES_FOR_DELETED_CHANNEL,
   MESSAGE_ADD_FINISHED,
   MESSAGE_APP_LOADING_FINISHED,
   MESSAGE_APP_MESSAGES_ACTIONS,
@@ -33,6 +34,8 @@ export const byId = (prevState = Immutable.Map<Uuid, IMessageAppMessage>(),
       const changedMessageDecrement = _changeMessageRating(RatingPolarity.NEGATIVE, userId, prevState.get(id)!);
       return prevState.set(action.payload.id, changedMessageDecrement);
     }
+    case HIDE_MESSAGES_FOR_DELETED_CHANNEL:
+      return Immutable.Map();
     default:
       return prevState;
   }
@@ -48,6 +51,8 @@ export const allIds = (prevState = Immutable.List<Uuid>(),
       return prevState.push(action.payload.message.id);
     case MESSAGE_DELETE_FINISHED:
       return prevState.filter((id: Uuid) => id !== action.payload.id);
+    case HIDE_MESSAGES_FOR_DELETED_CHANNEL:
+      return Immutable.List();
     default:
       return prevState;
   }

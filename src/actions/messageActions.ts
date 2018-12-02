@@ -1,5 +1,6 @@
 import * as Immutable from 'immutable';
 import {
+  HIDE_MESSAGES_FOR_DELETED_CHANNEL,
   MESSAGE_ADD_FINISHED,
   MESSAGE_ADD_STARTED,
   MESSAGE_DECREMENT_RATING,
@@ -132,3 +133,8 @@ export const decrementRating = (id: Uuid): any => {
     dispatch(messageDecrementRating(id, getState().loggedUser!.email));
   };
 };
+
+// HIDING MESSAGES FOR DELETED CHANNEL
+export const hideMessagesForDeletedChannel = (): Action<HIDE_MESSAGES_FOR_DELETED_CHANNEL> => ({
+  type: HIDE_MESSAGES_FOR_DELETED_CHANNEL,
+});

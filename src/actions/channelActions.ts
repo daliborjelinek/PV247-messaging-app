@@ -12,7 +12,7 @@ import {
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
 import {IMessageAppState} from '../models/IMessageAppState';
-import {loadMessagesForChannel} from './messageActions';
+import {hideMessagesForDeletedChannel, loadMessagesForChannel} from './messageActions';
 import * as ChannelService from '../service/channelService';
 import * as Immutable from 'immutable';
 
@@ -111,7 +111,7 @@ export const deleteChannel = (id: Uuid): any => {
     dispatch(channelDeleteStarted());
     await ChannelService.deleteChannel(id);
     dispatch(channelDeleteFinished(id));
-    // TODO delete messages from selected channel???
+    dispatch(hideMessagesForDeletedChannel());
   };
 };
 
@@ -156,4 +156,3 @@ export const addUserToActiveChannel = (email: string): any => {
     dispatch(addUserToChannelFinished(email, getState().currentChannelId!));
   };
 };
-
