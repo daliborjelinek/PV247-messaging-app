@@ -1,12 +1,20 @@
 import {Dispatch} from 'redux';
-import {logIn} from '../actions/loginAction';
+import {clearAuthenticationErrorMessage, logIn} from '../actions/loginAction';
 import {connect} from 'react-redux';
-import {ILoginPageDispatchProps, LoginPage} from '../components/LoginPage';
+import {ILoginPageDispatchProps, ILoginPageStateProps, LoginPage} from '../components/LoginPage';
+import {IMessageAppState} from '../models/IMessageAppState';
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapStateToProps = (state: IMessageAppState): ILoginPageStateProps => {
   return {
-    onLogin: (email: string, password: string) =>  dispatch(logIn(email, password)),
+    loginError: state.loginPageError,
   };
 };
 
-export const LoginPageContainer = connect<void, ILoginPageDispatchProps>(null, mapDispatchToProps)(LoginPage);
+const mapDispatchToProps = (dispatch: Dispatch): ILoginPageDispatchProps => {
+  return {
+    onLogin: (email: string, password: string) =>  dispatch(logIn(email, password)),
+    onPasswordChange: () => dispatch(clearAuthenticationErrorMessage()),
+  };
+};
+
+export const LoginPageContainer = connect<void, ILoginPageDispatchProps>(mapStateToProps, mapDispatchToProps)(LoginPage);

@@ -8,6 +8,7 @@ import {usersReducer} from './usersReducer';
 import {isUserDialogOpenReducer} from './isUserDialogOpenReducer';
 import {isChannelNameEdititingModeReducer} from './isChannelNameEdtitingModeReducer';
 import {isInviteUsersDialogOpenReducer} from './isInviteUsersDialogOpenReducer';
+import {loginPageErrorsReducer} from './loginPageErrorsReducer';
 
 export const rootReducer = (prevState = {} as IMessageAppState, action: Action<any>): IMessageAppState => ({
   isLoggedIn: isLoggedInReducer(prevState.isLoggedIn, action),
@@ -19,4 +20,5 @@ export const rootReducer = (prevState = {} as IMessageAppState, action: Action<a
   isUserDialogOpen: isUserDialogOpenReducer(prevState.isUserDialogOpen, action),
   isChannelNameEditingMode: isChannelNameEdititingModeReducer(prevState.isChannelNameEditingMode, action),
   isInviteUsersDialogOpen: isInviteUsersDialogOpenReducer(prevState.isChannelNameEditingMode, action),
+  loginPageError: loginPageErrorsReducer(prevState.loginPageError, action),
 });

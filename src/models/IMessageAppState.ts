@@ -2,6 +2,7 @@ import * as Immutable from 'immutable';
 import {IMessageAppMessage} from './IMessageAppMessage';
 import {IMessageAppChannel} from './IMessageAppChannel';
 import {IMessageAppUser} from './IMessageAppUser';
+import {LOGIN_ERROR} from '../constants/errors';
 
 export interface IMessageAppMessages {
   allIds: Immutable.List<Uuid>;
@@ -29,4 +30,5 @@ export interface IMessageAppState {
   isUserDialogOpen: boolean;
   isChannelNameEditingMode: boolean;
   isInviteUsersDialogOpen: boolean;
+  loginPageError: LOGIN_ERROR | null;
 }
