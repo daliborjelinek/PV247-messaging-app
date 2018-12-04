@@ -74,7 +74,7 @@ export function reorderChannels(reorderedChannelIds: Immutable.List<Uuid>, chann
 export function addUserToChannel(email: Uuid, channel: IMessageAppChannel): void {
   const requestChannel = mapToRequestChannel(channel);
   requestChannel.customData.userIds.push(email);
-  PUT<ServerResponseChannel>(`${getChannelUrl}/${channel.id}`, requestChannel);
+  PUT<ServerResponseChannel>(`${getChannelUrl()}/${channel.id}`, requestChannel);
 }
 
 /**

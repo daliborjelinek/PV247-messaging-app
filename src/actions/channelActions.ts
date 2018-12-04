@@ -140,11 +140,11 @@ const addUserToChannelStarted = (): Action<CHANNEL_INVITE_USER_STARTED> => ({
   type: CHANNEL_INVITE_USER_STARTED,
 });
 
-const addUserToChannelFinished = (channelId: Uuid, email: string): Action<CHANNEL_INVITE_USER_FINISHED> => ({
+const addUserToChannelFinished = (email: string, channelId: Uuid): Action<CHANNEL_INVITE_USER_FINISHED> => ({
   type: CHANNEL_INVITE_USER_FINISHED,
   payload: {
-    channelId,
     email,
+    channelId,
   }
 });
 

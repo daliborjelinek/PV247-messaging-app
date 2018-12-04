@@ -19,6 +19,6 @@ export const rootReducer = (prevState = {} as IMessageAppState, action: Action<a
   users: usersReducer(prevState.users, action),
   isUserDialogOpen: isUserDialogOpenReducer(prevState.isUserDialogOpen, action),
   isChannelNameEditingMode: isChannelNameEdititingModeReducer(prevState.isChannelNameEditingMode, action),
-  isInviteUsersDialogOpen: isInviteUsersDialogOpenReducer(prevState.isChannelNameEditingMode, action),
+  isInviteUsersDialogOpen: isInviteUsersDialogOpenReducer(prevState.isInviteUsersDialogOpen, action),
   loginPageError: loginPageErrorsReducer(prevState.loginPageError, action),
 });
