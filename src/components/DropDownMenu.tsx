@@ -1,55 +1,81 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
 import '../styles/components/DropDownMenu.less';
+import {RefObject} from 'react';
 
-interface IDropDownMenuProps {
-  readonly items: IDropDownMenuItem[];
-  readonly iconClass?: string;
-  readonly menuWrapperClass?: string;
-  readonly openMenuDirection?: 'LEFT' | 'RIGHT';
+interface IOpenMenuDirectionClass {
+  LEFT: 'DropDownMenu--left';
+  RIGHT: 'DropDownMenu--right';
 }
+
+const openMenuDirection: IOpenMenuDirectionClass = {
+  LEFT: 'DropDownMenu--left',
+  RIGHT: 'DropDownMenu--right',
+};
 
 export interface IDropDownMenuItem {
   readonly title: string;
   readonly action: (...params: any[]) => any;
 }
 
+interface IDropDownMenuOwnProps {
+  readonly items: IDropDownMenuItem[];
+  readonly iconClass?: string;
+  readonly menuWrapperClass?: string;
+  readonly openMenuDirection?: 'LEFT' | 'RIGHT';
+}
+
 interface IDropDownMenuState {
   readonly isShown: boolean;
 }
 
-interface IOpenMenuDirection {
-  LEFT: string;
-  RIGHT: string;
-}
+type IProps = IDropDownMenuOwnProps;
+type IState = IDropDownMenuState;
 
-const openMenuDirection: IOpenMenuDirection = {
-  LEFT: 'DropDownMenu--left',
-  RIGHT: 'DropDownMenu--right',
-};
+/**
+ * Component for dropdown menu.
+ */
+export class DropDownMenu extends React.PureComponent<IProps, IState> {
 
-export class DropDownMenu extends React.PureComponent<IDropDownMenuProps, IDropDownMenuState> {
-
-  static propTypes = {
-    items: PropTypes.arrayOf(PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      action: PropTypes.func
-    })).isRequired,
-    menuWrapperClass: PropTypes.string,
-    iconClass: PropTypes.string,
-    openMenuDirection: PropTypes.string,
-  };
+  private readonly dropDownMenuHeaderRef: RefObject<HTMLDivElement>;
 
   private toggleVisibility = () => {
     this.setState((prevState) => ({ isShown: !prevState.isShown }));
   };
 
-  constructor(props: IDropDownMenuProps) {
+  /**
+   * Dropdown menu needs to be hidden when user clicks outside the menu.
+   * @param e event
+   */
+  private hideDropdownMenu = (e: MouseEvent) => {
+    if (!this.state.isShown || this.isClickedOnMenuHeader(e)) {
+      return;
+    }
+    this.setState((state) => ({ ...state, isShown: false }));
+  };
+
+  constructor(props: IProps) {
     super(props);
+
+    this.dropDownMenuHeaderRef = React.createRef();
 
     this.state = {
       isShown: false,
     };
+  }
+
+  componentDidMount(): void {
+    window.addEventListener('click', this.hideDropdownMenu);
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener('click', this.hideDropdownMenu);
+  }
+
+  private isClickedOnMenuHeader(e: MouseEvent): boolean {
+    if ((e.target! as HTMLElement).classList.contains('DropDownMenu')) {
+      return true;
+    }
+    return this.dropDownMenuHeaderRef.current!.contains(e.target! as HTMLElement);
   }
 
   private shouldBeMenuItemsRendered(): boolean {
@@ -62,7 +88,8 @@ export class DropDownMenu extends React.PureComponent<IDropDownMenuProps, IDropD
       openMenuDirection[this.props.openMenuDirection] : openMenuDirection.LEFT;
 
     return (
-      <div className={'DropDownMenu'} onClick={this.toggleVisibility}>
+      <div className={'DropDownMenu'} onClick={this.toggleVisibility}
+           ref={this.dropDownMenuHeaderRef}>
         <div className={this.props.menuWrapperClass}>
           <span className={this.props.iconClass} />
         </div>
