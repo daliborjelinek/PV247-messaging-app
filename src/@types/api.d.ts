@@ -17,6 +17,7 @@ export type ServerResponseChannel = {
     readonly countOfNewMessages: number;
     readonly userIds: Uuid[];
     readonly order: number;
+    readonly createdBy: Uuid;
   };
 };
 
@@ -26,6 +27,7 @@ export type ServerRequestChannel = {
     countOfNewMessages: number;
     userIds: Uuid[];
     order: number;
+    createdBy: Uuid;
   };
 };
 

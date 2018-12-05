@@ -6,4 +6,5 @@ export interface IMessageAppChannel {
   readonly countOfNewMessages: number;
   readonly userEmails: Immutable.List<Uuid>;
   readonly order: number;
+  readonly createdBy: Uuid;
 }

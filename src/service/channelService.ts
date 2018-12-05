@@ -26,6 +26,7 @@ export async function createChannel(name: string, order: number, createdBy: stri
       countOfNewMessages: 0,
       userIds: [createdBy],
       order,
+      createdBy,
     },
   };
   const response = await POST<ServerResponseChannel>(getChannelUrl(), newChannel);
@@ -111,6 +112,7 @@ function mapToChannel(serverResponseChannel: ServerResponseChannel): IMessageApp
     countOfNewMessages: serverResponseChannel.customData.countOfNewMessages,
     userEmails: Immutable.List<Uuid>(serverResponseChannel.customData.userIds),
     order: serverResponseChannel.customData.order,
+    createdBy: serverResponseChannel.customData.createdBy,
   };
 }
 
@@ -121,6 +123,7 @@ function mapToRequestChannel(channel: IMessageAppChannel): ServerRequestChannel 
       countOfNewMessages: channel.countOfNewMessages,
       userIds: channel.userEmails.toJS(),
       order: channel.order,
+      createdBy: channel.createdBy,
     },
   };
 }

@@ -6,6 +6,7 @@ import {MessageAppHeader} from './MessageAppHeader';
 import '../styles/components/MessageApp.less';
 import {ChannelListContainer} from '../containers/ChannelListContainer';
 import {UserProfileContainer} from '../containers/UserProfileContainer';
+import {AlertCloseableContainer} from '../containers/AlertCloseableContainer';
 
 
 export interface IMessageAppDispatchProps {
@@ -42,6 +43,7 @@ export class MessageApp extends React.PureComponent<IProps> {
 
     return (
       <div className="MessageApp">
+        <AlertCloseableContainer />
         <MessageAppHeader profileMenuItems={profileMenuItems}/>
         <ChannelListContainer />
         <ChatWindow />

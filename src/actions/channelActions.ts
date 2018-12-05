@@ -7,7 +7,7 @@ import {
   CHANNEL_RENAME_STARTED,
   CURRENT_CHANNEL_CHANGE_FINISHED,
   CURRENT_CHANNEL_CHANGE_STARTED, EDITING_CHANNEL_NAME_MODE_FINISHED,
-  EDITING_CHANNEL_NAME_MODE_STARTED, CHANNEL_REORDER_FINISHED, CHANNEL_REORDER_STARTED, CHANNEL_INVITE_USER_STARTED, CHANNEL_INVITE_USER_FINISHED
+  EDITING_CHANNEL_NAME_MODE_STARTED, CHANNEL_REORDER_FINISHED, CHANNEL_REORDER_STARTED, CHANNEL_INVITE_USER_STARTED, CHANNEL_INVITE_USER_FINISHED, CHANNEL_DELETE_FAILED
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
@@ -106,9 +106,21 @@ const channelDeleteFinished = (id: Uuid): Action<CHANNEL_DELETE_FINISHED> => ({
   }
 });
 
+const channelDeleteFailed = (): Action<CHANNEL_DELETE_FAILED> => ({
+  type: CHANNEL_DELETE_FAILED,
+  payload: {
+    message: 'Channel cannot be deleted. Only person who created the channel can remove it',
+  }
+});
+
 export const deleteChannel = (id: Uuid): any => {
-  return async (dispatch: Dispatch): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(channelDeleteStarted());
+    const channel = getState().channels.byId.get(id)!;
+    if (getState().loggedUser!.email !== channel.createdBy) {
+      dispatch(channelDeleteFailed());
+      return;
+    }
     await ChannelService.deleteChannel(id);
     dispatch(channelDeleteFinished(id));
     dispatch(hideMessagesForDeletedChannel());

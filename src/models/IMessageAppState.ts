@@ -31,4 +31,6 @@ export interface IMessageAppState {
   isChannelNameEditingMode: boolean;
   isInviteUsersDialogOpen: boolean;
   loginPageError: LOGIN_ERROR | null;
+  alerts: Immutable.List<string>;
+  isAlertBarVisible: boolean;
 }
