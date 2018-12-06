@@ -10,6 +10,7 @@ import {isChannelNameEdititingModeReducer} from './isChannelNameEdtitingModeRedu
 import {isInviteUsersDialogOpenReducer} from './isInviteUsersDialogOpenReducer';
 import {loginPageErrorsReducer} from './loginPageErrorsReducer';
 import {alertsReducer, isAlertBarVisibleReducer} from './alertReducers';
+import {updateMessagesTimeoutReducer} from './updateMessagesTimeoutReducer';
 
 export const rootReducer = (prevState = {} as IMessageAppState, action: Action<any>): IMessageAppState => ({
   isLoggedIn: isLoggedInReducer(prevState.isLoggedIn, action),
@@ -24,4 +25,5 @@ export const rootReducer = (prevState = {} as IMessageAppState, action: Action<a
   loginPageError: loginPageErrorsReducer(prevState.loginPageError, action),
   alerts: alertsReducer(prevState.alerts, action),
   isAlertBarVisible: isAlertBarVisibleReducer(prevState.isAlertBarVisible, action),
+  updateMessagesTimeout: updateMessagesTimeoutReducer(prevState.updateMessagesTimeout, action),
 });

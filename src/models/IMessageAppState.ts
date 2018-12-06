@@ -33,4 +33,6 @@ export interface IMessageAppState {
   loginPageError: LOGIN_ERROR | null;
   alerts: Immutable.List<string>;
   isAlertBarVisible: boolean;
+  // number of seconds until messages are updated for active channel (server request is made)
+  updateMessagesTimeout: number;
 }

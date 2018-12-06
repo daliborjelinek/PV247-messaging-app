@@ -1,4 +1,4 @@
-import {IMessageAppChannels, IMessageAppState, IMessageAppUsers} from '../models/IMessageAppState';
+import {IMessageAppChannels, IMessageAppMessages, IMessageAppState, IMessageAppUsers} from '../models/IMessageAppState';
 import {createSelector} from 'reselect';
 import * as Immutable from 'immutable';
 import {IMessageAppUser} from '../models/IMessageAppUser';
@@ -9,6 +9,7 @@ const getChannelIds = (state: IMessageAppState): Immutable.List<Uuid> => state.c
 const getLoggedUserEmail = (state: IMessageAppState): Uuid => state.loggedUser!.email;
 const getUsers = (state: IMessageAppState): IMessageAppUsers => state.users;
 const getCurrentChannel = (state: IMessageAppState): IMessageAppChannel => state.channels.byId.get(state.currentChannelId!)!;
+const getMessages = (state: IMessageAppState): IMessageAppMessages => state.messages;
 
 /**
  * Selector which filters those channels, which should be visible for logged user.
@@ -32,4 +33,19 @@ export const getUsersForInvitationList = createSelector(
     users.byEmail.filter((user) => !channel.userEmails.contains(user.email))
                  .toList()
   )
+);
+
+/**
+ * Returns information when last displayed message was created.
+ */
+export const getCreationTimeOfLastDisplayedMessage = createSelector(
+  [ getMessages ],
+  (messages): Date | null => {
+    if (messages.allIds.size === 0) {
+      return null;
+    }
+
+    const lastMessageId: Uuid = messages.allIds.last();
+    return messages.byId.get(lastMessageId)!.createdAt;
+  }
 );

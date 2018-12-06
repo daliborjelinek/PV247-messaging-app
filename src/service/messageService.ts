@@ -62,7 +62,29 @@ export async function changeMessageRating(message: IMessageAppMessage, email: st
   return mapToMessage(response.data);
 }
 
-// PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
+/**
+ * Load messages from server and return those, which are newer than last displayed message.
+ * @param channelId id of the channel for which messages are loaded
+ * @param lastMessageCreatedAt time of creation of the last displayed message
+ */
+export async function loadNewMessages(channelId: Uuid,
+                                      lastMessageCreatedAt: Date | null): Promise<Immutable.List<IMessageAppMessage>> {
+  const responseData = await GET<ServerResponseMessage[]>(getMessageUrl(channelId));
+  const messages = mapToMessagesList(responseData.data);
+
+  // no message existed before - return all messages
+  if (lastMessageCreatedAt == null) {
+    return messages;
+  }
+
+  // return only newer message
+  return messages.filter((message) => message.createdAt > lastMessageCreatedAt);
+}
+
+
+/********************************************************************************
+ * PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
+ ********************************************************************************/
 function mapToMessagesList(serverResponseMessage: ServerResponseMessage[]): Immutable.List<IMessageAppMessage> {
   if (serverResponseMessage == null || serverResponseMessage.length === 0) {
     return Immutable.List();

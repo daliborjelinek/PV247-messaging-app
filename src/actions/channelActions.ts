@@ -1,18 +1,24 @@
 import {
   CHANNEL_ADD_FINISHED,
   CHANNEL_ADD_STARTED,
+  CHANNEL_DELETE_FAILED,
   CHANNEL_DELETE_FINISHED,
   CHANNEL_DELETE_STARTED,
+  CHANNEL_INVITE_USER_FINISHED,
+  CHANNEL_INVITE_USER_STARTED,
   CHANNEL_RENAME_FINISHED,
   CHANNEL_RENAME_STARTED,
+  CHANNEL_REORDER_FINISHED,
+  CHANNEL_REORDER_STARTED,
   CURRENT_CHANNEL_CHANGE_FINISHED,
-  CURRENT_CHANNEL_CHANGE_STARTED, EDITING_CHANNEL_NAME_MODE_FINISHED,
-  EDITING_CHANNEL_NAME_MODE_STARTED, CHANNEL_REORDER_FINISHED, CHANNEL_REORDER_STARTED, CHANNEL_INVITE_USER_STARTED, CHANNEL_INVITE_USER_FINISHED, CHANNEL_DELETE_FAILED
+  CURRENT_CHANNEL_CHANGE_STARTED,
+  EDITING_CHANNEL_NAME_MODE_FINISHED,
+  EDITING_CHANNEL_NAME_MODE_STARTED
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
 import {IMessageAppState} from '../models/IMessageAppState';
-import {hideMessagesForDeletedChannel, loadMessagesForChannel} from './messageActions';
+import {hideMessagesForDeletedChannel, loadMessagesForChannel, restoreMessageActualizationTimeout} from './messageActions';
 import * as ChannelService from '../service/channelService';
 import * as Immutable from 'immutable';
 
@@ -36,6 +42,7 @@ export const onChannelSelected = (channelId: Uuid): any => {
     dispatch(currentChannelChangeFinished(selectedChannel));
     // render messages for given channel
     dispatch(loadMessagesForChannel(channelId));
+    dispatch(restoreMessageActualizationTimeout());
   };
 };
 
