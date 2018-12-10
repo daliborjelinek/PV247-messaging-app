@@ -17,14 +17,16 @@ export async function loadChannels(): Promise<Immutable.List<IMessageAppChannel>
  * Creates new channel with specified name.
  * @param name name of the new channel
  * @param order order of newly created channel - last is default
+ * @param createdBy email of the message author
  */
-export async function createChannel(name: string, order: number): Promise<IMessageAppChannel> {
+export async function createChannel(name: string, order: number, createdBy: string): Promise<IMessageAppChannel> {
   const newChannel: ServerRequestChannel = {
     name,
     customData: {
       countOfNewMessages: 0,
-      userIds: [],
+      userIds: [createdBy],
       order,
+      createdBy,
     },
   };
   const response = await POST<ServerResponseChannel>(getChannelUrl(), newChannel);
@@ -53,6 +55,7 @@ export async function changeChannelName(channel: IMessageAppChannel, name: strin
 
 /**
  * Send requests to server with updated order of channels.
+ *   GUI does not wait for result because it would degrade user experience with reordering.
  * @param reorderedChannelIds channel ids in new order
  * @param channels all visible channels
  */
@@ -65,19 +68,31 @@ export function reorderChannels(reorderedChannelIds: Immutable.List<Uuid>, chann
 }
 
 /**
- * Returns last active channel id. Can return null if no channel has been ever used
+ * Add user into the channel. UI does not wait for result.
+ * @param email email of added user
+ * @param channel channel in which user will be added
+ */
+export function addUserToChannel(email: Uuid, channel: IMessageAppChannel): void {
+  const requestChannel = mapToRequestChannel(channel);
+  requestChannel.customData.userIds.push(email);
+  PUT<ServerResponseChannel>(`${getChannelUrl()}/${channel.id}`, requestChannel);
+}
+
+/**
+ * Returns last active channel id for selected user. Can return null if no channel has been ever used
  *   or someone deleted data from local storage.
  */
-export function getLastLoadedChannelId(): Uuid | null {
-  return MessageAppRepository.getLastActiveChannelId();
+export function getLastActiveChannelId(userEmail: string): Uuid | null {
+  return MessageAppRepository.getLastActiveChannelId(userEmail);
 }
 
 /**
  * Set id of activated channel into the local storage.
  * @param channelId id of active channel
+ * @param userEmail email of logged user
  */
-export function setLastLoadedChannelId(channelId: Uuid): void {
-  MessageAppRepository.setLastActiveChannelId(channelId);
+export function setLastActiveChannelId(channelId: Uuid, userEmail: string): void {
+  MessageAppRepository.setLastActiveChannelId(channelId, userEmail);
 }
 
 // PRIVATE FUNCTION - MAPPING BETWEEN SERVER RESPONSE AND MESSAGE APP MODEL
@@ -97,6 +112,7 @@ function mapToChannel(serverResponseChannel: ServerResponseChannel): IMessageApp
     countOfNewMessages: serverResponseChannel.customData.countOfNewMessages,
     userEmails: Immutable.List<Uuid>(serverResponseChannel.customData.userIds),
     order: serverResponseChannel.customData.order,
+    createdBy: serverResponseChannel.customData.createdBy,
   };
 }
 
@@ -107,6 +123,7 @@ function mapToRequestChannel(channel: IMessageAppChannel): ServerRequestChannel 
       countOfNewMessages: channel.countOfNewMessages,
       userIds: channel.userEmails.toJS(),
       order: channel.order,
+      createdBy: channel.createdBy,
     },
   };
 }

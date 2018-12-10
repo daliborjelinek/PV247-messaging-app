@@ -1,7 +1,7 @@
 import * as React from 'react';
-import './MessageActions.less';
+import '../styles/components/MessageActions.less';
 import {RatingPolarity} from '../enums/RatingPolarity';
-import './MessageActionsRating.less';
+import '../styles/components/MessageActionsRating.less';
 
 export interface IMessageActionsRatingOwnProps {
   readonly messageId: Uuid;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Immutable from 'immutable';
-import './ChannelList.less';
+import '../styles/components/ChannelList.less';
 import {ChannelItemContainer} from '../containers/ChannelItemContainer';
 import {ChangeEvent} from 'react';
 import {DragDropContext, Droppable, DroppableProvided, DropResult} from 'react-beautiful-dnd';
@@ -46,7 +46,7 @@ export class ChannelList extends React.PureComponent<IProps, IState> {
       return;
     }
 
-    const reorderedChannelIds = this.props.channelIds.remove(source.index)
+    const reorderedChannelIds = this.props.channelIds.delete(source.index)
                                                      .insert(destination.index, draggableId);
     this.props.reorderChannels(reorderedChannelIds);
   };

@@ -1,0 +1,21 @@
+@import "../mixins.less";
+
+@InviteUsersItem__userName-max-width: 150px;
+
+.InviteUsersItem__picture, .InviteUsersItem__userName, .InviteUsersItem__inviteBtn {
+  display: inline-block;
+}
+
+.InviteUsersItem__userName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: @InviteUsersItem__userName-max-width;
+}
+
+.InviteUsersItem__picture {
+  .profile-pic(30px);
+}
+
+.InviteUsersItem__inviteBtn {
+  float: right;
+}

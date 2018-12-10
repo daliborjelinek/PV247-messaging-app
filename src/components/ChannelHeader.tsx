@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
-import './ChannelHeader.less';
+import '../styles/components/ChannelHeader.less';
 import {ChangeEvent} from 'react';
+import {InviteUsersDialogContainer} from '../containers/InviteUsersDialogContainer';
 
 export interface IChannelHeaderStateProps {
   readonly channel: IMessageAppChannel | null;
@@ -15,6 +16,7 @@ export interface IChannelHeaderDispatchProps {
   deactivateChannelNameEditingMode(): void;
   changeChannelName(id: Uuid, newName: string): void;
   removeChannel(id: Uuid): void;
+  showInviteUsersDialog(): void;
 }
 
 interface IChannelHeaderState {
@@ -99,7 +101,7 @@ export class ChannelHeader extends React.PureComponent<IProps, IState> {
 
     return [
       { title: 'Change name', action: () => this.props.activateChannelNameEditingMode() },
-      { title: 'Invite member', action: () => console.log('Invite member')},
+      { title: 'Invite member', action: () => this.props.showInviteUsersDialog()},
       { title: 'Delete', action: () => (this.props.removeChannel(this.props.channel!.id))},
     ];
   }
@@ -142,6 +144,7 @@ export class ChannelHeader extends React.PureComponent<IProps, IState> {
                         iconClass={'glyphicon glyphicon-menu-hamburger'}
                         openMenuDirection={'RIGHT'}/>
         </div>
+        <InviteUsersDialogContainer/>
       </div>
     );
   }

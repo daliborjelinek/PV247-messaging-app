@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './ChannelItem.less';
+import '../styles/components/ChannelItem.less';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Draggable} from 'react-beautiful-dnd';
 

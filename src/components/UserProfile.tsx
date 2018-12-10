@@ -1,5 +1,5 @@
 import {Button, Modal} from 'react-bootstrap';
-import './UserProfile.less';
+import '../styles/components/UserProfile.less';
 import * as React from 'react';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 import {ChangeEvent} from 'react';

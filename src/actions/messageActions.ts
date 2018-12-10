@@ -1,5 +1,9 @@
 import * as Immutable from 'immutable';
 import {
+  ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED,
+  ACTUALIZE_MESSAGES_IN_CHANNEL_STARTED,
+  HIDE_MESSAGES_FOR_DELETED_CHANNEL,
+  INCREASE_MESSAGES_UPDATE_TIMEOUT,
   MESSAGE_ADD_FINISHED,
   MESSAGE_ADD_STARTED,
   MESSAGE_DECREMENT_RATING,
@@ -7,13 +11,15 @@ import {
   MESSAGE_DELETE_STARTED,
   MESSAGE_INCREMENT_RATING,
   MESSAGE_LOADING_FINISHED,
-  MESSAGE_LOADING_STARTED
+  MESSAGE_LOADING_STARTED,
+  RESTORE_MESSAGES_UPDATE_TIMEOUT
 } from '../constants/actionTypes';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {Dispatch} from 'redux';
 import {IMessageAppState} from '../models/IMessageAppState';
 import {RatingPolarity} from '../enums/RatingPolarity';
 import * as MessageService from '../service/messageService';
+import {getCreationTimeOfLastDisplayedMessage} from '../selectors/messageAppSelectors';
 
 // LOADING MESSAGES
 const messageLoadingStarted = (): Action<MESSAGE_LOADING_STARTED> => {
@@ -64,6 +70,7 @@ export const addMessage = (text: string): any => {
     const channelId = getState().currentChannelId!;
     const newMessage = await  MessageService.createMessage(text, authorEmail, channelId);
     dispatch(messageAddFinished(newMessage));
+    dispatch(restoreMessageActualizationTimeout());
   };
 };
 
@@ -130,5 +137,48 @@ export const decrementRating = (id: Uuid): any => {
     const currentChannelId = getState().currentChannelId!;
     await MessageService.changeMessageRating(message, loggedUserEmail, currentChannelId, RatingPolarity.NEGATIVE);
     dispatch(messageDecrementRating(id, getState().loggedUser!.email));
+  };
+};
+
+// HIDING MESSAGES FOR DELETED CHANNEL
+export const hideMessagesForDeletedChannel = (): Action<HIDE_MESSAGES_FOR_DELETED_CHANNEL> => ({
+  type: HIDE_MESSAGES_FOR_DELETED_CHANNEL,
+});
+
+// ACTUALIZATION OF MESSAGES FOR CHANNEL
+export const actualizeMessagesForChannelStarted = (): Action<ACTUALIZE_MESSAGES_IN_CHANNEL_STARTED> => ({
+  type: ACTUALIZE_MESSAGES_IN_CHANNEL_STARTED,
+});
+
+export const actualizeMessagesForChannelFinished = (newMessages: Immutable.List<IMessageAppMessage>):
+  Action<ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED> => ({
+  type: ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED,
+  payload: {
+    newMessages,
+  }
+});
+
+export const increaseMessagesActualizationTimeout = (): Action<INCREASE_MESSAGES_UPDATE_TIMEOUT> => ({
+  type: INCREASE_MESSAGES_UPDATE_TIMEOUT,
+});
+
+export const restoreMessageActualizationTimeout = (): Action<RESTORE_MESSAGES_UPDATE_TIMEOUT> => ({
+  type: RESTORE_MESSAGES_UPDATE_TIMEOUT,
+});
+
+// UPDATE MESSAGES FOR CHANNEL
+export const updateMessagesInChannel = (channelId: Uuid): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    dispatch(actualizeMessagesForChannelStarted());
+    const lastMessageCreatedAt = getCreationTimeOfLastDisplayedMessage(getState());
+    const newMessages = await MessageService.loadNewMessages(channelId, lastMessageCreatedAt);
+    dispatch(actualizeMessagesForChannelFinished(newMessages));
+
+    // change actualization timout based on response from the server
+    if (newMessages.size === 0) {
+      dispatch(increaseMessagesActualizationTimeout());
+    } else {
+      dispatch(restoreMessageActualizationTimeout());
+    }
   };
 };

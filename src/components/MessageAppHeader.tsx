@@ -1,22 +1,16 @@
 import * as React from 'react';
-import * as  PropTypes from 'prop-types';
 
 import {DropDownMenu, IDropDownMenuItem} from './DropDownMenu';
-import {shape} from 'prop-types';
 
-import './MessageAppHeader.less';
+import '../styles/components/MessageAppHeader.less';
 
-interface  IMessageAppHeaderProps {
+interface  IMessageAppHeaderOwnProps {
   readonly profileMenuItems: IDropDownMenuItem[];
 }
 
-export class MessageAppHeader extends React.PureComponent<IMessageAppHeaderProps> {
+type IProps = IMessageAppHeaderOwnProps;
 
-  static propTypes = {
-    profileMenuItems: PropTypes.arrayOf(shape({
-      ...DropDownMenu.propTypes.items,
-    }))
-  };
+export class MessageAppHeader extends React.PureComponent<IProps> {
 
   public render(): JSX.Element {
     return (

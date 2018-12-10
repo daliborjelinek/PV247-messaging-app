@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ChangeEvent} from 'react';
-import './MessageEditor.less';
+import '../styles/components/MessageEditor.less';
 
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';

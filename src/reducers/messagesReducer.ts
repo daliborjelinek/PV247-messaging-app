@@ -1,6 +1,8 @@
 import * as Immutable from 'immutable';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {
+  ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED,
+  HIDE_MESSAGES_FOR_DELETED_CHANNEL,
   MESSAGE_ADD_FINISHED,
   MESSAGE_APP_LOADING_FINISHED,
   MESSAGE_APP_MESSAGES_ACTIONS,
@@ -18,9 +20,16 @@ export const byId = (prevState = Immutable.Map<Uuid, IMessageAppMessage>(),
     case MESSAGE_APP_LOADING_FINISHED:
     case MESSAGE_LOADING_FINISHED:
       return Immutable.Map(action.payload.messages.map((message: IMessageAppMessage) => [message.id, message]));
-    case MESSAGE_ADD_FINISHED:
+    case MESSAGE_ADD_FINISHED: {
       const newMessage: IMessageAppMessage = action.payload.message;
       return prevState.set(newMessage.id, newMessage);
+    }
+    case ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED: {
+      const newMessagesMap: Immutable.Map<Uuid, IMessageAppMessage> = Immutable.Map(action.payload.newMessages.map(
+        (message: IMessageAppMessage) => [message.id, message])
+      );
+      return prevState.merge(newMessagesMap);
+    }
     case MESSAGE_DELETE_FINISHED:
       return prevState.delete(action.payload.id);
     case MESSAGE_INCREMENT_RATING: {
@@ -33,6 +42,8 @@ export const byId = (prevState = Immutable.Map<Uuid, IMessageAppMessage>(),
       const changedMessageDecrement = _changeMessageRating(RatingPolarity.NEGATIVE, userId, prevState.get(id)!);
       return prevState.set(action.payload.id, changedMessageDecrement);
     }
+    case HIDE_MESSAGES_FOR_DELETED_CHANNEL:
+      return Immutable.Map();
     default:
       return prevState;
   }
@@ -44,10 +55,15 @@ export const allIds = (prevState = Immutable.List<Uuid>(),
     case MESSAGE_APP_LOADING_FINISHED:
     case MESSAGE_LOADING_FINISHED:
       return Immutable.List(action.payload.messages.map((message: IMessageAppMessage) => message.id));
+    case ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED:
+      const newMessagesIds: Immutable.List<Uuid> = action.payload.newMessages.map((message: IMessageAppMessage) => message.id);
+      return prevState.merge(newMessagesIds);
     case MESSAGE_ADD_FINISHED:
       return prevState.push(action.payload.message.id);
     case MESSAGE_DELETE_FINISHED:
       return prevState.filter((id: Uuid) => id !== action.payload.id);
+    case HIDE_MESSAGES_FOR_DELETED_CHANNEL:
+      return Immutable.List();
     default:
       return prevState;
   }

@@ -2,6 +2,7 @@ import * as Immutable from 'immutable';
 import {IMessageAppMessage} from './IMessageAppMessage';
 import {IMessageAppChannel} from './IMessageAppChannel';
 import {IMessageAppUser} from './IMessageAppUser';
+import {LOGIN_ERROR} from '../constants/errors';
 
 export interface IMessageAppMessages {
   allIds: Immutable.List<Uuid>;
@@ -28,4 +29,10 @@ export interface IMessageAppState {
   currentChannelId: Uuid | null;
   isUserDialogOpen: boolean;
   isChannelNameEditingMode: boolean;
+  isInviteUsersDialogOpen: boolean;
+  loginPageError: LOGIN_ERROR | null;
+  alerts: Immutable.List<string>;
+  isAlertBarVisible: boolean;
+  // number of seconds until messages are updated for active channel (server request is made)
+  updateMessagesTimeout: number;
 }

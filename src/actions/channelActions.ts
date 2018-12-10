@@ -1,18 +1,24 @@
 import {
   CHANNEL_ADD_FINISHED,
   CHANNEL_ADD_STARTED,
+  CHANNEL_DELETE_FAILED,
   CHANNEL_DELETE_FINISHED,
   CHANNEL_DELETE_STARTED,
+  CHANNEL_INVITE_USER_FINISHED,
+  CHANNEL_INVITE_USER_STARTED,
   CHANNEL_RENAME_FINISHED,
   CHANNEL_RENAME_STARTED,
+  CHANNEL_REORDER_FINISHED,
+  CHANNEL_REORDER_STARTED,
   CURRENT_CHANNEL_CHANGE_FINISHED,
-  CURRENT_CHANNEL_CHANGE_STARTED, EDITING_CHANNEL_NAME_MODE_FINISHED,
-  EDITING_CHANNEL_NAME_MODE_STARTED, MESSAGE_APP_REORDER_CHANNELS_FINISHED, MESSAGE_APP_REORDER_CHANNELS_STARTED
+  CURRENT_CHANNEL_CHANGE_STARTED,
+  EDITING_CHANNEL_NAME_MODE_FINISHED,
+  EDITING_CHANNEL_NAME_MODE_STARTED
 } from '../constants/actionTypes';
 import {IMessageAppChannel} from '../models/IMessageAppChannel';
 import {Dispatch} from 'redux';
 import {IMessageAppState} from '../models/IMessageAppState';
-import {loadMessagesForChannel} from './messageActions';
+import {hideMessagesForDeletedChannel, loadMessagesForChannel, restoreMessageActualizationTimeout} from './messageActions';
 import * as ChannelService from '../service/channelService';
 import * as Immutable from 'immutable';
 
@@ -32,10 +38,11 @@ export const onChannelSelected = (channelId: Uuid): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(currentChannelChangeStarted());
     const selectedChannel = getState().channels.byId.get(channelId)!;
-    ChannelService.setLastLoadedChannelId(channelId);
+    ChannelService.setLastActiveChannelId(channelId, getState().loggedUser!.email);
     dispatch(currentChannelChangeFinished(selectedChannel));
     // render messages for given channel
     dispatch(loadMessagesForChannel(channelId));
+    dispatch(restoreMessageActualizationTimeout());
   };
 };
 
@@ -55,7 +62,8 @@ const channelAddFinished = (channel: IMessageAppChannel): Action<CHANNEL_ADD_FIN
 export const addChannel = (name: string): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(channelAddStarted());
-    const newChannel = await ChannelService.createChannel(name, getState().channels.allIds.size);
+    const newChannel = await ChannelService.createChannel(name, getState().channels.allIds.size,
+      getState().loggedUser!.email);
     dispatch(channelAddFinished(newChannel));
   };
 };
@@ -105,22 +113,34 @@ const channelDeleteFinished = (id: Uuid): Action<CHANNEL_DELETE_FINISHED> => ({
   }
 });
 
+const channelDeleteFailed = (): Action<CHANNEL_DELETE_FAILED> => ({
+  type: CHANNEL_DELETE_FAILED,
+  payload: {
+    message: 'Channel cannot be deleted. Only person who created the channel can remove it',
+  }
+});
+
 export const deleteChannel = (id: Uuid): any => {
-  return async (dispatch: Dispatch): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(channelDeleteStarted());
+    const channel = getState().channels.byId.get(id)!;
+    if (getState().loggedUser!.email !== channel.createdBy) {
+      dispatch(channelDeleteFailed());
+      return;
+    }
     await ChannelService.deleteChannel(id);
     dispatch(channelDeleteFinished(id));
-    // TODO delete messages from selected channel???
+    dispatch(hideMessagesForDeletedChannel());
   };
 };
 
 // REORDERING CHANNELS
-const reorderChannelStarted = (): Action<MESSAGE_APP_REORDER_CHANNELS_STARTED> => ({
-  type: MESSAGE_APP_REORDER_CHANNELS_STARTED,
+const reorderChannelStarted = (): Action<CHANNEL_REORDER_STARTED> => ({
+  type: CHANNEL_REORDER_STARTED,
 });
 
-const reorderChannelFinished = (reorderedChannelIds: Immutable.List<Uuid>): Action<MESSAGE_APP_REORDER_CHANNELS_FINISHED> => ({
-  type: MESSAGE_APP_REORDER_CHANNELS_FINISHED,
+const reorderChannelFinished = (reorderedChannelIds: Immutable.List<Uuid>): Action<CHANNEL_REORDER_FINISHED> => ({
+  type: CHANNEL_REORDER_FINISHED,
   payload: {
     reorderedChannelIds,
   }
@@ -131,5 +151,27 @@ export const reorderChannels = (reorderedChannelIds: Immutable.List<Uuid>): any 
     dispatch(reorderChannelStarted());
     ChannelService.reorderChannels(reorderedChannelIds, getState().channels);
     dispatch(reorderChannelFinished(reorderedChannelIds));
+  };
+};
+
+// ADDING USER TO CHANNEL
+const addUserToChannelStarted = (): Action<CHANNEL_INVITE_USER_STARTED> => ({
+  type: CHANNEL_INVITE_USER_STARTED,
+});
+
+const addUserToChannelFinished = (email: string, channelId: Uuid): Action<CHANNEL_INVITE_USER_FINISHED> => ({
+  type: CHANNEL_INVITE_USER_FINISHED,
+  payload: {
+    email,
+    channelId,
+  }
+});
+
+export const addUserToActiveChannel = (email: string): any => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
+    dispatch(addUserToChannelStarted());
+    const channel = getState().channels.byId.get(getState().currentChannelId!)!;
+    ChannelService.addUserToChannel(email, channel);
+    dispatch(addUserToChannelFinished(email, getState().currentChannelId!));
   };
 };

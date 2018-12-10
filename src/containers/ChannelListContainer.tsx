@@ -4,10 +4,11 @@ import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
 import {addChannel, reorderChannels} from '../actions/channelActions';
 import * as Immutable from 'immutable';
+import {getChannelIdsForLoggedUser} from '../selectors/messageAppSelectors';
 
 const mapStateToProps = (state: IMessageAppState): IChannelListStateProps => {
   return {
-    channelIds: state.channels.allIds,
+    channelIds: getChannelIdsForLoggedUser(state),
   };
 };
 

@@ -8,6 +8,7 @@ import {currentChannelChangeFinished} from './channelActions';
 import * as ChannelService from '../service/channelService';
 import * as MessageService from '../service/messageService';
 import * as UserService from '../service/userService';
+import {IMessageAppState} from '../models/IMessageAppState';
 
 const loadingStarted = (): Action<MESSAGE_APP_LOADING_STARTED> => ({
   type: MESSAGE_APP_LOADING_STARTED,
@@ -26,7 +27,7 @@ const loadingFinished = (channels: Immutable.List<IMessageAppChannel> = Immutabl
 });
 
 export const loadApp = (): any => {
-  return async (dispatch: Dispatch): Promise<void> => {
+  return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(loadingStarted());
     const channels = await ChannelService.loadChannels();
     // loading messages and users is not necessary
@@ -35,10 +36,18 @@ export const loadApp = (): any => {
       return;
     }
 
+    // check if user is in any of the existing channels
+    const loggedUserEmail = getState().loggedUser!.email;
+    const channelsForLoggedUser = channels.filter((channel) => channel.userEmails.contains(loggedUserEmail));
+    if (channelsForLoggedUser.isEmpty()) {
+      dispatch(loadingFinished());
+      return;
+    }
+
     // at least one channel exists - load messages and users
-    let activeChannel: IMessageAppChannel = channels.get(0)!;
-    const lastUsedChannelId = ChannelService.getLastLoadedChannelId();
-    const lastUsedChannel = channels.find((channel) => channel.id === lastUsedChannelId);
+    let activeChannel: IMessageAppChannel = channelsForLoggedUser.get(0)!;
+    const lastUsedChannelId = ChannelService.getLastActiveChannelId(loggedUserEmail);
+    const lastUsedChannel = channelsForLoggedUser.find((channel) => channel.id === lastUsedChannelId);
     if (lastUsedChannel != null) {
       activeChannel = lastUsedChannel;
     }

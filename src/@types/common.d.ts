@@ -14,3 +14,7 @@ type Credentials = {
   email: string;
   password: string;
 };
+
+type ActiveChannelForUserMap = {
+  [email: string]: Uuid;
+};

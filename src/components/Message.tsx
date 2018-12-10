@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './Message.less';
+import '../styles/components/Message.less';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 import {MessageActions} from './MessageActions';

@@ -5,7 +5,7 @@ import {
   CHANNEL_DELETE_FINISHED,
   CHANNEL_RENAME_FINISHED,
   MESSAGE_APP_CHANNELS_ACTIONS,
-  MESSAGE_APP_LOADING_FINISHED, MESSAGE_APP_REORDER_CHANNELS_FINISHED,
+  MESSAGE_APP_LOADING_FINISHED, CHANNEL_REORDER_FINISHED, CHANNEL_INVITE_USER_FINISHED,
 } from '../constants/actionTypes';
 import {combineReducers} from 'redux';
 
@@ -23,6 +23,11 @@ const byId = (prevState = Immutable.Map<Uuid, IMessageAppChannel>(),
       return prevState.set(id, updatedItem);
     case CHANNEL_DELETE_FINISHED:
       return prevState.delete(action.payload.id);
+    case CHANNEL_INVITE_USER_FINISHED:
+      const {channelId, email} = action.payload;
+      const userEmails = prevState.get(channelId)!.userEmails.push(email);
+      const updatedChannel: IMessageAppChannel = { ...prevState.get(channelId)!, userEmails};
+      return prevState.set(channelId, updatedChannel);
     default:
       return prevState;
   }
@@ -37,7 +42,7 @@ const allIds = (prevState = Immutable.List<Uuid>(),
       return prevState.push(action.payload.channel.id);
     case CHANNEL_DELETE_FINISHED:
       return prevState.filter((id) => id !== action.payload.id);
-    case MESSAGE_APP_REORDER_CHANNELS_FINISHED:
+    case CHANNEL_REORDER_FINISHED:
       return action.payload.reorderedChannelIds;
     default:
       return prevState;
