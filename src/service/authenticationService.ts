@@ -40,11 +40,9 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
     messageAppRepository.removeAuthToken();
     return LOGIN_BAD_PASSWORD as LOGIN_BAD_PASSWORD;
   }
-
-  const {password, ...user} = loadResult;
-  messageAppRepository.saveLoggedUser(user);
+  messageAppRepository.saveLoggedUser(loadResult);
   // return logged user
-  return user;
+  return loadResult;
 }
 
 /**
@@ -77,7 +75,7 @@ function checkPassword(credentials: Credentials, correctPassword: string): boole
  *
  * @param credentials data from login form
  */
-async function registerUser(credentials: Credentials): Promise<IMessageAppUser | LOGIN_USER_ALREADY_REGISTERED> {
+async function registerUser(credentials: Credentials): Promise<IMessageAppUserWithPassword | LOGIN_USER_ALREADY_REGISTERED> {
   return axios.post<ServerResponseUser>(getUserUrl(), {
     email: credentials.email,
     customData: {password: credentials.password}
@@ -86,6 +84,7 @@ async function registerUser(credentials: Credentials): Promise<IMessageAppUser |
       return {
         email: response.data.email,
         password: response.data.customData.password,
+        userName: response.data.customData.userName,
       };
     })
     .catch(() => LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED);

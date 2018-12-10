@@ -32,7 +32,7 @@ const loginAutoFailed = (): Action<MESSAGE_APP_LOGGING_AUTO_FAILED> => ({
   type: MESSAGE_APP_LOGGING_AUTO_FAILED,
 });
 
-const loginAutoSucces = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGING_AUTO_SUCCESS> => ({
+const loginAutoSuccess = (loggedUser: IMessageAppUser): Action<MESSAGE_APP_LOGGING_AUTO_SUCCESS> => ({
   type: MESSAGE_APP_LOGGING_AUTO_SUCCESS,
   payload: {
     loggedUser,
@@ -43,7 +43,6 @@ export const logIn = (email: string, password: string): any => {
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch(authenticationStarted());
     const authenticationResult = await authenticationService.authenticate({email, password});
-
     // error during authentication
     if (typeof authenticationResult === 'string') {
       dispatch(authenticationFailed(authenticationResult));
@@ -61,7 +60,7 @@ export const autoLogin = (): any => {
     if (loggedUser == null) {
       dispatch(loginAutoFailed());
     } else {
-      dispatch(loginAutoSucces(loggedUser));
+      dispatch(loginAutoSuccess(loggedUser));
     }
   };
 };

@@ -4,8 +4,7 @@ export type ServerResponseUser = {
   readonly email: string;
   readonly customData: {
     readonly password: string;
-    readonly userName?: string;
-    readonly name?: string;
+    readonly userName: string;
     readonly picture?: any;
   };
 };

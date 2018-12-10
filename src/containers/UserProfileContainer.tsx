@@ -2,20 +2,21 @@ import {IMessageAppState} from '../models/IMessageAppState';
 import {UserProfile, IUserProfileStateProps, IUserProfileDispatchProps} from '../components/UserProfile';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
-import {showDialog} from '../actions/UserProfileActions';
-import {hideDialog} from '../actions/UserProfileActions';
+import {hideDialog, updateProfile} from '../actions/UserProfileActions';
+
 
 
 const mapStateToProps = (state: IMessageAppState): IUserProfileStateProps => {
   return {
     isUserDialogOpen: state.isUserDialogOpen,
+    userProfile: state.loggedUser,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    showUserDialog: () =>  dispatch(showDialog()),
     hideUserDialog: () => dispatch(hideDialog()),
+    updateProfile: (userName: string, picture: string ) => dispatch(updateProfile(userName, picture)),
   };
 };
 

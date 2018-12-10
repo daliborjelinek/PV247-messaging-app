@@ -22,8 +22,8 @@ export class Message extends React.PureComponent<IProps> {
     const isMyMessage = this.props.isMyMessage;
     const messageRating = this.props.message.rating;
     const messageId = this.props.message.id;
-    const pictureUrl = this.props.messageAuthor && this.props.messageAuthor.pictureUrl != null ?
-      this.props.messageAuthor.pictureUrl : 'https://image.freepik.com/free-icon/male-user-shadow_318-34042.jpg';
+    const pictureUrl = this.props.messageAuthor.picture;
+
 
     return (
       <div className={'Message'}>
@@ -32,7 +32,7 @@ export class Message extends React.PureComponent<IProps> {
                style={{backgroundImage: `url(${pictureUrl}`}} />
         </div>
         <div className={'Message_content'}>
-          <span className={'Message__author'}>{this.props.messageAuthor && this.props.messageAuthor.name}</span>
+          <span className={'Message__author'}>{this.props.messageAuthor && this.props.messageAuthor.userName}</span>
           <span className={'Message__date'}>{this.props.message.createdAt.toLocaleString()}</span>
           <div className={'Message__text'}>{this.props.message.value}</div>
         </div>
