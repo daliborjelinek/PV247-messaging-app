@@ -35,15 +35,9 @@ function mapToUser(serverResponseUser: ServerResponseUser): IMessageAppUser {
 
 
 
+export async function updateUser(user: IMessageAppUser): Promise<IMessageAppUser> {
 
-export async function updateUser(mail: string, userName: string, picture: string): Promise<IMessageAppUser> {
-  const update = {
-    customData: {
-      userName,
-      picture,
-      password: '',
-    }
-  };
-  const response = await PUT<any>(getUserUrl() + '/' + mail, update);
-  return response.data;
+    const response = await PUT<any>(getUserUrl() + '/' + user.email, {customData: user});
+    console.log(response.data);
+    return response.data;
 }

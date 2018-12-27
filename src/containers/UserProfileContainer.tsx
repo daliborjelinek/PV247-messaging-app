@@ -16,7 +16,7 @@ const mapStateToProps = (state: IMessageAppState): IUserProfileStateProps => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     hideUserDialog: () => dispatch(hideDialog()),
-    updateProfile: (userName: string, picture: string ) => dispatch(updateProfile(userName, picture)),
+    updateProfile: (user: string, picture: File ) => dispatch(updateProfile(user, picture)),
   };
 };
 

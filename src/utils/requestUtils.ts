@@ -1,7 +1,7 @@
 import * as messageAppRepository from '../repository/messageAppRepository';
 import axios, {AxiosPromise, AxiosRequestConfig} from 'axios';
 
-const APP_ID = 'e1579836-9997-4a22-833a-5120a43f42b6';
+const APP_ID = 'ace1cd27-4c7a-4ef3-b415-b753159fc7a4';
 const BASE_URL = `https://pv247messaging.azurewebsites.net/api/v2/`;
 
 /*************************************************
@@ -25,6 +25,14 @@ export function getChannelUrl(): string {
 
 export function getMessageUrl(channelId: Uuid): string {
   return `${getChannelUrl()}/${channelId}/message`;
+}
+
+export function getFileUrl(): string {
+  return `${BASE_URL}file`;
+}
+
+export function getFileLinkUrl(fileId: Uuid): string {
+  return `${getFileUrl()}/${fileId}/download-link`;
 }
 
 /*************************************************

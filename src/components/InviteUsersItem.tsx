@@ -37,11 +37,11 @@ export class InviteUsersItem extends React.PureComponent<IProps, IState> {
   }
 
   public render(): JSX.Element {
-    const pictureUrl = this.props.user.pictureUrl;
+    const picture = this.props.user.picture;
 
     return (
       <div className={'InviteUsersItem'}>
-        <div className={'InviteUsersItem__picture'} style={{backgroundImage: `url(${pictureUrl}`}} />
+        <div className={'InviteUsersItem__picture'} style={{backgroundImage: `url(${picture}`}} />
         <div className={'InviteUsersItem__userName'}>{this.props.user.userName}</div>
         <button className={'btn btn-primary InviteUsersItem__inviteBtn'} disabled={this.state.isInvited}
                 onClick={this.onInvite}>Invite</button>

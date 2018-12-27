@@ -54,3 +54,15 @@ export type ServerRequestMessage = {
      usersWhoRatedMessage: UsersWhoRatedMessageMap;
   };
 };
+
+export type ServerResponseFile = {
+  id: string;
+  name: string;
+  extension: string;
+  createdBy: string;
+  fileSize: number;
+};
+
+export type ServerRespoonseFileLink = {
+  fileUri: string;
+};

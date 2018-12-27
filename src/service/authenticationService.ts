@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {getUserUrl, getAuthToken, GET} from '../utils/requestUtils';
-import {IMessageAppUser, IMessageAppUserWithPassword} from '../models/IMessageAppUser';
+import {IMessageAppUser} from '../models/IMessageAppUser';
 import {LOGIN_BAD_PASSWORD, LOGIN_EMAIL_DOES_NOT_EXIST, LOGIN_ERROR, LOGIN_USER_ALREADY_REGISTERED} from '../constants/errors';
 import * as messageAppRepository from '../repository/messageAppRepository';
 import {ServerResponseUser} from '../@types/api';
@@ -13,7 +13,7 @@ import {ServerResponseUser} from '../@types/api';
  */
 export async function authenticate(credentials: Credentials): Promise<IMessageAppUser | LOGIN_ERROR> {
   const authToken = await getAuthToken(credentials.email);
-
+  console.log(authToken);
   // non-existing e-mail -> register new user
   if (authToken == null) {
     const registerResult = await registerUser(credentials);
@@ -50,7 +50,7 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
  *
  * @param credentials data from login form
  */
-async function loadUser(credentials: Credentials): Promise<IMessageAppUserWithPassword | LOGIN_EMAIL_DOES_NOT_EXIST> {
+async function loadUser(credentials: Credentials): Promise<IMessageAppUser | LOGIN_EMAIL_DOES_NOT_EXIST> {
   const url = `${getUserUrl()}/${credentials.email}`;
   return GET<ServerResponseUser>(url)
     .then((response) => {
@@ -75,16 +75,17 @@ function checkPassword(credentials: Credentials, correctPassword: string): boole
  *
  * @param credentials data from login form
  */
-async function registerUser(credentials: Credentials): Promise<IMessageAppUserWithPassword | LOGIN_USER_ALREADY_REGISTERED> {
+async function registerUser(credentials: Credentials): Promise<IMessageAppUser | LOGIN_USER_ALREADY_REGISTERED> {
   return axios.post<ServerResponseUser>(getUserUrl(), {
     email: credentials.email,
-    customData: {password: credentials.password}
+    customData: {password: credentials.password, userName: credentials.email, picture: 'https://img.icons8.com/color/1600/person-male.png'}
   })
     .then((response) => {
       return {
         email: response.data.email,
         password: response.data.customData.password,
         userName: response.data.customData.userName,
+        picture: response.data.customData.picture,
       };
     })
     .catch(() => LOGIN_USER_ALREADY_REGISTERED as LOGIN_USER_ALREADY_REGISTERED);

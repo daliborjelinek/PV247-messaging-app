@@ -11,12 +11,13 @@ export interface IUserProfileStateProps {
 
 export interface IUserProfileDispatchProps {
   hideUserDialog(): void;
-  updateProfile(userName: string, pisture: string): void;
+  updateProfile(newUserName: string, picture: File | null): void;
 }
 
 export interface IUserProfileState {
   readonly newUserName: string;
-  readonly imagePreview: string;
+  readonly imagePreview: string | null;
+  readonly imageFile: File | null;
 }
 
 type IProps = IUserProfileStateProps & IUserProfileDispatchProps;
@@ -35,10 +36,13 @@ export class UserProfile extends React.PureComponent<IProps, IUserProfileState> 
   };
 
   private  onFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.target.files);
+    const imageFile = e.target!.files![0];
+    this.setState((state): IUserProfileState => {
+      return { ...state, imageFile};
+    });
     const reader = new FileReader();
     reader.onload = () => this.showPreview(reader.result);
-    reader.readAsDataURL(e.target!.files![0]);
+    reader.readAsDataURL(imageFile);
   };
 
   private showPreview = (image: string | ArrayBuffer | null): void => {
@@ -53,16 +57,17 @@ export class UserProfile extends React.PureComponent<IProps, IUserProfileState> 
   };
 
   private onSave = (): void => {
-    this.props.updateProfile(this.state.newUserName, this.state.imagePreview);
+    this.props.updateProfile(this.state.newUserName, this.state.imageFile);
     this.props.hideUserDialog();
   };
 
   public constructor(props: IProps) {
     super(props);
-
+    console.log(props.userProfile);
     this.state = {
-      newUserName: props.userProfile!.email,
-      imagePreview: 'https://imagebox.cz.osobnosti.cz/foto/vladimir-putin/vladimir-putin.jpg'
+      newUserName: props.userProfile!.userName,
+      imagePreview: props.userProfile!.picture!,
+      imageFile: null,
     };
 
   }
@@ -75,7 +80,7 @@ export class UserProfile extends React.PureComponent<IProps, IUserProfileState> 
       </Modal.Header>
       <Modal.Body>
         <div onClick={() => this.fileInputRef.current!.click()} className={'UserProfile__userModal_imgWrap'}>
-          <img className={'UserProfile__userModal_img'} src={this.state.imagePreview}/>
+          <img className={'UserProfile__userModal_img'} src={this.state.imagePreview!}/>
           <div className={'UserProfile__userModal_img-overlay'}>
             edit
           </div>
