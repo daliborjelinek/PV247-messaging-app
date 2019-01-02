@@ -27,6 +27,14 @@ export function getMessageUrl(channelId: Uuid): string {
   return `${getChannelUrl()}/${channelId}/message`;
 }
 
+export function getFileUrl(): string {
+  return `${BASE_URL}file`;
+}
+
+export function getFileLinkUrl(fileId: Uuid): string {
+  return `${getFileUrl()}/${fileId}/download-link`;
+}
+
 /*************************************************
  * SENDING REQUESTS WITH AUTHENTICATION TOKEN
  ************************************************/

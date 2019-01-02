@@ -35,13 +35,12 @@ export const logIn = (email: string, password: string): any => {
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch(authenticationStarted());
     const authenticationResult = await authenticationService.authenticate({email, password});
-
+    console.log(authenticationResult);
     // error during authentication
     if (typeof authenticationResult === 'string') {
       dispatch(authenticationFailed(authenticationResult));
       return;
     }
-
     dispatch(authenticationSuccess(authenticationResult));
   };
 };

@@ -1,5 +1,5 @@
 import * as Immutable from 'immutable';
-import {GET, getUserUrl} from '../utils/requestUtils';
+import {GET, PUT, getUserUrl} from '../utils/requestUtils';
 import {ServerResponseUser} from '../@types/api';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 
@@ -22,24 +22,22 @@ function mapToUsersMap(serverResponseUsers: ServerResponseUser[]): Immutable.Lis
 }
 
 function mapToUser(serverResponseUser: ServerResponseUser): IMessageAppUser {
-  const userName = serverResponseUser.customData.userName == null ? serverResponseUser.email :
-    serverResponseUser.customData.userName;
-  const name = serverResponseUser.customData.name == null ? userName :
-    serverResponseUser.customData.userName;
-  const pictureUrl = getPictureUrl(serverResponseUser.customData.picture);
+  // const picture = getPictureUrl(serverResponseUser.customData.picture);
+
   return {
     email: serverResponseUser.email,
-    userName,
-    name,
-    pictureUrl,
+    userName: serverResponseUser.customData.userName,
+    picture: serverResponseUser.customData.picture,
+    password: serverResponseUser.customData.password
   };
 }
 
-function getPictureUrl(picture: any): string {
-  if (picture == null) {
-    return 'https://image.freepik.com/free-icon/male-user-shadow_318-34042.jpg';
-  }
 
-  // TODO return real picture
-  return 'https://image.freepik.com/free-icon/male-user-shadow_318-34042.jpg';
+
+
+export async function updateUser(user: IMessageAppUser): Promise<IMessageAppUser> {
+
+    const response = await PUT<any>(getUserUrl() + '/' + user.email, {customData: user});
+    console.log(response.data);
+    return response.data;
 }

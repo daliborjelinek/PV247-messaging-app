@@ -4,8 +4,7 @@ export type ServerResponseUser = {
   readonly email: string;
   readonly customData: {
     readonly password: string;
-    readonly userName?: string;
-    readonly name?: string;
+    readonly userName: string;
     readonly picture?: any;
   };
 };
@@ -54,4 +53,16 @@ export type ServerRequestMessage = {
      rating: number;
      usersWhoRatedMessage: UsersWhoRatedMessageMap;
   };
+};
+
+export type ServerResponseFile = {
+  id: string;
+  name: string;
+  extension: string;
+  createdBy: string;
+  fileSize: number;
+};
+
+export type ServerRespoonseFileLink = {
+  fileUri: string;
 };
