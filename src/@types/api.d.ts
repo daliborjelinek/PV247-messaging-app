@@ -56,13 +56,13 @@ export type ServerRequestMessage = {
 };
 
 export type ServerResponseFile = {
-  id: string;
-  name: string;
-  extension: string;
-  createdBy: string;
-  fileSize: number;
+  readonly id: string;
+  readonly name: string;
+  readonly extension: string;
+  readonly createdBy: string;
+  readonly fileSize: number;
 };
 
-export type ServerRespoonseFileLink = {
-  fileUri: string;
+export type ServerResponseFileLink = {
+  readonly fileUri: string;
 };
