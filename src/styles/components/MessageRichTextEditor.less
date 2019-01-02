@@ -1,0 +1,29 @@
+@import "../colors.less";
+@import "../fonts.less";
+@import "../variables.less";
+
+@MessageEditor-padding: 10px;
+@MessageEditor-space-between-icons: 10px;
+@MessageEditor-icon-font-size: 16px;
+@MessageEditor__textAreaWrapper-height: @message-editor-height - 50px;
+@MessageEditor__sendButton-offset: 50px;
+
+.MessageRichTextEditor {
+  height: @message-editor-height;
+  position: relative;
+  background-color: white;
+  border-top: 1px solid @border-color-light;
+  padding: @MessageEditor-padding;
+  // to be on the bottom of the page
+  margin-top: auto;
+
+  .quill {
+    height: 80%;
+  }
+}
+
+.MessageEditor__sendButton {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+}
