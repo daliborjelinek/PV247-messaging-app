@@ -63,7 +63,6 @@ export class UserProfile extends React.PureComponent<IProps, IUserProfileState> 
 
   public constructor(props: IProps) {
     super(props);
-    console.log(props.userProfile);
     this.state = {
       newUserName: props.userProfile!.userName,
       imagePreview: props.userProfile!.picture!,
@@ -80,7 +79,7 @@ export class UserProfile extends React.PureComponent<IProps, IUserProfileState> 
       </Modal.Header>
       <Modal.Body>
         <div onClick={() => this.fileInputRef.current!.click()} className={'UserProfile__userModal_imgWrap'}>
-          <img className={'UserProfile__userModal_img'} src={this.state.imagePreview!}/>
+          <img className={'UserProfile__userModal_img'} src={this.state.imagePreview!} alt={'Profile picture'}/>
           <div className={'UserProfile__userModal_img-overlay'}>
             edit
           </div>

@@ -22,8 +22,6 @@ function mapToUsersMap(serverResponseUsers: ServerResponseUser[]): Immutable.Lis
 }
 
 function mapToUser(serverResponseUser: ServerResponseUser): IMessageAppUser {
-  // const picture = getPictureUrl(serverResponseUser.customData.picture);
-
   return {
     email: serverResponseUser.email,
     userName: serverResponseUser.customData.userName,
@@ -32,12 +30,7 @@ function mapToUser(serverResponseUser: ServerResponseUser): IMessageAppUser {
   };
 }
 
-
-
-
 export async function updateUser(user: IMessageAppUser): Promise<IMessageAppUser> {
-
-    const response = await PUT<any>(getUserUrl() + '/' + user.email, {customData: user});
-    console.log(response.data);
+    const response = await PUT<IMessageAppUser>(getUserUrl() + '/' + user.email, {customData: user});
     return response.data;
 }
