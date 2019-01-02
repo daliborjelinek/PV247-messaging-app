@@ -28,20 +28,24 @@ export async function authenticate(credentials: Credentials): Promise<IMessageAp
     return registerResult;
   }
 
-  // existing e-mail - log in
-  const loadResult = await loadUser(credentials);
-  if (loadResult === LOGIN_EMAIL_DOES_NOT_EXIST) {
-    messageAppRepository.removeAuthToken();
-    return LOGIN_EMAIL_DOES_NOT_EXIST as LOGIN_EMAIL_DOES_NOT_EXIST;
+  // existing e-mail - log in or register user - e-mail was probably used in another app
+  let authenticationResult = await loadUser(credentials);
+  if (authenticationResult === LOGIN_EMAIL_DOES_NOT_EXIST) {
+    const registerUserResult = await registerUser(credentials);
+    if (registerUserResult === LOGIN_USER_ALREADY_REGISTERED) {
+      messageAppRepository.removeAuthToken();
+      return LOGIN_USER_ALREADY_REGISTERED;
+    }
+    authenticationResult = registerUserResult;
   }
 
   // bad password
-  if (!checkPassword(credentials, loadResult.password)) {
+  if (!checkPassword(credentials, authenticationResult.password)) {
     messageAppRepository.removeAuthToken();
     return LOGIN_BAD_PASSWORD as LOGIN_BAD_PASSWORD;
   }
 
-  const {password, ...user} = loadResult;
+  const {password, ...user} = authenticationResult;
   messageAppRepository.saveLoggedUser(user);
   // return logged user
   return user;
@@ -77,7 +81,7 @@ function checkPassword(credentials: Credentials, correctPassword: string): boole
  *
  * @param credentials data from login form
  */
-async function registerUser(credentials: Credentials): Promise<IMessageAppUser | LOGIN_USER_ALREADY_REGISTERED> {
+async function registerUser(credentials: Credentials): Promise<IMessageAppUserWithPassword | LOGIN_USER_ALREADY_REGISTERED> {
   return axios.post<ServerResponseUser>(getUserUrl(), {
     email: credentials.email,
     customData: {password: credentials.password}
