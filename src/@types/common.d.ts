@@ -18,3 +18,9 @@ type Credentials = {
 type ActiveChannelForUserMap = {
   [email: string]: Uuid;
 };
+
+type Mention = {
+  name: string;
+  link?: string;
+  avatar?: string;
+};

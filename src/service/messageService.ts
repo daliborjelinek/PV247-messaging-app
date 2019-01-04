@@ -3,6 +3,7 @@ import {DELETE, GET, getMessageUrl, POST, PUT} from '../utils/requestUtils';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {ServerRequestMessage, ServerResponseMessage} from '../@types/api';
 import {RatingPolarity} from '../enums/RatingPolarity';
+import { RawDraftContentState } from 'draft-js';
 
 
 /**
@@ -20,9 +21,9 @@ export async function loadMessagesForChannel(channelId: Uuid): Promise<Immutable
  * @param authorEmail id of the author of the message
  * @param channelId id of the channel
  */
-export async function createMessage(value: string, authorEmail: string, channelId: Uuid): Promise<IMessageAppMessage> {
+export async function createMessage(value: RawDraftContentState, authorEmail: string, channelId: Uuid): Promise<IMessageAppMessage> {
   const newMessage: ServerRequestMessage = {
-    value,
+    value: JSON.stringify(value),
     createdBy: authorEmail,
     createdAt: new Date(),
     customData: {
@@ -105,7 +106,7 @@ function mapToMessagesList(serverResponseMessage: ServerResponseMessage[]): Immu
 function mapToMessage(serverResponseMessage: ServerResponseMessage): IMessageAppMessage {
   return {
     id: serverResponseMessage.id,
-    value: serverResponseMessage.value,
+    value: JSON.parse(serverResponseMessage.value),
     createdAt: serverResponseMessage.createdAt,
     createdBy: serverResponseMessage.createdBy,
     rating: serverResponseMessage.customData.rating,
@@ -115,7 +116,7 @@ function mapToMessage(serverResponseMessage: ServerResponseMessage): IMessageApp
 
 function mapToRequestMessage(message: IMessageAppMessage): ServerRequestMessage {
   return {
-    value: message.value,
+    value: JSON.stringify(message.value),
     createdAt: message.createdAt,
     createdBy: message.createdBy,
     updatedAt: message.updatedAt,

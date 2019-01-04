@@ -20,6 +20,8 @@ import {IMessageAppState} from '../models/IMessageAppState';
 import {RatingPolarity} from '../enums/RatingPolarity';
 import * as MessageService from '../service/messageService';
 import {getCreationTimeOfLastDisplayedMessage} from '../selectors/messageAppSelectors';
+import { RawDraftContentState } from 'draft-js';
+
 
 // LOADING MESSAGES
 const messageLoadingStarted = (): Action<MESSAGE_LOADING_STARTED> => {
@@ -61,14 +63,14 @@ const messageAddFinished = (message: IMessageAppMessage): Action<MESSAGE_ADD_FIN
   };
 };
 
-export const addMessage = (text: string): any => {
+export const addMessage = (rawContentState: RawDraftContentState): any => {
   return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
     dispatch(messageAddStarted());
     // user must be logged in to write message, that's why I can use exclamation mark
     const authorEmail = getState().loggedUser!.email;
     // if message editor is shown, current channel must be not null
     const channelId = getState().currentChannelId!;
-    const newMessage = await  MessageService.createMessage(text, authorEmail, channelId);
+    const newMessage = await  MessageService.createMessage(rawContentState, authorEmail, channelId);
     dispatch(messageAddFinished(newMessage));
     dispatch(restoreMessageActualizationTimeout());
   };

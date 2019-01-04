@@ -3,6 +3,10 @@ import '../styles/components/Message.less';
 import {IMessageAppMessage} from '../models/IMessageAppMessage';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 import {MessageActions} from './MessageActions';
+import {convertFromRaw, EditorState} from 'draft-js';
+import Editor from 'draft-js-plugins-editor';
+import {mentionPlugin} from './MessageEditor';
+import 'draft-js-mention-plugin/lib/plugin.css';
 
 export interface IMessageOwnProps {
   readonly id: Uuid;
@@ -15,8 +19,23 @@ export interface IMessageStateProps {
 }
 
 type IProps = IMessageOwnProps & IMessageStateProps;
+type IState = {editorState: EditorState};
 
-export class Message extends React.PureComponent<IProps> {
+export class Message extends React.PureComponent<IProps, IState> {
+
+  // even though Editor is read only, on change handler must be set
+  // otherwise, mentions would not work - https://github.com/draft-js-plugins/draft-js-plugins/issues/530
+  private onChange = (editorState: EditorState) => {
+    this.setState((prevState) => ({...prevState, editorState}));
+  };
+
+  constructor(props: IProps) {
+    super(props);
+    const rawData = this.props.message.value;
+    this.state = {
+      editorState: EditorState.createWithContent(convertFromRaw(rawData)),
+    };
+  }
 
   public render(): JSX.Element {
     const isMyMessage = this.props.isMyMessage;
@@ -24,6 +43,7 @@ export class Message extends React.PureComponent<IProps> {
     const messageId = this.props.message.id;
     const pictureUrl = this.props.messageAuthor.picture;
 
+    const plugins = [mentionPlugin];
 
     return (
       <div className={'Message'}>
@@ -34,7 +54,8 @@ export class Message extends React.PureComponent<IProps> {
         <div className={'Message_content'}>
           <span className={'Message__author'}>{this.props.messageAuthor && this.props.messageAuthor.userName}</span>
           <span className={'Message__date'}>{this.props.message.createdAt.toLocaleString()}</span>
-          <div className={'Message__text'}>{this.props.message.value}</div>
+          <Editor editorState={this.state.editorState} readOnly plugins={plugins}
+                  onChange={this.onChange}/>
         </div>
         <MessageActions rating={messageRating} isMyMessage={isMyMessage} messageId={messageId}/>
       </div>
