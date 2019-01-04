@@ -34,7 +34,7 @@ export class Message extends React.PureComponent<IProps> {
         <div className={'Message_content'}>
           <span className={'Message__author'}>{this.props.messageAuthor && this.props.messageAuthor.userName}</span>
           <span className={'Message__date'}>{this.props.message.createdAt.toLocaleString()}</span>
-          <div className={'Message__text'} dangerouslySetInnerHTML={{__html: this.props.message.value}} />
+          <div className={'Message__text'}>this.props.message.value}</div>
         </div>
         <MessageActions rating={messageRating} isMyMessage={isMyMessage} messageId={messageId}/>
       </div>
