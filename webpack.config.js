@@ -19,21 +19,7 @@ module.exports = {
           { loader: 'tslint-loader', options: { configFile: 'tslint.json' } }
         ]
       },
-      {
-        test: /\.css$/,
-        include: [
-          path.resolve(__dirname, './node_modules')
-        ],
-        use: [
-          { loader: 'file-loader', options: { name: 'styles/[name].[ext]' } },
-          { loader: 'extract-loader', options: { publicPath: '../' } },
-          { loader: 'css-loader' }
-        ],
-      },
       { test: /\.css$/,
-        exclude: [
-          path.resolve(__dirname, './node_modules')
-        ],
         use: [
           { loader: "style-loader" },
           { loader: "css-loader" }
