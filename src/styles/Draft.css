@@ -11,7 +11,7 @@
 .DraftEditor-editorContainer,
 .DraftEditor-root,
 .public-DraftEditor-content {
-    height: 100%;
+    height: inherit;
     width: 100%;
     text-align: initial;
 }
