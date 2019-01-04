@@ -1,9 +1,8 @@
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {IMessageEditorDispatchProps, IMessageEditorStateProps} from '../components/MessageEditor';
+import {IMessageEditorDispatchProps, IMessageEditorStateProps, MessageEditor} from '../components/MessageEditor';
 import {addMessage} from '../actions/messageActions';
 import {IMessageAppState} from '../models/IMessageAppState';
-import {MessageRichTextEditor} from '../components/MessageRichTextEditor';
 
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -19,4 +18,4 @@ export const mapStateToProps = (state: IMessageAppState): IMessageEditorStatePro
 };
 
 export const MessageEditorContainer = connect<IMessageEditorStateProps, IMessageEditorDispatchProps>(mapStateToProps,
-  mapDispatchToProps)(MessageRichTextEditor);
+  mapDispatchToProps)(MessageEditor);

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {ChangeEvent} from 'react';
 import '../styles/components/MessageEditor.less';
-
+import {Editor, EditorState, RichUtils, DraftHandleValue} from 'draft-js';
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faBold, faEraser, faFile, faFileImage, faFont, faItalic,
-        faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
+import {faBold, faEraser, faFile, faFileImage, faFont, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
+import '../styles/Draft.css';
 
 // Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
@@ -21,7 +20,7 @@ export interface IMessageEditorStateProps {
 }
 
 type IProps = IMessageEditorDispatchProps & IMessageEditorStateProps;
-type IState = { messageText: string };
+type IState = { editorState: EditorState};
 
 
 /**
@@ -29,41 +28,41 @@ type IState = { messageText: string };
  */
 export class MessageEditor extends React.PureComponent<IProps, IState> {
 
-  // used to set width when component is mounted
-  private readonly messageEditorDiv: React.RefObject<HTMLDivElement>;
-
-  // used to set focus when component is mounted
-  private readonly  messageEditorTextArea: React.RefObject<HTMLTextAreaElement>;
-
-  /**
-   * Stores text into the state when text is changed.
-   * @param e change event
-   */
-  private onTextChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    const text = e.target.value;
-    this.setState(() => {
-      return { messageText: text };
-    });
-  };
-
   /**
    * Saves messages into Redux store and database/local storage.
    */
   private onSave = () => {
-    if (this.state.messageText === '') {
-      return;
+    console.log('Text save');
+  };
+
+  private onChange = (editorState: EditorState) => {
+    this.setState((prevState) => ({...prevState, editorState}));
+  };
+
+  /**
+   * Default Draft.js command handling. Allows using shortcuts(Ctrl + B, Ctrl + I,...).
+   * @param command
+   * @param editorState
+   */
+  private handleKeyCommand = (command: string, editorState: EditorState): DraftHandleValue => {
+    const newEditorState = RichUtils.handleKeyCommand(editorState, command);
+    if (newEditorState) {
+      this.onChange(newEditorState);
+      return 'handled';
     }
-    this.props.addMessage(this.state.messageText);
-    this.messageEditorTextArea.current!.value = '';
+    return 'not-handled';
+  };
+
+  // EDITOR ACTIONS
+  private onBoldClick = () => {
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
   };
 
   // CONSTRUCTOR
   constructor(props: IProps) {
     super(props);
-    this.messageEditorDiv = React.createRef();
-    this.messageEditorTextArea = React.createRef();
     this.state = {
-      messageText: '',
+      editorState: EditorState.createEmpty(),
     };
   }
 
@@ -76,8 +75,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     if (!this.props.channelSelected) {
       return;
     }
-    this.messageEditorTextArea!.current!.focus();
-
+    // FOCUS ON EDITOR
   }
 
   /**
@@ -87,24 +85,24 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     if (!this.props.channelSelected) {
       return;
     }
-    this.messageEditorTextArea!.current!.focus();
-
+    // FOCUS ON EDITOR
   }
 
   /**
-   * When enter key is pressed, textarea is focused and messageText is not empty,
+   * When ctrl + enter key is pressed, textarea is focused and messageText is not empty,
    * message will be submitted.
    * @param e
    */
   private onKeyDown(e: KeyboardEvent) {
-    if (document.activeElement.className !== 'MessageEditor__textArea') {
+    console.log(e);
+    /*if (document.activeElement.className !== 'MessageEditor__textArea') {
       return;
     }
     if (!e.ctrlKey || e.key !== 'Enter') {
       return;
     }
     this.onSave();
-    this.messageEditorTextArea.current!.value = '';
+    this.messageEditorTextArea.current!.value = '';*/
   }
 
   public render(): JSX.Element | null {
@@ -113,9 +111,9 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     }
 
     return (
-      <div className={'MessageEditor'} ref={this.messageEditorDiv}>
+      <div className={'MessageEditor'}>
         <div className={'MessageEditor__operationPane'}>
-          <FontAwesomeIcon icon={'bold'} size={'lg'}/>
+          <span onClick={this.onBoldClick}><FontAwesomeIcon icon={'bold'} size={'lg'} /></span>
           <FontAwesomeIcon icon={'italic'} size={'lg'}/>
           <FontAwesomeIcon icon={'underline'} size={'lg'}/>
           <span className={'glyphicon glyphicon-text-size'} />
@@ -129,10 +127,10 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
           <FontAwesomeIcon icon={'smile'} size={'lg'}/>
         </div>
         <div className={'MessageEditor__textAreaWrapper'}>
-          <textarea className={'MessageEditor__textArea'}
-                    ref={this.messageEditorTextArea}
-                    onChange={this.onTextChange}
-                    placeholder={'Press Ctrl + Enter to send the message'}/>
+          <Editor editorState={this.state.editorState}
+                  onChange={this.onChange}
+                  placeholder={'Press Ctrl + Enter to send the message'}
+                  handleKeyCommand={this.handleKeyCommand}/>
           <button type={'submit'} className={'btn btn-primary MessageEditor__sendButton'}
                   onClick={this.onSave}>Send</button>
         </div>
