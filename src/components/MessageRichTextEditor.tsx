@@ -19,7 +19,7 @@ export class MessageRichTextEditor extends React.PureComponent<IProps, IState> {
     toolbar: {
       container: [
         [{ header: [1, 2, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote', { color: [] }],
         [{list: 'ordered'}, {list: 'bullet'}, {indent: '-1'}, {indent: '+1'}],
         ['link', 'image'],
         ['clean'],
@@ -27,7 +27,7 @@ export class MessageRichTextEditor extends React.PureComponent<IProps, IState> {
       handlers: {
         image: (value: string) => console.log(value),
       },
-    }
+    },
   };
 
   formats = [
