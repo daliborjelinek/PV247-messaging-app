@@ -15,7 +15,7 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
 
 export const mapStateToProps = (state: IMessageAppState): IMessageEditorStateProps => {
   return {
-    channelSelected: state.currentChannelId != null,
+    currentChannelId: state.currentChannelId,
     usersInChannel: getUsersForMention(state),
   };
 };

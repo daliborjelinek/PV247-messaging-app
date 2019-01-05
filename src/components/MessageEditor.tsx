@@ -8,7 +8,7 @@ import * as Immutable from 'immutable';
 import '../styles/Draft.css';
 import 'draft-js-mention-plugin/lib/plugin.css';
 import {IMessageAppUser} from '../models/IMessageAppUser';
-import {colorStyleMap, decorators, getMentions} from '../utils/messageEditorUtils';
+import {colorStyleMap, decorators, getMentions, positionSuggestions} from '../utils/messageEditorUtils';
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -26,7 +26,7 @@ export interface IMessageEditorDispatchProps {
 }
 
 export interface IMessageEditorStateProps {
-  channelSelected: boolean;
+  currentChannelId: Uuid | null;
   usersInChannel: Immutable.List<IMessageAppUser>;
 }
 
@@ -232,6 +232,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     this.possibleMentions = [];
     mentionPlugin = createMentionPlugin({
       mentionPrefix: '@',
+      positionSuggestions,
     });
   }
 
@@ -241,7 +242,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    */
   componentDidMount() {
     document.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
-    if (!this.props.channelSelected) {
+    if (this.props.currentChannelId == null) {
       return;
     }
     // FOCUS ON EDITOR
@@ -251,11 +252,8 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   /**
    * Focus textarea if any channel is selected = message editor is visible.
    */
-  componentDidUpdate() {
-    if (!this.props.channelSelected) {
-      return;
-    }
-    if (this.possibleMentions.length === 0 && this.props.usersInChannel.size > 0) {
+  componentDidUpdate(prevProps: Readonly<IProps>): void {
+    if (prevProps.currentChannelId !== this.props.currentChannelId) {
       const suggestions = getMentions(this.props.usersInChannel);
       this.possibleMentions = suggestions;
       this.setState(prevState => ({...prevState, suggestions}));
@@ -303,7 +301,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    * RENDERING
    *********************************************************/
   public render(): JSX.Element | null {
-    if (!this.props.channelSelected) {
+    if (!this.props.currentChannelId == null) {
       return null;
     }
 
