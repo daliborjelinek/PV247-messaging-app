@@ -5,7 +5,7 @@
 @MessageEditor-padding: 10px;
 @MessageEditor-space-between-icons: 10px;
 @MessageEditor-icon-font-size: 16px;
-@MessageEditor__textAreaWrapper-height: @message-editor-height - 50px;
+@MessageEditor__textAreaWrapper-height: @message-editor-height - 55px;
 @MessageEditor__sendButton-offset: 50px;
 
 .MessageEditor {
@@ -26,34 +26,20 @@
     }
   }
 
-  .glyphicon {
-    font-size: @MessageEditor-icon-font-size;
-    margin-right: @MessageEditor-space-between-icons;
-    position: relative;
-    top: 3px;
-    font-weight: bold;
-  }
-
   .svg-inline--fa {
     margin-right: @MessageEditor-space-between-icons;
   }
 }
 
-.MessageEditor__textAreaWrapper {
+.MessageEditor__operationPane {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-end;
+  align-items: center;
+}
+
+.MessageEditor__textAreaWrapper {
   height: @MessageEditor__textAreaWrapper-height;
   margin-top: 10px;
   overflow: auto;
-}
-
-.MessageEditor__textArea {
-  width: 100%;
-  padding-right: 65px;
-  height: 90%;
-  resize: none;
 }
 
 .MessageEditor__sendButton {
