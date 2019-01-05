@@ -13,7 +13,7 @@ export class Link extends React.PureComponent<IProps> {
     const {url} = this.props.contentState.getEntity(this.props.entityKey).getData();
 
     return (
-      <a href={url}>{this.props.children}</a>
+      <a href={url} target={'_blank'}>{this.props.children}</a>
     );
   }
 }

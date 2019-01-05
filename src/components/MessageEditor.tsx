@@ -60,7 +60,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       'remove-range');
     this.setState(prevState => ({ ...prevState,
       editorState: emptyState,
-      focusedBlockType: '' }));
+      focusedBlockType: '' }), () => setTimeout(this.focus(), 0));
   };
 
   /**
