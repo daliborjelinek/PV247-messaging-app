@@ -1,0 +1,31 @@
+@BasicColorPicker__selection-dimensions: 100px;
+@BasicColorPicker__color-dimensions: 20px;
+
+.BasicColorPicker {
+  position: relative;
+  font-size: 17px;
+  top: 2px;
+  margin-right: 8px;
+}
+
+.BasicColorPicker__selection {
+  position: absolute;
+  background-color: white;
+  z-index: 10;
+  width: @BasicColorPicker__selection-dimensions;
+  border: 1px solid rgba(0, 0, 0, .15);
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.BasicColorPicker__color {
+  height: @BasicColorPicker__color-dimensions;
+  width: @BasicColorPicker__color-dimensions;
+  margin: 5px;
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover, &.active {
+    box-shadow: 0 0 2px 2px rgba(18, 149, 230, 0.84);
+  }
+}

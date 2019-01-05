@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {MouseEvent, SyntheticEvent} from 'react';
 import '../styles/components/MessageEditor.less';
 import {convertToRaw, DraftHandleValue, EditorState, Modifier, RawDraftContentState, RichUtils} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
@@ -7,12 +8,13 @@ import * as Immutable from 'immutable';
 import '../styles/Draft.css';
 import 'draft-js-mention-plugin/lib/plugin.css';
 import {IMessageAppUser} from '../models/IMessageAppUser';
-import {getMentions} from '../utils/messageEditorUtils';
+import {colorStyleMap, getMentions} from '../utils/messageEditorUtils';
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faBold, faEraser, faFile, faFileImage, faFont, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
 import {TextSizeDropDown} from './rich_text/TextSizeDropDown';
+import {BasicColorPicker, ColorPickerColor} from './rich_text/BasicColorPicker';
 
 // Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
@@ -32,6 +34,7 @@ type IState = {
   editorState: EditorState,
   suggestions: Mention[];
   focusedBlockType: string;
+  currentColor: ColorPickerColor;
 };
 
 export let mentionPlugin: any;
@@ -43,6 +46,8 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   // draft.js plugins does not have support for TypeScript :(
   private possibleMentions: Mention[];
 
+  private editor: Editor | null;
+
   /**********************************************************
    * EVENTS
    *********************************************************/
@@ -51,11 +56,25 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    */
   private onSave = () => {
     this.props.addMessage(convertToRaw(this.state.editorState.getCurrentContent()));
+    this.setState(prevState => ({ ...prevState, editorState: EditorState.createEmpty(), focusedBlockType: '' }));
   };
 
+  /**
+   * Function should be called every time when content of the message editor is changed.
+   * @param editorState
+   */
   private onChange = (editorState: EditorState) => {
     this.setState((prevState) => ({...prevState, editorState}));
     this.updateActionToolbar(editorState);
+  };
+
+  /**
+   * Set focus to editor.
+   */
+  private focus = () => {
+    if (this.editor) {
+      this.editor.focus();
+    }
   };
 
   /**
@@ -72,8 +91,14 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     return 'not-handled';
   };
 
+  private preventDefault = (e: SyntheticEvent<any>) => {
+    e.preventDefault();
+  };
+
+
   // EDITOR ACTIONS - INLINE STYLES
-  private onBoldClick = () => {
+  private onBoldClick = (e: MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
   };
 
@@ -83,6 +108,41 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
 
   private onUnderlineClick = () => {
     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
+  };
+
+  // https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/color/color.html
+  private onChangeTextColor = (toggledColor: ColorPickerColor) => {
+    const {editorState} = this.state;
+    const selection = editorState.getSelection();
+
+    // Let's just allow one color at a time. Turn off all active colors.
+    const nextContentState = Object.keys(colorStyleMap)
+      .reduce((contentState, color) => {
+        return Modifier.removeInlineStyle(contentState, selection, color);
+      }, editorState.getCurrentContent());
+
+    let nextEditorState = EditorState.push(
+      editorState,
+      nextContentState,
+      'change-inline-style'
+    );
+
+    const currentStyle = editorState.getCurrentInlineStyle();
+    // Unset style override for current color.
+    if (selection.isCollapsed()) {
+      nextEditorState = currentStyle.reduce((state, color) => {
+        return RichUtils.toggleInlineStyle(state!, color!);
+      }, nextEditorState);
+    }
+
+    // If the color is being toggled on, apply it.
+    if (!currentStyle.has(toggledColor)) {
+      nextEditorState = RichUtils.toggleInlineStyle(
+        nextEditorState,
+        toggledColor
+      );
+    }
+    this.onChange(nextEditorState);
   };
 
   private onRemoveInlineStyles = () => {
@@ -113,6 +173,14 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     this.onChange(RichUtils.toggleBlockType(this.state.editorState, fontSize));
   };
 
+  private toggleUl = () => {
+    this.onChange(RichUtils.toggleBlockType(this.state.editorState, 'unordered-list-item'));
+  };
+
+  private toggleOl = () => {
+    this.onChange(RichUtils.toggleBlockType(this.state.editorState, 'ordered-list-item'));
+  };
+
   // MENTION PLUGIN ACTIONS
   // @ts-ignore
   onSearchChange = (e: any) => {
@@ -131,6 +199,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       editorState: EditorState.createEmpty(),
       suggestions: [],
       focusedBlockType: '',
+      currentColor: 'BLACK',
     };
     this.possibleMentions = [];
     mentionPlugin = createMentionPlugin({
@@ -148,10 +217,11 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       return;
     }
     // FOCUS ON EDITOR
+    this.focus();
   }
 
   /**
-   * Focus textarea and resize MessageEditor if any channel is selected = message editor is visible.
+   * Focus textarea if any channel is selected = message editor is visible.
    */
   componentDidUpdate() {
     if (!this.props.channelSelected) {
@@ -162,7 +232,6 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       this.possibleMentions = suggestions;
       this.setState(prevState => ({...prevState, suggestions}));
     }
-    // FOCUS ON EDITOR
   }
 
   /**********************************************************
@@ -181,7 +250,6 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       return;
     }
     this.onSave();
-    this.setState(prevState => ({...prevState, editorState: EditorState.createEmpty()}));
   }
 
   /**
@@ -194,6 +262,13 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     const focusedBlockKey = selectionState.getFocusKey();
     const currentBlock = currentContent.getBlockForKey(focusedBlockKey);
     this.setState(prevState => ({...prevState, focusedBlockType: currentBlock.getType()}));
+
+    // select current color
+    const colors = Object.keys(colorStyleMap);
+    const currentStyle = editorState.getCurrentInlineStyle();
+    const currentColor = currentStyle.filter(value => value != null && colors.indexOf(value) !== -1).first();
+    const selectedColor = currentColor || 'BLACK';
+    this.setState(prevState => ({...prevState, currentColor: selectedColor as ColorPickerColor}));
   }
 
   /**********************************************************
@@ -209,30 +284,51 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
 
     return (
       <div className={'MessageEditor'}>
+
+        {/* Operation panel */}
         <div className={'MessageEditor__operationPane'}>
-          <span onClick={this.onBoldClick}><FontAwesomeIcon icon={'bold'} size={'lg'} /></span>
-          <span onClick={this.onItalicClick}><FontAwesomeIcon icon={'italic'} size={'lg'}/></span>
-          <span onClick={this.onUnderlineClick}><FontAwesomeIcon icon={'underline'} size={'lg'}/></span>
+          <span onMouseDown={this.preventDefault} onClick={this.onBoldClick}>
+            <FontAwesomeIcon icon={'bold'} size={'lg'} />
+          </span>
+          <span onMouseDown={this.preventDefault} onClick={this.onItalicClick}>
+            <FontAwesomeIcon icon={'italic'} size={'lg'}/>
+          </span>
+          <span onMouseDown={this.preventDefault} onClick={this.onUnderlineClick}>
+            <FontAwesomeIcon icon={'underline'} size={'lg'}/>
+          </span>
           <TextSizeDropDown onChange={this.toggleFontSize} focusedBlockType={this.state.focusedBlockType}/>
-          <span className={'glyphicon glyphicon-text-color'} />
-          <span onClick={this.onRemoveInlineStyles}><FontAwesomeIcon icon={'eraser'} size={'lg'}/></span>
-          <FontAwesomeIcon icon={'list-ol'} size={'lg'} />
-          <FontAwesomeIcon icon={'list-ul'} size={'lg'}/>
+          <BasicColorPicker onColorChange={this.onChangeTextColor} currentColor={this.state.currentColor}/>
+          <span onClick={this.onRemoveInlineStyles}>
+            <FontAwesomeIcon icon={'eraser'} size={'lg'}/>
+          </span>
+          <span onClick={this.toggleOl}>
+            <FontAwesomeIcon icon={'list-ol'} size={'lg'} />
+          </span>
+          <span onClick={this.toggleUl}>
+            <FontAwesomeIcon icon={'list-ul'} size={'lg'}/>
+          </span>
           <FontAwesomeIcon icon={'link'} size={'lg'}/>
-          <FontAwesomeIcon icon={'smile'} size={'lg'}/>
         </div>
-        <div className={'MessageEditor__textAreaWrapper'}>
+
+        {/* Editor */}
+        <div className={'MessageEditor__textAreaWrapper'} onClick={this.focus}>
           <Editor editorState={this.state.editorState}
                   onChange={this.onChange}
                   placeholder={'Press Ctrl + Enter to send the message'}
                   plugins={plugins}
-                  handleKeyCommand={this.handleKeyCommand}/>
+                  handleKeyCommand={this.handleKeyCommand}
+                  customStyleMap={colorStyleMap}
+                  ref={(ref) => this.editor = ref}/>
           <MentionSuggestions
             onSearchChange={this.onSearchChange}
             suggestions={this.state.suggestions}
           />
-          <button type={'submit'} className={'btn btn-primary MessageEditor__sendButton'}
-                  onClick={this.onSave}>Send</button>
+          <button type={'submit'}
+                  className={'btn btn-primary MessageEditor__sendButton'}
+                  onClick={this.onSave}
+                  onMouseDown={this.preventDefault}>
+            Send
+          </button>
         </div>
       </div>
     );
