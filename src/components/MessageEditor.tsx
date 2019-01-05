@@ -38,8 +38,6 @@ type IState = {
   currentColor: ColorPickerColor;
 };
 
-export let mentionPlugin: any;
-
 /**
  * Class which represents message editor. Text area is focused after page is loaded.
  */
@@ -48,6 +46,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   private possibleMentions: Mention[];
 
   private editor: Editor | null;
+  private readonly mentionPlugin: any;
 
   /**********************************************************
    * EVENTS
@@ -230,7 +229,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       currentColor: 'BLACK',
     };
     this.possibleMentions = [];
-    mentionPlugin = createMentionPlugin({
+    this.mentionPlugin = createMentionPlugin({
       mentionPrefix: '@',
       positionSuggestions,
     });
@@ -253,7 +252,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    * Focus textarea if any channel is selected = message editor is visible.
    */
   componentDidUpdate(prevProps: Readonly<IProps>): void {
-    if (prevProps.currentChannelId !== this.props.currentChannelId) {
+    if (this.props.currentChannelId != null && prevProps.currentChannelId !== this.props.currentChannelId) {
       const suggestions = getMentions(this.props.usersInChannel);
       this.possibleMentions = suggestions;
       this.setState(prevState => ({...prevState, suggestions}));
@@ -305,8 +304,8 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       return null;
     }
 
-    const { MentionSuggestions } = mentionPlugin;
-    const plugins = [mentionPlugin];
+    const { MentionSuggestions } = this.mentionPlugin;
+    const plugins = [this.mentionPlugin];
 
     return (
       <div className={'MessageEditor'}>

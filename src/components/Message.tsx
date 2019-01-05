@@ -5,9 +5,9 @@ import {IMessageAppUser} from '../models/IMessageAppUser';
 import {MessageActions} from './MessageActions';
 import {convertFromRaw, EditorState} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
-import {mentionPlugin} from './MessageEditor';
 import 'draft-js-mention-plugin/lib/plugin.css';
-import {colorStyleMap, decorators} from '../utils/messageEditorUtils';
+import {colorStyleMap, decorators, positionSuggestions} from '../utils/messageEditorUtils';
+import createMentionPlugin from 'draft-js-mention-plugin';
 
 export interface IMessageOwnProps {
   readonly id: Uuid;
@@ -24,6 +24,8 @@ type IState = {editorState: EditorState};
 
 export class Message extends React.PureComponent<IProps, IState> {
 
+  private readonly mentionPlugin: any;
+
   // even though Editor is read only, on change handler must be set
   // otherwise, mentions would not work - https://github.com/draft-js-plugins/draft-js-plugins/issues/530
   private onChange = (editorState: EditorState) => {
@@ -33,6 +35,10 @@ export class Message extends React.PureComponent<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     const rawData = this.props.message.value;
+    this.mentionPlugin = createMentionPlugin({
+      mentionPrefix: '@',
+      positionSuggestions,
+    });
     this.state = {
       editorState: EditorState.createWithContent(convertFromRaw(rawData)),
     };
@@ -44,7 +50,7 @@ export class Message extends React.PureComponent<IProps, IState> {
     const messageId = this.props.message.id;
     const pictureUrl = this.props.messageAuthor.picture;
 
-    const plugins = [mentionPlugin];
+    const plugins = [this.mentionPlugin];
 
     return (
       <div className={'Message'}>
