@@ -72,8 +72,8 @@ export function positionSuggestions(_ref: any) {
   }
 
   return {
-    left: left + 'px',
-    top: top + 'px',
+    left: left + 40 + 'px',
+    top: top - top - 20 + 'px',
     transform,
     transformOrigin: '1em 0%',
     transition,
