@@ -6,6 +6,7 @@ import {MessageActions} from './MessageActions';
 import {convertFromRaw, EditorState} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import {mentionPlugin} from './MessageEditor';
+import {imagePlugin} from './MessageEditor';
 import 'draft-js-mention-plugin/lib/plugin.css';
 
 export interface IMessageOwnProps {
@@ -43,7 +44,7 @@ export class Message extends React.PureComponent<IProps, IState> {
     const messageId = this.props.message.id;
     const pictureUrl = this.props.messageAuthor.picture;
 
-    const plugins = [mentionPlugin];
+    const plugins = [mentionPlugin, imagePlugin];
 
     return (
       <div className={'Message'}>

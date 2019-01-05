@@ -22,6 +22,8 @@ type IProps = IMessageListStateProps & IMessageListDispatchProps;
 export class MessageList extends React.PureComponent<IProps> {
 
   private nextUpdateTimer: number | null = null;
+  private messageListRef = React.createRef<HTMLDivElement>();
+  private listShouldAutoScroll: boolean = true;
 
   componentDidMount(): void {
     this.startUpdatingMessages();
@@ -31,6 +33,9 @@ export class MessageList extends React.PureComponent<IProps> {
   componentDidUpdate(prevProps: Readonly<IProps>): void {
     if (prevProps.channelId !== this.props.channelId) {
       this.startUpdatingMessages();
+    }
+    if (this.listShouldAutoScroll) {
+      this.messageListRef.current!.scrollTop = this.messageListRef.current!.scrollHeight;
     }
   }
 
@@ -76,9 +81,15 @@ export class MessageList extends React.PureComponent<IProps> {
     }
   }
 
+  private handleScroll = () => {
+    const scroll = Math.round(this.messageListRef.current!.scrollTop + this.messageListRef.current!.offsetHeight);
+    const scrollHeight =  Math.round(this.messageListRef.current!.scrollHeight);
+    this.listShouldAutoScroll = (scroll === scrollHeight);
+  };
+
   public render(): JSX.Element {
     return (
-      <div className={'MessageList'}>
+      <div onScroll={this.handleScroll} ref={this.messageListRef} className={'MessageList'}>
         {this.props.messageIds.map((messageId) => {
           return <MessageContainer id={messageId} key={messageId}/>;
         })}
