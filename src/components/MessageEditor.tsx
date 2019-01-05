@@ -1,6 +1,6 @@
 import * as React from 'react';
 import '../styles/components/MessageEditor.less';
-import {convertToRaw, DraftHandleValue, EditorState, RawDraftContentState, RichUtils, Modifier} from 'draft-js';
+import {convertToRaw, DraftHandleValue, EditorState, Modifier, RawDraftContentState, RichUtils} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin';
 import * as Immutable from 'immutable';
@@ -12,6 +12,7 @@ import {getMentions} from '../utils/messageEditorUtils';
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faBold, faEraser, faFile, faFileImage, faFont, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
+import {TextSizeDropDown} from './rich_text/TextSizeDropDown';
 
 // Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
@@ -30,6 +31,7 @@ type IProps = IMessageEditorDispatchProps & IMessageEditorStateProps;
 type IState = {
   editorState: EditorState,
   suggestions: Mention[];
+  focusedBlockType: string;
 };
 
 export let mentionPlugin: any;
@@ -41,6 +43,9 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   // draft.js plugins does not have support for TypeScript :(
   private possibleMentions: Mention[];
 
+  /**********************************************************
+   * EVENTS
+   *********************************************************/
   /**
    * Saves messages into Redux store and database/local storage.
    */
@@ -50,6 +55,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
 
   private onChange = (editorState: EditorState) => {
     this.setState((prevState) => ({...prevState, editorState}));
+    this.updateActionToolbar(editorState);
   };
 
   /**
@@ -66,7 +72,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     return 'not-handled';
   };
 
-  // EDITOR ACTIONS
+  // EDITOR ACTIONS - INLINE STYLES
   private onBoldClick = () => {
     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
   };
@@ -102,6 +108,11 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     this.setState(prevState => ({...prevState, editorState: newEditorState}));
   };
 
+  // EDITOR ACTIONS - BLOCK TYPES
+  private toggleFontSize = (fontSize: string) => {
+    this.onChange(RichUtils.toggleBlockType(this.state.editorState, fontSize));
+  };
+
   // MENTION PLUGIN ACTIONS
   // @ts-ignore
   onSearchChange = (e: any) => {
@@ -111,12 +122,15 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     }));
   };
 
-  // CONSTRUCTOR
+  /**********************************************************
+   * LIFE CYCLE METHODS
+   *********************************************************/
   constructor(props: IProps) {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
       suggestions: [],
+      focusedBlockType: '',
     };
     this.possibleMentions = [];
     mentionPlugin = createMentionPlugin({
@@ -151,6 +165,9 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     // FOCUS ON EDITOR
   }
 
+  /**********************************************************
+   * PRIVATE METHODS
+   *********************************************************/
   /**
    * When ctrl + enter key is pressed, textarea is focused and messageText is not empty,
    * message will be submitted.
@@ -167,6 +184,21 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     this.setState(prevState => ({...prevState, editorState: EditorState.createEmpty()}));
   }
 
+  /**
+   * Some items must be updated, when cursor position is changed.
+   */
+  private updateActionToolbar(editorState: EditorState) {
+    // select correct block type based on focused block
+    const currentContent = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+    const focusedBlockKey = selectionState.getFocusKey();
+    const currentBlock = currentContent.getBlockForKey(focusedBlockKey);
+    this.setState(prevState => ({...prevState, focusedBlockType: currentBlock.getType()}));
+  }
+
+  /**********************************************************
+   * RENDERING
+   *********************************************************/
   public render(): JSX.Element | null {
     if (!this.props.channelSelected) {
       return null;
@@ -181,7 +213,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
           <span onClick={this.onBoldClick}><FontAwesomeIcon icon={'bold'} size={'lg'} /></span>
           <span onClick={this.onItalicClick}><FontAwesomeIcon icon={'italic'} size={'lg'}/></span>
           <span onClick={this.onUnderlineClick}><FontAwesomeIcon icon={'underline'} size={'lg'}/></span>
-          <span className={'glyphicon glyphicon-text-size'} />
+          <TextSizeDropDown onChange={this.toggleFontSize} focusedBlockType={this.state.focusedBlockType}/>
           <span className={'glyphicon glyphicon-text-color'} />
           <span onClick={this.onRemoveInlineStyles}><FontAwesomeIcon icon={'eraser'} size={'lg'}/></span>
           <FontAwesomeIcon icon={'list-ol'} size={'lg'} />
