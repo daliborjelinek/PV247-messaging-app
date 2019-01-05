@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {MouseEvent, SyntheticEvent} from 'react';
 import '../styles/components/MessageEditor.less';
-import {ContentState, convertToRaw, DraftHandleValue, EditorState, Modifier, RawDraftContentState, RichUtils} from 'draft-js';
+import {convertToRaw, ContentState, DraftHandleValue, EditorState, RawDraftContentState, RichUtils, Modifier, AtomicBlockUtils} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin';
+import createImagePlugin from 'draft-js-image-plugin';
 import * as Immutable from 'immutable';
 import '../styles/Draft.css';
 import 'draft-js-mention-plugin/lib/plugin.css';
@@ -12,14 +13,17 @@ import {colorStyleMap, decorators, getMentions, positionSuggestions} from '../ut
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faBold, faEraser, faFile, faFileImage, faFont, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
+import {faBold, faEraser, faFile, faFileImage, faFont, faImage, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
 import {TextSizeDropDown} from './rich_text/TextSizeDropDown';
 import {BasicColorPicker, ColorPickerColor} from './rich_text/BasicColorPicker';
 import {CreateLink} from './rich_text/CreateLink';
+import {ChangeEvent} from 'react';
+import * as fileService from '../service/fileService';
+
 
 // Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
-                  faListUl, faLink, faFile, faFileImage, faSmile);
+                  faListUl, faLink, faFile, faFileImage, faSmile, faImage);
 
 export interface IMessageEditorDispatchProps {
   addMessage(rawContentState: RawDraftContentState): void;
@@ -38,12 +42,15 @@ type IState = {
   currentColor: ColorPickerColor;
 };
 
+export let imagePlugin: any;
+
 /**
  * Class which represents message editor. Text area is focused after page is loaded.
  */
 export class MessageEditor extends React.PureComponent<IProps, IState> {
   // draft.js plugins does not have support for TypeScript :(
   private possibleMentions: Mention[];
+  private fileInputRef = React.createRef<HTMLInputElement>();
 
   private editor: Editor | null;
   private readonly mentionPlugin: any;
@@ -211,7 +218,6 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   // MENTION PLUGIN ACTIONS
   // @ts-ignore
   onSearchChange = (e: any) => {
-    console.log(e);
     this.setState(prevState => ({
       ...prevState, suggestions: defaultSuggestionsFilter<Mention>(e.value, this.possibleMentions),
     }));
@@ -233,6 +239,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       mentionPrefix: '@',
       positionSuggestions,
     });
+    imagePlugin = createImagePlugin();
   }
 
   /**
@@ -277,6 +284,19 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     this.onSave();
   }
 
+  private onFileChange = async (e: ChangeEvent<HTMLInputElement>): Promise<any> => {
+    const fileResponse = await fileService.storeFileToServer(e.target!.files![0]);
+    const fileLinkResponse = await fileService.getStoredFileURL(fileResponse[0].id);
+    const editorState = this.state.editorState;
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity('image', 'IMMUTABLE', {src: fileLinkResponse.fileUri});
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {currentContent: contentStateWithEntity});
+    this.setState((prevState) => ({
+      ...prevState, editorState: AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' ')
+    }));
+  };
+
   /**
    * Some items must be updated, when cursor position is changed.
    */
@@ -305,7 +325,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     }
 
     const { MentionSuggestions } = this.mentionPlugin;
-    const plugins = [this.mentionPlugin];
+    const plugins = [this.mentionPlugin, imagePlugin];
 
     return (
       <div className={'MessageEditor'}>
@@ -326,6 +346,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
           <span onClick={this.onRemoveInlineStyles}>
             <FontAwesomeIcon icon={'eraser'} size={'lg'}/>
           </span>
+          <span onClick={() => this.fileInputRef.current!.click()}><FontAwesomeIcon icon={'image'} size={'lg'}/></span>
           <span onClick={this.toggleOl}>
             <FontAwesomeIcon icon={'list-ol'} size={'lg'} />
           </span>
@@ -356,6 +377,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
             Send
           </button>
         </div>
+        <input type="file" accept="image/*" onChange={this.onFileChange} id="file" ref={this.fileInputRef} style={{display: 'none'}}/>
       </div>
     );
   }

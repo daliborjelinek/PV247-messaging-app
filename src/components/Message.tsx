@@ -5,6 +5,8 @@ import {IMessageAppUser} from '../models/IMessageAppUser';
 import {MessageActions} from './MessageActions';
 import {convertFromRaw, EditorState} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
+import {mentionPlugin} from './MessageEditor';
+import {imagePlugin} from './MessageEditor';
 import 'draft-js-mention-plugin/lib/plugin.css';
 import {colorStyleMap, decorators, positionSuggestions} from '../utils/messageEditorUtils';
 import createMentionPlugin from 'draft-js-mention-plugin';
@@ -50,7 +52,7 @@ export class Message extends React.PureComponent<IProps, IState> {
     const messageId = this.props.message.id;
     const pictureUrl = this.props.messageAuthor.picture;
 
-    const plugins = [this.mentionPlugin];
+    const plugins = [this.mentionPlugin, imagePlugin];
 
     return (
       <div className={'Message'}>
