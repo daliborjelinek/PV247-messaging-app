@@ -1,20 +1,21 @@
 import * as React from 'react';
 import {MouseEvent, SyntheticEvent} from 'react';
 import '../styles/components/MessageEditor.less';
-import {convertToRaw, DraftHandleValue, EditorState, Modifier, RawDraftContentState, RichUtils} from 'draft-js';
+import {ContentState, convertToRaw, DraftHandleValue, EditorState, Modifier, RawDraftContentState, RichUtils} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin';
 import * as Immutable from 'immutable';
 import '../styles/Draft.css';
 import 'draft-js-mention-plugin/lib/plugin.css';
 import {IMessageAppUser} from '../models/IMessageAppUser';
-import {colorStyleMap, getMentions} from '../utils/messageEditorUtils';
+import {colorStyleMap, decorators, getMentions} from '../utils/messageEditorUtils';
 // Font awesome
 import {library as faIconLibrary} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faBold, faEraser, faFile, faFileImage, faFont, faItalic, faLink, faListOl, faListUl, faSmile, faUnderline} from '@fortawesome/free-solid-svg-icons';
 import {TextSizeDropDown} from './rich_text/TextSizeDropDown';
 import {BasicColorPicker, ColorPickerColor} from './rich_text/BasicColorPicker';
+import {CreateLink} from './rich_text/CreateLink';
 
 // Add imported icons to library
 faIconLibrary.add(faBold, faItalic, faUnderline, faFont, faEraser, faListOl,
@@ -56,7 +57,11 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    */
   private onSave = () => {
     this.props.addMessage(convertToRaw(this.state.editorState.getCurrentContent()));
-    this.setState(prevState => ({ ...prevState, editorState: EditorState.createEmpty(), focusedBlockType: '' }));
+    const emptyState = EditorState.push(this.state.editorState, ContentState.createFromText(''),
+      'remove-range');
+    this.setState(prevState => ({ ...prevState,
+      editorState: emptyState,
+      focusedBlockType: '' }));
   };
 
   /**
@@ -167,6 +172,29 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
 
     this.setState(prevState => ({...prevState, editorState: newEditorState}));
   };
+
+  // LINK
+  private onSubmitLink = (link: string) => {
+    if (link === '') {
+      return this.removeLink();
+    }
+    const {editorState} = this.state;
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'LINK',
+      'MUTABLE',
+      {url: link}
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+    this.onChange(RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey));
+    setTimeout(this.focus, 0);
+  };
+
+  private removeLink() {
+    const {editorState} = this.state;
+    this.onChange(RichUtils.toggleLink(editorState, editorState.getSelection(), null));
+  }
 
   // EDITOR ACTIONS - BLOCK TYPES
   private toggleFontSize = (fontSize: string) => {
@@ -307,7 +335,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
           <span onClick={this.toggleUl}>
             <FontAwesomeIcon icon={'list-ul'} size={'lg'}/>
           </span>
-          <FontAwesomeIcon icon={'link'} size={'lg'}/>
+          <CreateLink editorState={this.state.editorState} onSubmitUrl={this.onSubmitLink}/>
         </div>
 
         {/* Editor */}
@@ -318,6 +346,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
                   plugins={plugins}
                   handleKeyCommand={this.handleKeyCommand}
                   customStyleMap={colorStyleMap}
+                  decorators={decorators}
                   ref={(ref) => this.editor = ref}/>
           <MentionSuggestions
             onSearchChange={this.onSearchChange}

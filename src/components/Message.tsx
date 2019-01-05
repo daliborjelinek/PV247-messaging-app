@@ -7,7 +7,7 @@ import {convertFromRaw, EditorState} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import {mentionPlugin} from './MessageEditor';
 import 'draft-js-mention-plugin/lib/plugin.css';
-import {colorStyleMap} from '../utils/messageEditorUtils';
+import {colorStyleMap, decorators} from '../utils/messageEditorUtils';
 
 export interface IMessageOwnProps {
   readonly id: Uuid;
@@ -58,6 +58,7 @@ export class Message extends React.PureComponent<IProps, IState> {
           <Editor editorState={this.state.editorState}
                   readOnly
                   plugins={plugins}
+                  decorators={decorators}
                   customStyleMap={colorStyleMap}
                   onChange={this.onChange}/>
         </div>

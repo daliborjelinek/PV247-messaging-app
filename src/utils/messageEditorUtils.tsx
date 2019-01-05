@@ -1,5 +1,7 @@
 import * as Immutable from 'immutable';
 import {IMessageAppUser} from '../models/IMessageAppUser';
+import { ContentBlock, ContentState } from 'draft-js';
+import {Link} from '../components/rich_text/Link';
 
 // MENTIONS
 /**
@@ -35,3 +37,24 @@ export const colorStyleMap = {
     color: 'brown',
   },
 };
+
+export function findLinkEntities(contentBlock: ContentBlock, callback: any, contentState: ContentState): void {
+  contentBlock.findEntityRanges(
+    (character) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'LINK'
+      );
+    },
+    callback
+  );
+}
+
+// DECORATORS
+export const decorators = [
+  {
+    strategy: findLinkEntities,
+    component: Link,
+  }
+];
