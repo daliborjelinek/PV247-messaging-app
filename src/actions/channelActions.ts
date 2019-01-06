@@ -39,9 +39,9 @@ export const onChannelSelected = (channelId: Uuid): any => {
     dispatch(currentChannelChangeStarted());
     const selectedChannel = getState().channels.byId.get(channelId)!;
     ChannelService.setLastActiveChannelId(channelId, getState().loggedUser!.email);
-    dispatch(currentChannelChangeFinished(selectedChannel));
     // render messages for given channel
-    dispatch(loadMessagesForChannel(channelId));
+    await dispatch(loadMessagesForChannel(channelId));
+    dispatch(currentChannelChangeFinished(selectedChannel));
     dispatch(restoreMessageActualizationTimeout());
   };
 };
