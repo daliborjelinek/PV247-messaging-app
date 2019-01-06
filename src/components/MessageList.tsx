@@ -27,6 +27,9 @@ export class MessageList extends React.PureComponent<IProps> {
 
   componentDidMount(): void {
     this.startUpdatingMessages();
+    window.onload = () => {
+      this.messageListRef.current!.scrollTop = this.messageListRef.current!.scrollHeight;
+    };
   }
 
   // it is possible, that channel was changed - in that case start updating
