@@ -22,19 +22,20 @@ export const updateProfileFinished = (user: IMessageAppUser): Action<USER_PROFIL
   payload: user,
 });
 
-export const updateProfile = (newUserName: string, picture: File): any => {
+export const updateProfile = (newUserName: string, picture: File | null): any => {
     return async (dispatch: Dispatch, getState: () => IMessageAppState): Promise<void> => {
       dispatch(updateProfileStarted());
       const newUser = {
         ...getState().loggedUser!,
         userName: newUserName,
       };
+
       if (picture != null) {
         const fileResponse = await fileService.storeFileToServer(picture);
         const fileLinkResponse = await fileService.getStoredFileURL(fileResponse[0].id);
         newUser.picture = fileLinkResponse.fileUri;
-
       }
+
       await userService.updateUser(newUser);
       dispatch(updateProfileFinished(newUser));
     };
