@@ -53,7 +53,7 @@ export const loadApp = (): any => {
     }
     const messagesForActiveChannel = MessageService.loadMessagesForChannel(activeChannel.id);
     const users = UserService.loadUsers();
-    Promise.all([messagesForActiveChannel, users]).then((values) => {
+    return Promise.all([messagesForActiveChannel, users]).then((values) => {
       dispatch(loadingFinished(channels, values[0], values[1]));
       // after loading is finished, change active channel to the first one
       dispatch(currentChannelChangeFinished(activeChannel));
