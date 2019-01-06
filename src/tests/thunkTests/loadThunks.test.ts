@@ -9,7 +9,7 @@ import * as MessageService from '../../service/messageService';
 import * as UserService from '../../service/userService';
 import {CURRENT_CHANNEL_CHANGE_FINISHED, MESSAGE_APP_LOADING_FINISHED, MESSAGE_APP_LOADING_STARTED} from '../../constants/actionTypes';
 import {IMessageAppUser} from '../../models/IMessageAppUser';
-import {loadApp} from '../../actions/loadAction';
+import {loadApp} from '../../actions/loadActions';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
