@@ -50,11 +50,18 @@ export class Message extends React.PureComponent<IProps, IState> {
     };
   }
 
+  // noinspection JSMethodCanBeStatic
+  private getDateTimeString(date: Date): string {
+    const dateStr = date.toLocaleString();
+    return dateStr.slice(0, 10) + ' ' + dateStr.slice(11, 19);
+  }
+
   public render(): JSX.Element {
     const isMyMessage = this.props.isMyMessage;
     const messageRating = this.props.message.rating;
     const messageId = this.props.message.id;
     const pictureUrl = this.props.messageAuthor.picture;
+    const dateTimeStr = this.getDateTimeString(this.props.message.createdAt);
 
     const plugins = [this.mentionPlugin, imagePlugin, this.emojiPlugin];
 
@@ -66,7 +73,7 @@ export class Message extends React.PureComponent<IProps, IState> {
         </div>
         <div className={'Message_content'}>
           <span className={'Message__author'}>{this.props.messageAuthor && this.props.messageAuthor.userName}</span>
-          <span className={'Message__date'}>{this.props.message.createdAt.toLocaleString()}</span>
+          <span className={'Message__date'}>{dateTimeStr}</span>
           <Editor editorState={this.state.editorState}
                   readOnly
                   plugins={plugins}

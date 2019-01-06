@@ -33,7 +33,7 @@ export class ChannelItem extends React.PureComponent<IProps> {
                ref={provided.innerRef}
                onClick={() => this.props.onChannelSelected(this.props.id)}>
             <span className="ChannelItem__name">{this.props.channelItem.name}</span>
-            <span className="ChannelItem__countOfNewMessages badge badge-pill">{this.props.channelItem.countOfNewMessages}</span>
+            {/*<span className="ChannelItem__countOfNewMessages badge badge-pill">{this.props.channelItem.countOfNewMessages}</span>*/}
           </div>
         )}
       </Draggable>

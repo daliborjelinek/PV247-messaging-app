@@ -139,7 +139,6 @@ export class ChannelHeader extends React.PureComponent<IProps, IState> {
           </div>
         </div>
         <div className={'ChannelHeader__actions'}>
-          <span className={'glyphicon glyphicon-search'} />
           <DropDownMenu items={this.getMenuItems()}
                         iconClass={'glyphicon glyphicon-menu-hamburger'}
                         openMenuDirection={'RIGHT'}/>
