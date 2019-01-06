@@ -2,7 +2,7 @@ import {IMessageAppState} from '../models/IMessageAppState';
 import {connect} from 'react-redux';
 import {App, IAppDispatchProps, IAppStateProps} from '../App';
 import {Dispatch} from 'redux';
-import {autoLogin} from '../actions/loginAction';
+import {autoLogin} from '../actions/loginActions';
 
 const mapStateToProps = (state: IMessageAppState): IAppStateProps => {
   return {

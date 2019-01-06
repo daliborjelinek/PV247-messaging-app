@@ -1,9 +1,9 @@
 import {Dispatch} from 'redux';
-import {loadApp} from '../actions/loadAction';
+import {loadApp} from '../actions/loadActions';
 import {connect} from 'react-redux';
 import {IMessageAppDispatchProps, MessageApp} from '../components/MessageApp';
-import {logout} from '../actions/logoutAction';
-import {showDialog} from '../actions/UserProfileActions';
+import {logout} from '../actions/logoutActions';
+import {showDialog} from '../actions/userProfileActions';
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

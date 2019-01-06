@@ -4,8 +4,8 @@ import {
   UPDATE_MESSAGES_TIMOUT
 } from '../constants/actionTypes';
 
-const UPDATE_MESSAGES_TIMOUT_MIN = 10;
-const UPDATE_MESSAGES_TIMEOUT_MAX = 80;
+const UPDATE_MESSAGES_TIMOUT_MIN = 1;
+const UPDATE_MESSAGES_TIMEOUT_MAX = 10;
 
 export const updateMessagesTimeoutReducer = (prevState: number = UPDATE_MESSAGES_TIMOUT_MIN, action: Action<UPDATE_MESSAGES_TIMOUT>) => {
   switch (action.type) {

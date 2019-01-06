@@ -70,7 +70,7 @@ export const addMessage = (rawContentState: RawDraftContentState): any => {
     const authorEmail = getState().loggedUser!.email;
     // if message editor is shown, current channel must be not null
     const channelId = getState().currentChannelId!;
-    const newMessage = await  MessageService.createMessage(rawContentState, authorEmail, channelId);
+    const newMessage = await MessageService.createMessage(rawContentState, authorEmail, channelId);
     dispatch(messageAddFinished(newMessage));
     dispatch(restoreMessageActualizationTimeout());
   };

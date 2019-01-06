@@ -2,7 +2,7 @@ import {IMessageAppState} from '../models/IMessageAppState';
 import {UserProfile, IUserProfileStateProps, IUserProfileDispatchProps} from '../components/UserProfile';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
-import {hideDialog, updateProfile} from '../actions/UserProfileActions';
+import {hideDialog, updateProfile} from '../actions/userProfileActions';
 
 
 

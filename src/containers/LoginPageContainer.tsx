@@ -1,5 +1,5 @@
 import {Dispatch} from 'redux';
-import {clearAuthenticationErrorMessage, logIn} from '../actions/loginAction';
+import {clearAuthenticationErrorMessage, logIn} from '../actions/loginActions';
 import {connect} from 'react-redux';
 import {ILoginPageDispatchProps, ILoginPageStateProps, LoginPage} from '../components/LoginPage';
 import {IMessageAppState} from '../models/IMessageAppState';
