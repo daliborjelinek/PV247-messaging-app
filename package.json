@@ -32,6 +32,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/axios-mock-adapter": "^1.10.0",
     "@types/delay": "^3.1.0",
     "@types/draft-js": "^0.10.27",
     "@types/jest": "^23.1.5",
@@ -40,9 +41,11 @@
     "@types/react-beautiful-dnd": "^7.1.2",
     "@types/react-dom": "^16.0.9",
     "@types/react-redux": "^6.0.9",
+    "@types/redux-mock-store": "^1.0.0",
     "@types/redux-thunk": "^2.1.0",
     "@types/uuid": "^3.4.4",
     "@types/webpack-env": "^1.13.6",
+    "axios-mock-adapter": "^1.16.0",
     "clean-webpack-plugin": "^1.0.0",
     "css-loader": "^1.0.0",
     "extract-loader": "^2.0.1",
@@ -51,6 +54,7 @@
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "react-set-state-usage": "^2.0.1",
+    "redux-mock-store": "^1.5.3",
     "style-loader": "^0.22.1",
     "ts-jest": "^23.0.0",
     "ts-loader": "^4.4.2",
