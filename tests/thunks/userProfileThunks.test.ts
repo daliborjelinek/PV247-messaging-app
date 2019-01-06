@@ -1,9 +1,9 @@
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import * as UserService from '../../service/userService';
-import {USER_PROFILE_UPDATE_FINISHED, USER_PROFILE_UPDATE_STARTED} from '../../constants/actionTypes';
-import {IMessageAppUser} from '../../models/IMessageAppUser';
-import {updateProfile} from '../../actions/userProfileActions';
+import * as UserService from '../../src/service/userService';
+import {USER_PROFILE_UPDATE_FINISHED, USER_PROFILE_UPDATE_STARTED} from '../../src/constants/actionTypes';
+import {IMessageAppUser} from '../../src/models/IMessageAppUser';
+import {updateProfile} from '../../src/actions/userProfileActions';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

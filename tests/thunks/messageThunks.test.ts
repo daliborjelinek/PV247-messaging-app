@@ -1,9 +1,9 @@
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import {IMessageAppMessage} from '../../models/IMessageAppMessage';
-import {RatingPolarity} from '../../enums/RatingPolarity';
+import {IMessageAppMessage} from '../../src/models/IMessageAppMessage';
+import {RatingPolarity} from '../../src/enums/RatingPolarity';
 import * as Immutable from 'immutable';
-import {loadMessagesForChannel, addMessage, deleteMessage, incrementRating, decrementRating, updateMessagesInChannel} from '../../actions/messageActions';
+import {loadMessagesForChannel, addMessage, deleteMessage, incrementRating, decrementRating, updateMessagesInChannel} from '../../src/actions/messageActions';
 import {
   ACTUALIZE_MESSAGES_IN_CHANNEL_FINISHED,
   ACTUALIZE_MESSAGES_IN_CHANNEL_STARTED,
@@ -16,9 +16,9 @@ import {
   MESSAGE_LOADING_FINISHED,
   MESSAGE_LOADING_STARTED,
   RESTORE_MESSAGES_UPDATE_TIMEOUT
-} from '../../constants/actionTypes';
-import * as MessageService from '../../service/messageService';
-import * as MessageAppSelector from '../../selectors/messageAppSelectors';
+} from '../../src/constants/actionTypes';
+import * as MessageService from '../../src/service/messageService';
+import * as MessageAppSelector from '../../src/selectors/messageAppSelectors';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

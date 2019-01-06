@@ -1,10 +1,10 @@
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import {IMessageAppUser} from '../../models/IMessageAppUser';
-import * as AuthenticationService from '../../service/authenticationService';
-import {MESSAGE_APP_LOGGING_AUTO_FAILED, MESSAGE_APP_LOGGING_AUTO_STARTED, MESSAGE_APP_LOGGING_AUTO_SUCCESS, MESSAGE_APP_LOGGING_FAILED, MESSAGE_APP_LOGGING_STARTED, MESSAGE_APP_LOGGING_SUCCESS} from '../../constants/actionTypes';
-import {autoLogin, logIn} from '../../actions/loginActions';
-import {LOGIN_BAD_PASSWORD, LOGIN_EMAIL_DOES_NOT_EXIST, LOGIN_USER_ALREADY_REGISTERED} from '../../constants/errors';
+import {IMessageAppUser} from '../../src/models/IMessageAppUser';
+import * as AuthenticationService from '../../src/service/authenticationService';
+import {MESSAGE_APP_LOGGING_AUTO_FAILED, MESSAGE_APP_LOGGING_AUTO_STARTED, MESSAGE_APP_LOGGING_AUTO_SUCCESS, MESSAGE_APP_LOGGING_FAILED, MESSAGE_APP_LOGGING_STARTED, MESSAGE_APP_LOGGING_SUCCESS} from '../../src/constants/actionTypes';
+import {autoLogin, logIn} from '../../src/actions/loginActions';
+import {LOGIN_BAD_PASSWORD, LOGIN_EMAIL_DOES_NOT_EXIST, LOGIN_USER_ALREADY_REGISTERED} from '../../src/constants/errors';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

@@ -1,15 +1,15 @@
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import {IMessageAppMessage} from '../../models/IMessageAppMessage';
-import {RatingPolarity} from '../../enums/RatingPolarity';
-import {IMessageAppChannel} from '../../models/IMessageAppChannel';
+import {IMessageAppMessage} from '../../src/models/IMessageAppMessage';
+import {RatingPolarity} from '../../src/enums/RatingPolarity';
+import {IMessageAppChannel} from '../../src/models/IMessageAppChannel';
 import * as Immutable from 'immutable';
-import * as ChannelService from '../../service/channelService';
-import * as MessageService from '../../service/messageService';
-import * as UserService from '../../service/userService';
-import {CURRENT_CHANNEL_CHANGE_FINISHED, MESSAGE_APP_LOADING_FINISHED, MESSAGE_APP_LOADING_STARTED} from '../../constants/actionTypes';
-import {IMessageAppUser} from '../../models/IMessageAppUser';
-import {loadApp} from '../../actions/loadActions';
+import * as ChannelService from '../../src/service/channelService';
+import * as MessageService from '../../src/service/messageService';
+import * as UserService from '../../src/service/userService';
+import {CURRENT_CHANNEL_CHANGE_FINISHED, MESSAGE_APP_LOADING_FINISHED, MESSAGE_APP_LOADING_STARTED} from '../../src/constants/actionTypes';
+import {IMessageAppUser} from '../../src/models/IMessageAppUser';
+import {loadApp} from '../../src/actions/loadActions';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
