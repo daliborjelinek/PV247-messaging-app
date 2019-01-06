@@ -6,8 +6,8 @@ import {
 } from '../constants/actionTypes';
 import {combineReducers} from 'redux';
 
-const byEmail = (prevState = Immutable.Map<Uuid, IMessageAppUser>(),
-                 action: Action<MESSAGE_APP_USERS_ACTIONS | USER_PROFILE_UPDATE_FINISHED>): Immutable.Map<Uuid, IMessageAppUser> => {
+export const byEmail = (prevState = Immutable.Map<Uuid, IMessageAppUser>(),
+                        action: Action<MESSAGE_APP_USERS_ACTIONS | USER_PROFILE_UPDATE_FINISHED>): Immutable.Map<Uuid, IMessageAppUser> => {
   switch (action.type) {
     case MESSAGE_APP_LOADING_FINISHED:
       return Immutable.Map(action.payload.users.map((user: IMessageAppUser) => [user.email, user]));
