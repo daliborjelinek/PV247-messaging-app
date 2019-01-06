@@ -1,13 +1,15 @@
 import * as React from 'react';
-import {MouseEvent, SyntheticEvent} from 'react';
+import {ChangeEvent, MouseEvent, SyntheticEvent} from 'react';
 import '../styles/components/MessageEditor.less';
-import {convertToRaw, ContentState, DraftHandleValue, EditorState, RawDraftContentState, RichUtils, Modifier, AtomicBlockUtils} from 'draft-js';
+import {AtomicBlockUtils, ContentState, convertToRaw, DraftHandleValue, EditorState, Modifier, RawDraftContentState, RichUtils} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin';
+import createEmojiPlugin from 'draft-js-emoji-plugin';
 import createImagePlugin from 'draft-js-image-plugin';
 import * as Immutable from 'immutable';
 import '../styles/Draft.css';
 import 'draft-js-mention-plugin/lib/plugin.css';
+import 'draft-js-emoji-plugin/lib/plugin.css';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 import {colorStyleMap, decorators, getMentions, positionSuggestions} from '../utils/messageEditorUtils';
 // Font awesome
@@ -17,7 +19,6 @@ import {faBold, faEraser, faFile, faFileImage, faFont, faImage, faItalic, faLink
 import {TextSizeDropDown} from './rich_text/TextSizeDropDown';
 import {BasicColorPicker, ColorPickerColor} from './rich_text/BasicColorPicker';
 import {CreateLink} from './rich_text/CreateLink';
-import {ChangeEvent} from 'react';
 import * as fileService from '../service/fileService';
 
 
@@ -54,6 +55,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
 
   private editor: Editor | null;
   private readonly mentionPlugin: any;
+  private readonly emojiPlugin: any;
 
   /**********************************************************
    * EVENTS
@@ -239,6 +241,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       mentionPrefix: '@',
       positionSuggestions,
     });
+    this.emojiPlugin = createEmojiPlugin();
     imagePlugin = createImagePlugin();
   }
 
@@ -325,13 +328,15 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
     }
 
     const { MentionSuggestions } = this.mentionPlugin;
-    const plugins = [this.mentionPlugin, imagePlugin];
+    const { EmojiSelect } = this.emojiPlugin;
+    const plugins = [this.mentionPlugin, imagePlugin, this.emojiPlugin];
 
     return (
       <div className={'MessageEditor'}>
 
         {/* Operation panel */}
         <div className={'MessageEditor__operationPane'}>
+          <EmojiSelect />
           <span onMouseDown={this.preventDefault} onClick={this.onBoldClick}>
             <FontAwesomeIcon icon={'bold'} size={'lg'} />
           </span>

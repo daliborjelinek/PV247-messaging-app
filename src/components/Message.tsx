@@ -6,9 +6,12 @@ import {MessageActions} from './MessageActions';
 import {convertFromRaw, EditorState} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import {imagePlugin} from './MessageEditor';
-import 'draft-js-mention-plugin/lib/plugin.css';
 import {colorStyleMap, decorators, positionSuggestions} from '../utils/messageEditorUtils';
 import createMentionPlugin from 'draft-js-mention-plugin';
+import createEmojiPlugin from 'draft-js-emoji-plugin';
+import 'draft-js-mention-plugin/lib/plugin.css';
+import 'draft-js-emoji-plugin/lib/plugin.css';
+
 
 export interface IMessageOwnProps {
   readonly id: Uuid;
@@ -26,6 +29,7 @@ type IState = {editorState: EditorState};
 export class Message extends React.PureComponent<IProps, IState> {
 
   private readonly mentionPlugin: any;
+  private readonly emojiPlugin: any;
 
   // even though Editor is read only, on change handler must be set
   // otherwise, mentions would not work - https://github.com/draft-js-plugins/draft-js-plugins/issues/530
@@ -40,6 +44,7 @@ export class Message extends React.PureComponent<IProps, IState> {
       mentionPrefix: '@',
       positionSuggestions,
     });
+    this.emojiPlugin = createEmojiPlugin();
     this.state = {
       editorState: EditorState.createWithContent(convertFromRaw(rawData)),
     };
@@ -51,7 +56,7 @@ export class Message extends React.PureComponent<IProps, IState> {
     const messageId = this.props.message.id;
     const pictureUrl = this.props.messageAuthor.picture;
 
-    const plugins = [this.mentionPlugin, imagePlugin];
+    const plugins = [this.mentionPlugin, imagePlugin, this.emojiPlugin];
 
     return (
       <div className={'Message'}>
