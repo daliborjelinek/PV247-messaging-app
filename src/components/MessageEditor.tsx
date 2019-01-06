@@ -42,7 +42,6 @@ type IState = {
   currentColor: ColorPickerColor;
 };
 
-export let mentionPlugin: any;
 export let imagePlugin: any;
 
 /**
@@ -54,6 +53,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
   private fileInputRef = React.createRef<HTMLInputElement>();
 
   private editor: Editor | null;
+  private readonly mentionPlugin: any;
 
   /**********************************************************
    * EVENTS
@@ -67,7 +67,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       'remove-range');
     this.setState(prevState => ({ ...prevState,
       editorState: emptyState,
-      focusedBlockType: '' }));
+      focusedBlockType: '' }), () => setTimeout(this.focus(), 0));
   };
 
   /**
@@ -235,7 +235,7 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       currentColor: 'BLACK',
     };
     this.possibleMentions = [];
-    mentionPlugin = createMentionPlugin({
+    this.mentionPlugin = createMentionPlugin({
       mentionPrefix: '@',
       positionSuggestions,
     });
@@ -259,12 +259,11 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    * Focus textarea if any channel is selected = message editor is visible.
    */
   componentDidUpdate(prevProps: Readonly<IProps>): void {
-    if (prevProps.currentChannelId !== this.props.currentChannelId) {
+    if (this.props.currentChannelId != null && prevProps.currentChannelId !== this.props.currentChannelId) {
       const suggestions = getMentions(this.props.usersInChannel);
       this.possibleMentions = suggestions;
       this.setState(prevState => ({...prevState, suggestions}));
     }
-    // FOCUS ON EDITOR
   }
 
   /**********************************************************
@@ -325,8 +324,8 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
       return null;
     }
 
-    const { MentionSuggestions } = mentionPlugin;
-    const plugins = [mentionPlugin, imagePlugin];
+    const { MentionSuggestions } = this.mentionPlugin;
+    const plugins = [this.mentionPlugin, imagePlugin];
 
     return (
       <div className={'MessageEditor'}>
