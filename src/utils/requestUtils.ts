@@ -1,7 +1,7 @@
 import * as messageAppRepository from '../repository/messageAppRepository';
 import axios, {AxiosPromise, AxiosRequestConfig} from 'axios';
 
-const APP_ID = 'ace1cd27-4c7a-4ef3-b415-b753159fc7a4';
+const APP_ID = '342df009-59b5-4215-9d07-57a8502b4839';
 const BASE_URL = `https://pv247messaging.azurewebsites.net/api/v2/`;
 
 /*************************************************
