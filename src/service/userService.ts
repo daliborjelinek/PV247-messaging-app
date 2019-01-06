@@ -2,7 +2,7 @@ import * as Immutable from 'immutable';
 import {GET, PUT, getUserUrl} from '../utils/requestUtils';
 import {ServerResponseUser} from '../@types/api';
 import {IMessageAppUser} from '../models/IMessageAppUser';
-
+import * as MessageAppRepository from '../repository/messageAppRepository';
 
 /**
  * Load all users and transform them to the Immutable List.
@@ -32,5 +32,6 @@ function mapToUser(serverResponseUser: ServerResponseUser): IMessageAppUser {
 
 export async function updateUser(user: IMessageAppUser): Promise<IMessageAppUser> {
     const response = await PUT<IMessageAppUser>(getUserUrl() + '/' + user.email, {customData: user});
+    MessageAppRepository.saveLoggedUser(user);
     return response.data;
 }

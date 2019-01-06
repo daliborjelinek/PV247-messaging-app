@@ -1,9 +1,8 @@
-import {USER_PROFILE_SHOW_DIALOG, USER_PROFILE_HIDE_DIALOG, USER_PROFILE_UPDATE_STARTED, USER_PROFILE_UPDATE_FINISHED} from '../constants/actionTypes';
+import {USER_PROFILE_HIDE_DIALOG, USER_PROFILE_SHOW_DIALOG, USER_PROFILE_UPDATE_FINISHED, USER_PROFILE_UPDATE_STARTED} from '../constants/actionTypes';
 import {Dispatch} from 'redux';
 import * as userService from '../service/userService';
 import * as fileService from '../service/fileService';
 import {IMessageAppState} from '../models/IMessageAppState';
-import {saveLoggedUser} from '../repository/messageAppRepository';
 import {IMessageAppUser} from '../models/IMessageAppUser';
 
 export const showDialog = (): Action<USER_PROFILE_SHOW_DIALOG> => ({
@@ -36,7 +35,6 @@ export const updateProfile = (newUserName: string, picture: File): any => {
         newUser.picture = fileLinkResponse.fileUri;
 
       }
-      saveLoggedUser(newUser);
       await userService.updateUser(newUser);
       dispatch(updateProfileFinished(newUser));
     };
