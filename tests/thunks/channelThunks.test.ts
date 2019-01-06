@@ -1,9 +1,9 @@
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import * as Immutable from 'immutable';
-import {IMessageAppChannel} from '../../models/IMessageAppChannel';
-import * as ChannelService from '../../service/channelService';
-import * as MessageService from '../../service/messageService';
+import {IMessageAppChannel} from '../../src/models/IMessageAppChannel';
+import * as ChannelService from '../../src/service/channelService';
+import * as MessageService from '../../src/service/messageService';
 import {
   CHANNEL_ADD_FINISHED,
   CHANNEL_ADD_STARTED, CHANNEL_DELETE_FAILED, CHANNEL_DELETE_FINISHED, CHANNEL_DELETE_STARTED, CHANNEL_INVITE_USER_FINISHED, CHANNEL_INVITE_USER_STARTED, CHANNEL_RENAME_FINISHED,
@@ -13,8 +13,8 @@ import {
   MESSAGE_LOADING_FINISHED,
   MESSAGE_LOADING_STARTED,
   RESTORE_MESSAGES_UPDATE_TIMEOUT
-} from '../../constants/actionTypes';
-import {addChannel, addUserToActiveChannel, deleteChannel, onChannelSelected, renameChannel, reorderChannels} from '../../actions/channelActions';
+} from '../../src/constants/actionTypes';
+import {addChannel, addUserToActiveChannel, deleteChannel, onChannelSelected, renameChannel, reorderChannels} from '../../src/actions/channelActions';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
