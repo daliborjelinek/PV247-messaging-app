@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {IDropDownMenuItem} from './DropDownMenu';
-import {ChatWindow} from './ChatWindow';
+import {ChatWindowContainer} from '../containers/ChatWindowContainer';
 import {MessageAppHeader} from './MessageAppHeader';
 import '../styles/components/MessageApp.less';
 import {ChannelListContainer} from '../containers/ChannelListContainer';
@@ -46,7 +46,7 @@ export class MessageApp extends React.PureComponent<IProps> {
         <AlertCloseableContainer />
         <MessageAppHeader profileMenuItems={profileMenuItems}/>
         <ChannelListContainer />
-        <ChatWindow />
+        <ChatWindowContainer />
         <UserProfileContainer/>
       </div>
     );

@@ -35,4 +35,5 @@ export interface IMessageAppState {
   isAlertBarVisible: boolean;
   // number of seconds until messages are updated for active channel (server request is made)
   updateMessagesTimeout: number;
+  channelLoading: boolean;
 }
