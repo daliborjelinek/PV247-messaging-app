@@ -5,7 +5,6 @@ import {IMessageAppUser} from '../models/IMessageAppUser';
 import {MessageActions} from './MessageActions';
 import {convertFromRaw, EditorState} from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
-import {mentionPlugin} from './MessageEditor';
 import {imagePlugin} from './MessageEditor';
 import 'draft-js-mention-plugin/lib/plugin.css';
 import {colorStyleMap, decorators, positionSuggestions} from '../utils/messageEditorUtils';
