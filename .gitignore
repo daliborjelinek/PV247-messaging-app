@@ -24,3 +24,5 @@ npm-debug.log
 !.idea/codeStyles
 !.idea/libraries
 !.idea/inspectionProfiles
+
+Project.xml
