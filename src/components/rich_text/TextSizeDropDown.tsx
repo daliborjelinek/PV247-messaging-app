@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Dropdown, Glyphicon, MenuItem, SelectCallback} from 'react-bootstrap';
 import '../../styles/components/rich_text/TextSizeDropDown.less';
+import {SyntheticEvent} from 'react';
 
 export const FONT_SIZE_TYPES = [
   { label: 'regular', style: 'unstyled' },
@@ -32,6 +33,10 @@ export class TextSizeDropDown extends React.PureComponent<IProps, IState> {
     }
   };
 
+  private preventDefault = (e: SyntheticEvent<any>) => {
+    e.preventDefault();
+  };
+
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -55,12 +60,13 @@ export class TextSizeDropDown extends React.PureComponent<IProps, IState> {
       <MenuItem eventKey={heading.label}
                 key={heading.label}
                 onSelect={this.onChange as SelectCallback}
+                onMouseDown={this.preventDefault}
                 active={heading.label === this.state.activeMenuItem}>{heading.label}</MenuItem>
     ));
 
     return (
       <Dropdown className={'TextSizeDropDown'} id={'TextSizeDropDown__btn'} dropup>
-        <Dropdown.Toggle>
+        <Dropdown.Toggle onMouseDown={this.preventDefault}>
           <Glyphicon glyph={'text-size'}/>
         </Dropdown.Toggle>
         <Dropdown.Menu>

@@ -278,12 +278,11 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
    * @param e
    */
   private onKeyDown(e: KeyboardEvent) {
-    /*if (document.activeElement.className !== 'MessageEditor__textArea') {
-      return;
-    }*/
     if (!e.ctrlKey || e.key !== 'Enter') {
       return;
     }
+    e.preventDefault();
+    e.stopPropagation();
     this.onSave();
   }
 
@@ -352,10 +351,10 @@ export class MessageEditor extends React.PureComponent<IProps, IState> {
             <FontAwesomeIcon icon={'eraser'} size={'lg'}/>
           </span>
           <span onClick={() => this.fileInputRef.current!.click()}><FontAwesomeIcon icon={'image'} size={'lg'}/></span>
-          <span onClick={this.toggleOl}>
+          <span onClick={this.toggleOl} onMouseDown={this.preventDefault}>
             <FontAwesomeIcon icon={'list-ol'} size={'lg'} />
           </span>
-          <span onClick={this.toggleUl}>
+          <span onClick={this.toggleUl} onMouseDown={this.preventDefault}>
             <FontAwesomeIcon icon={'list-ul'} size={'lg'}/>
           </span>
           <CreateLink editorState={this.state.editorState} onSubmitUrl={this.onSubmitLink}/>
