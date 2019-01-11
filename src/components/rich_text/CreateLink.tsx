@@ -60,6 +60,11 @@ export class CreateLink extends React.PureComponent<IProps, IState> {
     this.setState(prevState => ({...prevState, urlInputValue: '', isUrlInputVisible: false}));
   };
 
+  private onCloseUrlSelection = (e: MouseEvent<Button>) => {
+    e.preventDefault();
+    this.setState((prevState) => ({...prevState, urlInputValue: '', isUrlInputVisible: false}));
+  };
+
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -86,6 +91,7 @@ export class CreateLink extends React.PureComponent<IProps, IState> {
               />
             </FormGroup>
             <Button bsStyle="primary" onClick={this.onSubmitUrl}>Submit</Button>
+            <Button onClick={this.onCloseUrlSelection}>Close</Button>
           </form>
         )}
       </div>
